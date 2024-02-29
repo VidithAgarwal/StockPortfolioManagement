@@ -38,11 +38,29 @@ public class Portfolio implements StockManagement {
 
 
 
-
-
-  @Override
+@Override
   public Map<String, Integer> portfolioComposition(String portfolioName) {
-    return null;
+    Map<String, Integer> composition = new HashMap<>();
+
+    String filePath = portfolioName + ".txt";
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        String[] parts = line.split(":", 2);
+        if (parts.length == 2) {
+          String key = parts[0].trim();
+          int value = Integer.parseInt(parts[1].trim());
+          composition.put(key, value);
+        }
+      }
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("File not found: " + filePath, e);
+    } catch (IOException e) {
+      throw new RuntimeException("Error reading file: " + filePath, e);
+      //required ?
+    }
+    return composition;
+
   }
 
   @Override
