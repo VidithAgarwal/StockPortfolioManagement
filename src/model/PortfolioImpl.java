@@ -51,9 +51,9 @@ public class PortfolioImpl implements Portfolio {
         writer.write(entry.getKey() + ": " + entry.getValue());
         writer.newLine();
       }
-      System.out.println("Map exported to " + filePath + " successfully.");
+      System.out.println("Portfolio exported to " + filePath + " successfully.");
     } catch (IOException e) {
-      System.err.println("Error exporting map to file: " + e.getMessage());
+      System.err.println("Error exporting portfolio to file: " + e.getMessage());
     }
   }
 
