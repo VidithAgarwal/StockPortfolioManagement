@@ -88,7 +88,8 @@ public class StockControllerImpl implements StockController {
     view.showListOfPortfolios(listOfPortfolioNames);
 
     int input = in.nextInt();
-    System.out.println("Enter the path");
+    System.out.println("Enter the proper path with file name in which you would like to save portfolio.");
+    //shouldn't this be in view , just the sentence.
     in.nextLine();
 
     String path = in.nextLine();
@@ -96,14 +97,14 @@ public class StockControllerImpl implements StockController {
     portfolioDirectory.get(input).savePortfolio(path);
   }
 
-  public void load() {
-    System.out.println("Enter the file path you want to load");
-    in.nextLine();
-
-    String path = in.nextLine();
-    System.out.println(path);
-    portfolioDirectory.get(input).savePortfolio(path);
-  }
+//  public void load() {
+//    System.out.println("Enter the file path you want to load");
+//    in.nextLine();
+//
+//    String path = in.nextLine();
+//    System.out.println(path);
+//    portfolioDirectory.get(input).savePortfolio(path);
+//  }
 
   private ArrayList<String> getListOfPortfoliosName() {
     ArrayList<String> listOfPortfolios = new ArrayList<>();
@@ -112,6 +113,50 @@ public class StockControllerImpl implements StockController {
     }
 
     return listOfPortfolios;
+  }
+
+  public void go() {
+    Scanner scanner = new Scanner(System.in);
+    int choice = 0;
+
+    while (choice != 3) {
+      if (portfolioDirectory.isEmpty()) {
+        view.showPrimaryMenu();
+      } else {
+        view.showSecondaryMenu();
+      }
+      choice = scanner.nextInt();
+
+      switch (choice) {
+        case 1:
+          createPortfolio();
+          break;
+        case 2:
+          //load();
+          break;
+        case 3:
+          //exit();
+          break;
+        case 4:
+          if (! portfolioDirectory.isEmpty()) {
+            examineComposition();
+          }
+          break;
+        case 5:
+          if (! portfolioDirectory.isEmpty()) {
+            System.out.println("Get total value of a portfolio for certain date");
+          }
+          break;
+        case 6:
+          if (! portfolioDirectory.isEmpty()) {
+            save();
+          }
+          break;
+        default:
+          this.view.displayError("Enter a valid choice, this option doesn't exists.");
+          break;
+      }
+    }
   }
 
 
