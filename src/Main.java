@@ -7,12 +7,12 @@ public class Main {
 
     IView view = new IViewImpl(System.out);
     StockControllerImpl a = new StockControllerImpl(view, System.in);
-
-    for (int i = 0; i < 1; i++) {
-
-      a.createPortfolio();
-    }
-    a.examineComposition();
-    a.save();
+    a.go();
+//    for (int i = 0; i < 1; i++) {
+//
+//      a.createPortfolio();
+//    }
+//    a.examineComposition();
+//    a.save();
   }
 }
