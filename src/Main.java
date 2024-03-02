@@ -8,7 +8,7 @@ public class Main {
     IView view = new IViewImpl(System.out);
     StockControllerImpl a = new StockControllerImpl(view, System.in);
     a.go();
-//    for (int i = 0; i < 1; i++) {
+//    for (int i = 0; i <1 1; i++) {
 //
 //      a.createPortfolio();
 //    }
