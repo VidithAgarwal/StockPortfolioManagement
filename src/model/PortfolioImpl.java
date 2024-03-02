@@ -42,9 +42,11 @@ public class PortfolioImpl implements Portfolio {
   public void savePortfolio(String filePath) {
     File file = new File(filePath);
     File parentDir = file.getParentFile();
-    if (!parentDir.exists()) {
+
+    if (parentDir != null && !parentDir.exists()) {
       parentDir.mkdirs(); // Create parent directories recursively
     }
+
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
       for (Map.Entry<String, Integer> entry : this.sharesList.entrySet()) {
