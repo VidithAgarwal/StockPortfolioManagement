@@ -15,4 +15,6 @@ public interface IView {
   void showListOfPortfolios(ArrayList<String> listOfPortfolios);
 
   void displayError(String error);
+
+  void print(String message);
 }

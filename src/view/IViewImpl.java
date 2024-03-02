@@ -61,4 +61,9 @@ public class IViewImpl implements IView{
   public void displayError(String error) {
     out.println(error);
   }
+
+  @Override
+  public void print(String message) {
+    out.println(message);
+  }
 }
