@@ -89,7 +89,7 @@ public class StockControllerImpl implements StockController {
     in.nextLine();
 
     String path = in.nextLine();
-//    System.out.println(path);
+    System.out.println(path);
     portfolioDirectory.get(input).savePortfolio(path);
   }
 
@@ -108,11 +108,8 @@ public class StockControllerImpl implements StockController {
     in.nextLine();
 
     String path = in.nextLine();
-
-    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
-    Map<String, Integer> portfolioMap = portfolioDirectory.get(input).loadPortfolio(path);
-    newBuilder.loadedShareList(portfolioMap);
-
+    System.out.println(path);
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name, path);
     this.portfolioDirectory.add(newBuilder.build());
   }
 
@@ -142,7 +139,7 @@ public class StockControllerImpl implements StockController {
           createPortfolio();
           break;
         case 2:
-          //load();
+          load();
           break;
         case 3:
           //exit();
