@@ -9,7 +9,7 @@ public interface Portfolio {
   public float portfolioValue (String portfolioName, String date);
 
   public void savePortfolio (String portfolioName);
-  public Map<String, Integer> loadPortfolio (String pathName);
+  //public Map<String, Integer> loadPortfolio (String pathName);
 
   public String getName();
 }
