@@ -56,29 +56,29 @@ public class PortfolioImpl implements Portfolio {
     }
   }
 
-  @Override
-  public Map<String, Integer> loadPortfolio(String filePath) {
-    Map<String, Integer> portfolioMap = new HashMap<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(":"); // Assuming the delimiter is ":"
-        if (parts.length == 2) {
-          String key = parts[0].trim();
-          int value = Integer.parseInt(parts[1].trim());
-          portfolioMap.put(key, value);
-        } else {
-          // Handle invalid lines if needed
-          System.err.println("Invalid line: " + line);
-        }
-      }
-    } catch (IOException e) {
-      System.err.println("Error reading file: " + e.getMessage());
-    } catch (NumberFormatException e) {
-      System.err.println("Invalid number format in file: " + e.getMessage());
-    }
-    return portfolioMap;
-  }
+//  @Override
+//  public Map<String, Integer> loadPortfolio(String filePath) {
+//    Map<String, Integer> portfolioMap = new HashMap<>();
+//    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+//      String line;
+//      while ((line = reader.readLine()) != null) {
+//        String[] parts = line.split(":"); // Assuming the delimiter is ":"
+//        if (parts.length == 2) {
+//          String key = parts[0].trim();
+//          int value = Integer.parseInt(parts[1].trim());
+//          portfolioMap.put(key, value);
+//        } else {
+//          // Handle invalid lines if needed
+//          System.err.println("Invalid line: " + line);
+//        }
+//      }
+//    } catch (IOException e) {
+//      System.err.println("Error reading file: " + e.getMessage());
+//    } catch (NumberFormatException e) {
+//      System.err.println("Invalid number format in file: " + e.getMessage());
+//    }
+//    return portfolioMap;
+//  }
 
   @Override
   public String getName() {
@@ -94,20 +94,44 @@ public class PortfolioImpl implements Portfolio {
       this.portfolioName = portfolioName;
     }
 
-    public PortfolioBuilder(String portfolioName) {
-      //shareList = new HashMap<>(numberOfShare);
+    public PortfolioBuilder(String portfolioName, String path) {
+      shareList = loadPortfolio(path);
       this.portfolioName = portfolioName;
     }
 
-    public void loadedShareList (Map<String, Integer> portfolioMap) {
-      this.shareList = portfolioMap;
-    }
+//    public void loadedShareList (Map<String, Integer> portfolioMap) {
+//      this.shareList = portfolioMap;
+//    }
     public void addShare(String shareName, int quantity) {
       this.shareList.put(shareName, quantity);
     }
 
     public Portfolio build() {
       return new PortfolioImpl(this.portfolioName, shareList);
+    }
+
+
+    public Map<String, Integer> loadPortfolio(String filePath) {
+      Map<String, Integer> portfolioMap = new HashMap<>();
+      try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          String[] parts = line.split(":"); // Assuming the delimiter is ":"
+          if (parts.length == 2) {
+            String key = parts[0].trim();
+            int value = Integer.parseInt(parts[1].trim());
+            portfolioMap.put(key, value);
+          } else {
+            // Handle invalid lines if needed
+            System.err.println("Invalid line: " + line);
+          }
+        }
+      } catch (IOException e) {
+        System.err.println("Error reading file: " + e.getMessage());
+      } catch (NumberFormatException e) {
+        System.err.println("Invalid number format in file: " + e.getMessage());
+      }
+      return portfolioMap;
     }
   }
 
