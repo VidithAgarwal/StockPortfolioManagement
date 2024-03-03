@@ -3,11 +3,9 @@ package model;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +26,7 @@ public class PortfolioImpl implements Portfolio {
 
 
 
-@Override
+  @Override
   public Map<String, Integer> portfolioComposition() {
     return this.sharesList;
   }
@@ -42,7 +40,8 @@ public class PortfolioImpl implements Portfolio {
   public void savePortfolio(String filePath) {
     File file = new File(filePath);
     File parentDir = file.getParentFile();
-    if (!parentDir.exists()) {
+
+    if (parentDir != null && !parentDir.exists()) {
       parentDir.mkdirs(); // Create parent directories recursively
     }
 
@@ -51,9 +50,9 @@ public class PortfolioImpl implements Portfolio {
         writer.write(entry.getKey() + ": " + entry.getValue());
         writer.newLine();
       }
-      System.out.println("Map exported to " + filePath + " successfully.");
+      System.out.println("Portfolio exported to " + filePath + " successfully.");
     } catch (IOException e) {
-      System.err.println("Error exporting map to file: " + e.getMessage());
+      System.err.println("Error exporting portfolio to file: " + e.getMessage());
     }
   }
 
@@ -95,6 +94,14 @@ public class PortfolioImpl implements Portfolio {
       this.portfolioName = portfolioName;
     }
 
+    public PortfolioBuilder(String portfolioName) {
+      //shareList = new HashMap<>(numberOfShare);
+      this.portfolioName = portfolioName;
+    }
+
+    public void loadedShareList (Map<String, Integer> portfolioMap) {
+      this.shareList = portfolioMap;
+    }
     public void addShare(String shareName, int quantity) {
       this.shareList.put(shareName, quantity);
     }
