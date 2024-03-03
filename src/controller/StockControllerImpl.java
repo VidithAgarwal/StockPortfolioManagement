@@ -24,45 +24,41 @@ public class StockControllerImpl implements StockController {
   }
 
   public void createPortfolio() {
-    System.out.print("Enter the name of the portfolio ");
+    view.print("Enter the name of the portfolio: ");
 
     String name = in.nextLine();
 
     boolean found = this.portfolioExist(name);
 
     if (found) {
-      this.view.displayError("Portfolio name already exists!");
+      this.view.displayError("Portfolio with this name already exists!");
       createPortfolio();
+      return;
     }
 
-    System.out.print("Enter the number of shares ");
+    view.print("Enter the number of stocks you want to have in this portfolio: ");
 
     int numShares = in.nextInt();
 
-    try {
-      PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
-              numShares);
-      String shareName;
-      int quantity;
-      for (int i = 0; i < numShares; i++) {
-        this.in = new Scanner(System.in);
 
-        System.out.println("Enter the name of the share ");
 
-        shareName = in.nextLine();
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
+            numShares);
+    String shareName;
+    int quantity;
+    for (int i = 0; i < numShares; i++) {
+      in.nextLine();
+      view.print("Enter the name of the share: ");
 
-        System.out.println("Enter the quantity of the share ");
+      shareName = in.nextLine();
 
-        quantity = in.nextInt();
-        in.nextLine();
+      view.print("Enter the quantity of " + shareName + " you have: ");
 
-        newBuilder.addShare(shareName, quantity);
-      }
-      this.portfolioDirectory.add(newBuilder.build());
-    } catch (IllegalArgumentException e) {
-      System.out.println("The portfolio name already exists! Please given another name.");
+      quantity = in.nextInt();
+
+      newBuilder.addShare(shareName, quantity);
     }
-
+    this.portfolioDirectory.add(newBuilder.build());
   }
 
   private boolean portfolioExist(String name) {
@@ -88,21 +84,36 @@ public class StockControllerImpl implements StockController {
     view.showListOfPortfolios(listOfPortfolioNames);
 
     int input = in.nextInt();
-    System.out.println("Enter the path");
+    view.print("Enter the proper path with file name in which you would like to save portfolio.");
+    //shouldn't this be in view , just the sentence.
     in.nextLine();
 
     String path = in.nextLine();
-    System.out.println(path);
+//    System.out.println(path);
     portfolioDirectory.get(input).savePortfolio(path);
   }
 
   public void load() {
-    System.out.println("Enter the file path you want to load");
+    view.print("Enter the name of the portfolio you be loading: ");
+    String name = in.nextLine();
+    boolean found = this.portfolioExist(name);
+
+    if (found) {
+      this.view.displayError("Portfolio with this name already exists!");
+      load();
+      return;
+    }
+
+    view.print("Enter the file path you want to load portfolio from.");
     in.nextLine();
 
     String path = in.nextLine();
-    System.out.println(path);
-    portfolioDirectory.get(input).savePortfolio(path);
+
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
+    Map<String, Integer> portfolioMap = portfolioDirectory.get(input).loadPortfolio(path);
+    newBuilder.loadedShareList(portfolioMap);
+
+    this.portfolioDirectory.add(newBuilder.build());
   }
 
   private ArrayList<String> getListOfPortfoliosName() {
@@ -112,6 +123,50 @@ public class StockControllerImpl implements StockController {
     }
 
     return listOfPortfolios;
+  }
+
+  public void go() {
+    int choice = 0;
+
+    while (choice != 3) {
+      if (portfolioDirectory.isEmpty()) {
+        view.showPrimaryMenu();
+      } else {
+        view.showSecondaryMenu();
+      }
+      choice = in.nextInt();
+      in.nextLine();
+
+      switch (choice) {
+        case 1:
+          createPortfolio();
+          break;
+        case 2:
+          //load();
+          break;
+        case 3:
+          //exit();
+          break;
+        case 4:
+          if (!portfolioDirectory.isEmpty()) {
+            examineComposition();
+          }
+          break;
+        case 5:
+          if (!portfolioDirectory.isEmpty()) {
+            view.print("Get total value of a portfolio for certain date");
+          }
+          break;
+        case 6:
+          if (!portfolioDirectory.isEmpty()) {
+            save();
+          }
+          break;
+        default:
+          this.view.displayError("Enter a valid choice, this option doesn't exists.");
+          break;
+      }
+    }
   }
 
 
