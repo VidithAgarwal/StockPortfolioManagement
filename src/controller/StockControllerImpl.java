@@ -51,7 +51,6 @@ public class StockControllerImpl implements StockController {
     for (int i = 0; i < numShares; i++) {
       in.nextLine();
       view.print("Enter the name of the share: ");
-
       shareName = in.nextLine();
 
       boolean validInput = false;
@@ -69,12 +68,14 @@ public class StockControllerImpl implements StockController {
         }
       }
 
-      //view.print("Enter the quantity of " + shareName + " you have: ");
-
-      //quantity = in.nextInt();
-
-      newBuilder.addShare(shareName, quantity);
+      try {
+        newBuilder.addShare(shareName, quantity);
+      } catch (IllegalArgumentException e) {
+        view.print("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
+        i--; //same share again asking
+      }
     }
+      //newBuilder.addShare(shareName, quantity);
     this.portfolioDirectory.add(newBuilder.build());
 
   }
