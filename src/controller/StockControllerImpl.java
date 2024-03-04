@@ -85,7 +85,7 @@ public class StockControllerImpl implements StockController {
     boolean found = this.portfolioExist(name);
     if (found) {
       this.view.displayError("Portfolio with this name already exists!");
-      loadPortfolio();
+      this.loadPortfolio();
       return;
     }
     view.print("Enter the full path of the file you want to load data from: ");
@@ -103,7 +103,7 @@ public class StockControllerImpl implements StockController {
           throw new IllegalArgumentException("File format is not CSV. Please enter a file with .csv extension.");
         }
         PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
-        System.out.println("Waiting");
+
         try {
           newBuilder.load(pathName);
           this.portfolioDirectory.add(newBuilder.build());
