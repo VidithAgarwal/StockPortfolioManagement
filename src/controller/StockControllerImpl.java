@@ -2,6 +2,7 @@ package controller;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import model.Portfolio;
@@ -40,6 +41,7 @@ public class StockControllerImpl implements StockController {
     int numShares = in.nextInt();
 
 
+
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
             numShares);
     String shareName;
@@ -54,11 +56,11 @@ public class StockControllerImpl implements StockController {
       while (!validInput) {
         try {
           view.print("Enter the quantity of " + shareName + " you have: ");
-          String input = in.nextLine();
-          quantity = Integer.parseInt(input);
+          quantity = in.nextInt();
           validInput = true;
-        } catch (NumberFormatException e) {
+        } catch (InputMismatchException e) {
           view.print("Please enter a whole number.");
+          in.nextLine();
         }
       }
 
@@ -69,6 +71,7 @@ public class StockControllerImpl implements StockController {
       newBuilder.addShare(shareName, quantity);
     }
     this.portfolioDirectory.add(newBuilder.build());
+
   }
 
   public void loadPortfolio() {
