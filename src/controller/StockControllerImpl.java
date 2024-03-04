@@ -143,6 +143,11 @@ public class StockControllerImpl implements StockController {
     view.showListOfPortfolios(listOfPortfolioNames);
 
     int input = in.nextInt();
+    if (input >= portfolioDirectory.size()) {
+      this.view.displayError("Enter a valid choice, this option doesn't exists.");
+      save();
+      return;
+    }
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     //shouldn't this be in view , just the sentence.
     in.nextLine();
