@@ -143,25 +143,35 @@ public class PortfolioImpl implements Portfolio {
       this.shareList.put(shareName, quantity);
     }
 
-    public void load(String filePath) {
+     public void load(String filePath) {
       try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
         while ((line = reader.readLine()) != null) {
-          String[] parts = line.split(":"); // Assuming the delimiter is ":"
+          String[] parts = line.split(","); // Assuming the delimiter is ","
           if (parts.length == 2) {
             String key = parts[0].trim();
-            int value = Integer.parseInt(parts[1].trim());
+            String value = parts[1].trim();
+            //validation to check correct key entered that is stock name is remaining.
 
-            this.shareList.put(key, value);
+            // Validate value is a positive whole number
+            try {
+              int intValue = Integer.parseInt(value);
+              if (intValue <= 0) {
+                throw new IllegalArgumentException("Invalid value: " + value);
+              }
+            } catch (NumberFormatException e) {
+              throw new IllegalArgumentException("Invalid value: " + value);
+            }
+            this.shareList.put(key, Integer.parseInt(value));
           } else {
-            // Handle invalid lines if needed
+            // Handle invalid line
             System.err.println("Invalid line: " + line);
           }
         }
       } catch (IOException e) {
         System.err.println("Error reading file: " + e.getMessage());
-      } catch (NumberFormatException e) {
-        System.err.println("Invalid number format in file: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        System.err.println("Invalid file format: " + e.getMessage());
       }
     }
 
