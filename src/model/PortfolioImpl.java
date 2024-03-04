@@ -157,10 +157,10 @@ public class PortfolioImpl implements Portfolio {
             try {
               int intValue = Integer.parseInt(value);
               if (intValue <= 0) {
-                throw new IllegalArgumentException("Invalid value: " + value);
+                throw new IllegalArgumentException();
               }
             } catch (NumberFormatException e) {
-              throw new IllegalArgumentException("Invalid value: " + value);
+              throw new IllegalArgumentException();
             }
             this.shareList.put(key, Integer.parseInt(value));
           } else {
@@ -170,8 +170,6 @@ public class PortfolioImpl implements Portfolio {
         }
       } catch (IOException e) {
         System.err.println("Error reading file: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        System.err.println("Invalid file format: " + e.getMessage());
       }
     }
 

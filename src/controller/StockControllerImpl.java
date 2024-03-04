@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -83,7 +85,7 @@ public class StockControllerImpl implements StockController {
     boolean found = this.portfolioExist(name);
     if (found) {
       this.view.displayError("Portfolio with this name already exists!");
-      createPortfolio();
+      loadPortfolio();
       return;
     }
     view.print("Enter the full path of the file you want to load data from: ");
@@ -101,8 +103,14 @@ public class StockControllerImpl implements StockController {
           throw new IllegalArgumentException("File format is not CSV. Please enter a file with .csv extension.");
         }
         PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
-        newBuilder.load(pathName);
-        this.portfolioDirectory.add(newBuilder.build());
+        System.out.println("Waiting");
+        try {
+          newBuilder.load(pathName);
+          this.portfolioDirectory.add(newBuilder.build());
+
+        } catch (IllegalArgumentException e) {
+          view.displayError("The values provided in the path is invalid");
+        }
         validPath = true;
       } catch (FileNotFoundException | IllegalArgumentException e) {
         view.displayError("Error reading file: " + e.getMessage());
