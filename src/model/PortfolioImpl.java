@@ -36,7 +36,6 @@ public class PortfolioImpl implements Portfolio {
 
 
 
-
 @Override
   public Map<String, Integer> portfolioComposition() {
     return this.sharesList;
@@ -103,54 +102,6 @@ public class PortfolioImpl implements Portfolio {
   }
 
 
-  private List<String> fetchStockNames() {
-     String API_KEY = "GSxm0cOzHGUXHmBTb_wteC5_Ag1eBCSt";
-     String BASE_URL = "https://api.polygon.io/v3/reference/tickers";
-     String STOCK_NAMES_FILE = "stock_names.txt";
-    List<String> stockNames = new ArrayList<>();
-
-    try {
-      File file = new File(STOCK_NAMES_FILE);
-      if (file.exists()) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(STOCK_NAMES_FILE))) {
-          String line;
-          while ((line = reader.readLine()) != null) {
-            stockNames.add(line);
-          }
-        }
-      } else {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "?apiKey=" + API_KEY))
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        JSONArray tickers = new JSONObject(response.body()).getJSONArray("results");
-
-        for (int i = 0; i < tickers.length(); i++) {
-          JSONObject ticker = tickers.getJSONObject(i);
-          String name = ticker.getString("name");
-          stockNames.add(name);
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STOCK_NAMES_FILE))) {
-          for (String stockName : stockNames) {
-            writer.write(stockName);
-            writer.newLine();
-          }
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return stockNames;
-  }
-
-  private boolean isValidStockName(String stockName) {
-    List<String> stockNames = fetchStockNames();
-    return stockNames.contains(stockName);
-  }
 
   @Override
   public void savePortfolio(String filePath) {
@@ -206,6 +157,7 @@ public class PortfolioImpl implements Portfolio {
           if (parts.length == 2) {
             String key = parts[0].trim();
             int value = Integer.parseInt(parts[1].trim());
+
             this.shareList.put(key, value);
           } else {
             // Handle invalid lines if needed
