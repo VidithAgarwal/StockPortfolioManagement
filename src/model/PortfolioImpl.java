@@ -140,7 +140,26 @@ public class PortfolioImpl implements Portfolio {
     }
 
     public void addShare(String shareName, int quantity) {
-      this.shareList.put(shareName, quantity);
+     // this.shareList.put(shareName, quantity);
+      try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          String[] parts = line.split(",");
+          if (parts.length >= 2) {
+            String tickerSymbol = parts[0].trim();
+            String companyName = parts[1].trim();
+
+            if (companyName.equalsIgnoreCase(shareName.trim())) {
+              this.shareList.put(tickerSymbol, quantity);
+              return;
+            }
+          }
+        }
+
+        throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
+      } catch (IOException e) {
+        System.err.println("Error reading file: " + e.getMessage());
+      }
     }
 
      public void load(String filePath) {
