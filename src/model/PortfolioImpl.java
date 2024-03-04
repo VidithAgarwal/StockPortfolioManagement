@@ -48,6 +48,7 @@ public class PortfolioImpl implements Portfolio {
   }
 
   //replace it with portfoliovalue of interface
+
 //  private double portfolioValues(String portfolioName, String date) {
 //    PortfolioImpl portfolio = getPortfolio(portfolioName);
 //    Map<String, Integer> sharesList = portfolio.getSharesList();
@@ -101,49 +102,43 @@ public class PortfolioImpl implements Portfolio {
     return 0;
   }
 
-  // to be replaced with portfoliovalue method
-  public static double getTotalValue(Map<String, Integer> portfolio, String date) {
-    double totalValue = 0;
-    double price;
-    for (Map.Entry<String, Integer> entry : portfolio.entrySet()) {
-      String stockName = entry.getKey();
-      int quantity = entry.getValue();
-
-      if (!portfolio.containsKey(stockName)) {
-
-        price = getPrice(stockName, date);
-       // portfolio.put(stockName, price);
-      } else {
-        price = portfolio.get(stockName);
-      }
-
-      totalValue += price * quantity;
-    }
-
-    return totalValue;
-  }
-
-  
 
   private List<String> fetchStockNames() {
      String API_KEY = "GSxm0cOzHGUXHmBTb_wteC5_Ag1eBCSt";
      String BASE_URL = "https://api.polygon.io/v3/reference/tickers";
-
+     String STOCK_NAMES_FILE = "stock_names.txt";
     List<String> stockNames = new ArrayList<>();
 
     try {
-      HttpClient client = HttpClient.newHttpClient();
-      HttpRequest request = HttpRequest.newBuilder()
-              .uri(URI.create(BASE_URL + "?apiKey=" + API_KEY))
-              .build();
+      File file = new File(STOCK_NAMES_FILE);
+      if (file.exists()) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(STOCK_NAMES_FILE))) {
+          String line;
+          while ((line = reader.readLine()) != null) {
+            stockNames.add(line);
+          }
+        }
+      } else {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "?apiKey=" + API_KEY))
+                .build();
 
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-      JSONArray tickers = new JSONObject(response.body()).getJSONArray("results");
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        JSONArray tickers = new JSONObject(response.body()).getJSONArray("results");
 
-      for (int i = 0; i < tickers.length(); i++) {
-        JSONObject ticker = tickers.getJSONObject(i);
-        String name = ticker.getString("name");
-        stockNames.add(name);
+        for (int i = 0; i < tickers.length(); i++) {
+          JSONObject ticker = tickers.getJSONObject(i);
+          String name = ticker.getString("name");
+          stockNames.add(name);
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STOCK_NAMES_FILE))) {
+          for (String stockName : stockNames) {
+            writer.write(stockName);
+            writer.newLine();
+          }
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();
