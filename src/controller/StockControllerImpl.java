@@ -40,25 +40,35 @@ public class StockControllerImpl implements StockController {
     int numShares = in.nextInt();
 
 
-
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
             numShares);
     String shareName;
-    int quantity;
+    int quantity = 0;
     for (int i = 0; i < numShares; i++) {
       in.nextLine();
       view.print("Enter the name of the share: ");
 
       shareName = in.nextLine();
 
-      view.print("Enter the quantity of " + shareName + " you have: ");
+      boolean validInput = false;
+      while (!validInput) {
+        try {
+          view.print("Enter the quantity of " + shareName + " you have: ");
+          String input = in.nextLine();
+          quantity = Integer.parseInt(input);
+          validInput = true;
+        } catch (NumberFormatException e) {
+          view.print("Please enter a whole number.");
+        }
+      }
 
-      quantity = in.nextInt();
+      //view.print("Enter the quantity of " + shareName + " you have: ");
+
+      //quantity = in.nextInt();
 
       newBuilder.addShare(shareName, quantity);
     }
     this.portfolioDirectory.add(newBuilder.build());
-
   }
 
   public void loadPortfolio() {
