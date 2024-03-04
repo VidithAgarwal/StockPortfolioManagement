@@ -6,19 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class PortfolioImpl implements Portfolio {
 
@@ -78,28 +72,28 @@ public class PortfolioImpl implements Portfolio {
 //   // return PortfolioImpl.getPortfolioByName(portfolioName);
 //  }
 
-  private static double getPrice(String stockName, String date) {
-    String API_KEY = "GSxm0cOzHGUXHmBTb_wteC5_Ag1eBCSt";
-    String BASE_URL = "https://api.polygon.io/v3/reference/tickers";
-    try {
-      HttpClient client = HttpClient.newHttpClient();
-      HttpRequest request = HttpRequest.newBuilder()
-              .uri(URI.create(BASE_URL + stockName + "?apiKey=" + API_KEY + "&date=" + date))
-              .build();
-
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-      JSONObject data = new JSONObject(response.body());
-
-      // Get the closing price from the API response
-      double price = data.getDouble("close");
-
-      return price;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return 0;
-  }
+//  private static double getPrice(String stockName, String date) {
+//    String API_KEY = "GSxm0cOzHGUXHmBTb_wteC5_Ag1eBCSt";
+//    String BASE_URL = "https://api.polygon.io/v3/reference/tickers";
+//    try {
+//      HttpClient client = HttpClient.newHttpClient();
+//      HttpRequest request = HttpRequest.newBuilder()
+//              .uri(URI.create(BASE_URL + stockName + "?apiKey=" + API_KEY + "&date=" + date))
+//              .build();
+//
+//      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//      JSONObject data = new JSONObject(response.body());
+//
+//      // Get the closing price from the API response
+//      double price = data.getDouble("close");
+//
+//      return price;
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
+//
+//    return 0;
+//  }
 
 
 
