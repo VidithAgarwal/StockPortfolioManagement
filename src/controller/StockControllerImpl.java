@@ -57,9 +57,12 @@ public class StockControllerImpl implements StockController {
         try {
           view.print("Enter the quantity of " + shareName + " you have: ");
           quantity = in.nextInt();
+          if (quantity <= 0) {
+            throw new InputMismatchException();
+          }
           validInput = true;
         } catch (InputMismatchException e) {
-          view.print("Please enter a whole number.");
+          view.print("Please enter a positive whole number.");
           in.nextLine();
         }
       }
