@@ -2,7 +2,6 @@ package controller;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Scanner;
 
 import model.Portfolio;
@@ -12,10 +11,10 @@ import view.IView;
 
 public class StockControllerImpl implements StockController {
 
-  private ArrayList<Portfolio> portfolioDirectory;
-  private IView view;
+  private final ArrayList<Portfolio> portfolioDirectory;
+  private final IView view;
 
-  private Scanner in;
+  private final Scanner in;
 
   public StockControllerImpl(IView view, InputStream in) {
     this.portfolioDirectory = new ArrayList<>();
@@ -62,6 +61,30 @@ public class StockControllerImpl implements StockController {
 
   }
 
+  public void loadPortfolio() {
+    view.print("Enter the name of the portfolio: ");
+
+    String name = in.nextLine();
+
+    boolean found = this.portfolioExist(name);
+
+    if (found) {
+      this.view.displayError("Portfolio with this name already exists!");
+      createPortfolio();
+      return;
+    }
+
+    view.print("Enter the full path of the file you want to load data from: ");
+
+    String pathName = in.nextLine();
+
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
+
+    newBuilder.load(pathName);
+    this.portfolioDirectory.add(newBuilder.build());
+
+  }
+
   private boolean portfolioExist(String name) {
     for (Portfolio obj : portfolioDirectory) {
       if (obj.getName().equals(name)) {
@@ -90,18 +113,8 @@ public class StockControllerImpl implements StockController {
     in.nextLine();
 
     String path = in.nextLine();
-//    System.out.println(path);
     portfolioDirectory.get(input).savePortfolio(path);
   }
-
-//  public void load() {
-//    System.out.println("Enter the file path you want to load");
-//    in.nextLine();
-//
-//    String path = in.nextLine();
-//    System.out.println(path);
-//    portfolioDirectory.get(input).savePortfolio(path);
-//  }
 
   private ArrayList<String> getListOfPortfoliosName() {
     ArrayList<String> listOfPortfolios = new ArrayList<>();
@@ -129,7 +142,7 @@ public class StockControllerImpl implements StockController {
           createPortfolio();
           break;
         case 2:
-          //load();
+          loadPortfolio();
           break;
         case 3:
           //exit();

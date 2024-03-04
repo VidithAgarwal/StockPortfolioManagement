@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class IViewImpl implements IView{
 
-  private PrintStream out;
+  private final PrintStream out;
 
   public IViewImpl(PrintStream out) {
     this.out = out;

@@ -3,11 +3,9 @@ package model;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,29 +57,7 @@ public class PortfolioImpl implements Portfolio {
     }
   }
 
-  @Override
-  public Map<String, Integer> loadPortfolio(String filePath) {
-    Map<String, Integer> portfolioMap = new HashMap<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(":"); // Assuming the delimiter is ":"
-        if (parts.length == 2) {
-          String key = parts[0].trim();
-          int value = Integer.parseInt(parts[1].trim());
-          portfolioMap.put(key, value);
-        } else {
-          // Handle invalid lines if needed
-          System.err.println("Invalid line: " + line);
-        }
-      }
-    } catch (IOException e) {
-      System.err.println("Error reading file: " + e.getMessage());
-    } catch (NumberFormatException e) {
-      System.err.println("Invalid number format in file: " + e.getMessage());
-    }
-    return portfolioMap;
-  }
+
 
   @Override
   public String getName() {
@@ -97,8 +73,34 @@ public class PortfolioImpl implements Portfolio {
       this.portfolioName = portfolioName;
     }
 
+    public PortfolioBuilder(String portfolioName) {
+      shareList = new HashMap<>();
+      this.portfolioName = portfolioName;
+    }
+
     public void addShare(String shareName, int quantity) {
       this.shareList.put(shareName, quantity);
+    }
+
+    public void load(String filePath) {
+      try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          String[] parts = line.split(":"); // Assuming the delimiter is ":"
+          if (parts.length == 2) {
+            String key = parts[0].trim();
+            int value = Integer.parseInt(parts[1].trim());
+            this.shareList.put(key, value);
+          } else {
+            // Handle invalid lines if needed
+            System.err.println("Invalid line: " + line);
+          }
+        }
+      } catch (IOException e) {
+        System.err.println("Error reading file: " + e.getMessage());
+      } catch (NumberFormatException e) {
+        System.err.println("Invalid number format in file: " + e.getMessage());
+      }
     }
 
     public Portfolio build() {

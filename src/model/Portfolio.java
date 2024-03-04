@@ -3,13 +3,12 @@ package model;
 import java.util.Map;
 
 public interface Portfolio {
-  public Map<String, Integer> portfolioComposition();
+  Map<String, Integer> portfolioComposition();
 
 
-  public float portfolioValue (String portfolioName, String date);
+  float portfolioValue (String portfolioName, String date);
 
-  public void savePortfolio (String portfolioName);
-  public Map<String, Integer> loadPortfolio (String pathName);
+  void savePortfolio (String portfolioName);
 
-  public String getName();
+  String getName();
 }
