@@ -47,8 +47,12 @@ public class PortfolioImpl implements Portfolio {
     for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
       StockImpl stock = entry.getKey();
       Integer quantity = entry.getValue();
-
-      totalValue += stock.returnPrice(date) * quantity;
+      try {
+        totalValue += stock.returnPrice(date) * quantity;
+      } catch (NullPointerException e) {
+        //System.out.println("No price data found for one or more stocks on the date: " + date);
+        throw e;
+      }
 
     }
     return totalValue;
