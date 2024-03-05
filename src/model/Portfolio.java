@@ -6,9 +6,9 @@ public interface Portfolio {
   Map<String, Integer> portfolioComposition();
 
 
-  float portfolioValue (String portfolioName, String date);
+  double portfolioValue (String date);
 
-  void savePortfolio (String portfolioName);
+  void savePortfolio (String path);
 
   String getName();
 }

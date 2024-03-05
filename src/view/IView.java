@@ -10,7 +10,7 @@ public interface IView {
 
   void showComposition(Map<String, Integer> composition);
 
-  void showTotalValue(float value);
+  void showTotalValue(double value);
 
   void showListOfPortfolios(ArrayList<String> listOfPortfolios);
 

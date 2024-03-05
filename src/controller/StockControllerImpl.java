@@ -187,6 +187,23 @@ public class StockControllerImpl implements StockController {
     return listOfPortfolios;
   }
 
+  public void getTotalValue() {
+    ArrayList<String> listOfPortfolioNames = getListOfPortfoliosName();
+    view.showListOfPortfolios(listOfPortfolioNames);
+
+    int input = in.nextInt();
+    if (!validateUserChoice(input)) {
+      save();
+      return;
+    }
+    in.nextLine();
+
+    view.print("Enter the date for which you want to get the total price of portfolio. ");
+    String date = in.nextLine();
+    double totalValue = portfolioDirectory.get(input).portfolioValue(date);
+    view.showTotalValue(totalValue);
+  }
+
   public void go() {
     int choice = 0;
 
@@ -217,6 +234,7 @@ public class StockControllerImpl implements StockController {
         case 5:
           if (!portfolioDirectory.isEmpty()) {
             view.print("Get total value of a portfolio for certain date");
+            getTotalValue();
           }
           break;
         case 6:

@@ -17,13 +17,13 @@ import java.net.http.HttpResponse;
 public class PortfolioImpl implements Portfolio {
 
 
-  private final Map<String, Integer> sharesList;
+  private final Map<StockImpl, Integer> sharesList;
   private final String portfolioName;
 
-  private PortfolioImpl(String portfolioName, Map<String, Integer> list) {
-    sharesList = new HashMap<>();
+  private PortfolioImpl(String portfolioName, Map<StockImpl, Integer> list) {
+    this.sharesList = new HashMap<>();
     this.portfolioName = portfolioName;
-    for (Map.Entry<String, Integer> entry : list.entrySet()) {
+    for (Map.Entry<StockImpl, Integer> entry : list.entrySet()) {
       this.sharesList.put(entry.getKey(), entry.getValue());
     }
   }
@@ -32,68 +32,27 @@ public class PortfolioImpl implements Portfolio {
 
   @Override
   public Map<String, Integer> portfolioComposition() {
-    return this.sharesList;
+    Map<String, Integer> composition = new HashMap<>();
+    for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
+      StockImpl stock = entry.getKey();
+      Integer value = entry.getValue();
+      composition.put(stock.getTicker(), value);
+    }
+    return composition;
   }
 
   @Override
-  public float portfolioValue(String portfolioName, String date) {
-    return 0;
+  public double portfolioValue(String date) {
+    double totalValue = 0;
+    for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
+      StockImpl stock = entry.getKey();
+      Integer quantity = entry.getValue();
+
+      totalValue += stock.returnPrice(date) * quantity;
+
+    }
+    return totalValue;
   }
-
-  //replace it with portfoliovalue of interface
-
-//  private double portfolioValues(String portfolioName, String date) {
-//    PortfolioImpl portfolio = getPortfolio(portfolioName);
-//    Map<String, Integer> sharesList = portfolio.getSharesList();
-//
-//    double totalValue = 0;
-//    double price;
-//
-//    for (Map.Entry<String, Integer> entry : sharesList.entrySet()) {
-//      String stockName = entry.getKey();
-//      int quantity = entry.getValue();
-//
-//      // Check if the data for this stock exists in the map
-//      if (!sharesList.containsKey(stockName)) {
-//        // If the data does not exist, call the API to get the data
-//         price = getPrice(stockName, date);
-//        sharesList.put(stockName, price);
-//      } else {
-//         price = sharesList.get(stockName);
-//      }
-//
-//      totalValue += price * quantity;
-//    }
-//
-//    return totalValue;
-//  }
-
-//  private PortfolioImpl getPortfolio(String portfolioName) {
-//   // return PortfolioImpl.getPortfolioByName(portfolioName);
-//  }
-
-//  private static double getPrice(String stockName, String date) {
-//    String API_KEY = "GSxm0cOzHGUXHmBTb_wteC5_Ag1eBCSt";
-//    String BASE_URL = "https://api.polygon.io/v3/reference/tickers";
-//    try {
-//      HttpClient client = HttpClient.newHttpClient();
-//      HttpRequest request = HttpRequest.newBuilder()
-//              .uri(URI.create(BASE_URL + stockName + "?apiKey=" + API_KEY + "&date=" + date))
-//              .build();
-//
-//      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//      JSONObject data = new JSONObject(response.body());
-//
-//      // Get the closing price from the API response
-//      double price = data.getDouble("close");
-//
-//      return price;
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    }
-//
-//    return 0;
-//  }
 
 
 
@@ -108,8 +67,8 @@ public class PortfolioImpl implements Portfolio {
 
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-      for (Map.Entry<String, Integer> entry : this.sharesList.entrySet()) {
-        writer.write(entry.getKey() + ": " + entry.getValue());
+      for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
+        writer.write(entry.getKey().getTicker() + ": " + entry.getValue());
         writer.newLine();
       }
       System.out.println("Portfolio exported to " + filePath + " successfully.");
@@ -126,7 +85,7 @@ public class PortfolioImpl implements Portfolio {
   }
 
   public static class PortfolioBuilder {
-    private Map<String, Integer> shareList;
+    private Map<StockImpl, Integer> shareList;
     private final String portfolioName;
 
     public PortfolioBuilder(String portfolioName, int numberOfShare) {
@@ -146,11 +105,12 @@ public class PortfolioImpl implements Portfolio {
       if (tickerSymbol == null) {
         throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
       }
-      if (shareList.containsKey(tickerSymbol)) {
-        int existingQuantity = this.shareList.get(tickerSymbol);
-        this.shareList.put(tickerSymbol, existingQuantity + quantity);
+      StockImpl stock = new StockImpl(tickerSymbol);
+      if (shareList.containsKey(stock)) {
+        int existingQuantity = this.shareList.get(stock);
+        this.shareList.put(stock, existingQuantity + quantity);
       } else {
-        this.shareList.put(tickerSymbol, quantity);
+        this.shareList.put(stock, quantity);
       }
     }
 
@@ -196,7 +156,8 @@ public class PortfolioImpl implements Portfolio {
             } catch (NumberFormatException e) {
               throw new IllegalArgumentException();
             }
-            this.shareList.put(tickerSymbol, Integer.parseInt(value));
+            StockImpl stock = new StockImpl(tickerSymbol);
+            this.shareList.put(stock, Integer.parseInt(value));
           } else {
             // Handle invalid line
             throw new IllegalArgumentException();
