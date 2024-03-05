@@ -19,6 +19,8 @@ public class StockImpl implements StockInterface{
 
   private void fetchData() {
     String apiKey = "W0M1JOKC82EZEQA8";
+    // our key B2R39JDS3MPERHL7
+    // sir's key String apiKey = "W0M1JOKC82EZEQA8";
     String stockSymbol = tickerSymbol; //ticker symbol for Google
     URL url = null;
 
@@ -56,11 +58,16 @@ public class StockImpl implements StockInterface{
 
   @Override
   public double returnPrice(String date) {
-
     if (this.priceData.isEmpty()) {
       fetchData();
     }
-    return this.priceData.get(date);
+
+    Double price = this.priceData.get(date);
+    if (price == null) {
+      throw new NullPointerException();
+    }
+
+    return price;
   }
 
   private void storeFetchedData(StringBuilder output) {
