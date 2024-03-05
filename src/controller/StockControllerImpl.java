@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 import model.Portfolio;
@@ -53,6 +55,7 @@ public class StockControllerImpl implements StockController {
 
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
             numShares);
+//    Map<String, Integer> shareQuantities = new HashMap<>();
     String shareName;
     int quantity = 0;
     for (int i = 0; i < numShares; i++) {
@@ -82,7 +85,7 @@ public class StockControllerImpl implements StockController {
         i--; //same share again asking
       }
     }
-      //newBuilder.addShare(shareName, quantity);
+    //newBuilder.addShare(shareName, quantity);
     this.portfolioDirectory.add(newBuilder.build());
 
   }
