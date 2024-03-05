@@ -38,11 +38,18 @@ public class StockControllerImpl implements StockController {
       return;
     }
 
-    view.print("Enter the number of stocks you want to have in this portfolio: ");
-
-    int numShares = in.nextInt();
-
-
+    int numShares = 0;
+    boolean validInput = false;
+    while (!validInput) {
+      try {
+        view.print("Enter the number of stocks you want to have in this portfolio: ");
+        numShares = in.nextInt();
+        validInput = true;
+      } catch (InputMismatchException e) {
+        view.displayError("Please enter a whole number");
+        in.nextLine();
+      }
+    }
 
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
             numShares);
@@ -53,7 +60,7 @@ public class StockControllerImpl implements StockController {
       view.print("Enter the name of the share: ");
       shareName = in.nextLine();
 
-      boolean validInput = false;
+      validInput = false;
       while (!validInput) {
         try {
           view.print("Enter the quantity of " + shareName + " you have: ");
@@ -136,6 +143,9 @@ public class StockControllerImpl implements StockController {
     view.showListOfPortfolios(listOfPortfolios);
 
     int input = in.nextInt();
+    if (!validateUserChoice(input)) {
+      return;
+    }
     view.showComposition(portfolioDirectory.get(input).portfolioComposition());
   }
 
@@ -144,9 +154,7 @@ public class StockControllerImpl implements StockController {
     view.showListOfPortfolios(listOfPortfolioNames);
 
     int input = in.nextInt();
-    if (input >= portfolioDirectory.size()) {
-      this.view.displayError("Enter a valid choice, this option doesn't exists.");
-      save();
+    if (!validateUserChoice(input)) {
       return;
     }
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
@@ -155,6 +163,15 @@ public class StockControllerImpl implements StockController {
 
     String path = in.nextLine();
     portfolioDirectory.get(input).savePortfolio(path);
+  }
+
+  private boolean validateUserChoice(int input) {
+    if (input >= portfolioDirectory.size()) {
+      this.view.displayError("Enter a valid choice, this option doesn't exists.");
+      save();
+      return false;
+    }
+    return true;
   }
 
   private ArrayList<String> getListOfPortfoliosName() {

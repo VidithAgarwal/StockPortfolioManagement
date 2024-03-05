@@ -147,9 +147,9 @@ public class PortfolioImpl implements Portfolio {
           String[] parts = line.split(",");
           if (parts.length >= 2) {
             String tickerSymbol = parts[0].trim();
-            String companyName = parts[1].trim();
+            String companyName = parts[1].trim().replaceAll("\\s", "");
 
-            if (companyName.equalsIgnoreCase(shareName.trim())) {
+            if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
               this.shareList.put(tickerSymbol, quantity);
               return;
             }
@@ -184,7 +184,7 @@ public class PortfolioImpl implements Portfolio {
             this.shareList.put(key, Integer.parseInt(value));
           } else {
             // Handle invalid line
-            System.err.println("Invalid line: " + line);
+            throw new IllegalArgumentException();
           }
         }
       } catch (IOException e) {
