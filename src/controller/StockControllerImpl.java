@@ -144,6 +144,7 @@ public class StockControllerImpl implements StockController {
 
     int input = in.nextInt();
     if (!validateUserChoice(input)) {
+      examineComposition();
       return;
     }
     view.showComposition(portfolioDirectory.get(input).portfolioComposition());
@@ -155,6 +156,7 @@ public class StockControllerImpl implements StockController {
 
     int input = in.nextInt();
     if (!validateUserChoice(input)) {
+      save();
       return;
     }
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
@@ -166,9 +168,8 @@ public class StockControllerImpl implements StockController {
   }
 
   private boolean validateUserChoice(int input) {
-    if (input >= portfolioDirectory.size()) {
+    if (input >= portfolioDirectory.size() || input < 0) {
       this.view.displayError("Enter a valid choice, this option doesn't exists.");
-      save();
       return false;
     }
     return true;
