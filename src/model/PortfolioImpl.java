@@ -30,7 +30,7 @@ public class PortfolioImpl implements Portfolio {
 
 
 
-@Override
+  @Override
   public Map<String, Integer> portfolioComposition() {
     return this.sharesList;
   }
@@ -140,14 +140,18 @@ public class PortfolioImpl implements Portfolio {
     }
 
     public void addShare(String shareName, int quantity) {
-     // this.shareList.put(shareName, quantity);
+      // this.shareList.put(shareName, quantity);
       String tickerSymbol = validateStockName(shareName);
 
       if (tickerSymbol == null) {
         throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
       }
-
-      this.shareList.put(tickerSymbol, quantity);
+      if (shareList.containsKey(tickerSymbol)) {
+        int existingQuantity = this.shareList.get(tickerSymbol);
+        this.shareList.put(tickerSymbol, existingQuantity + quantity);
+      } else {
+        this.shareList.put(tickerSymbol, quantity);
+      }
     }
 
     private String validateStockName(String shareName) {
@@ -170,7 +174,7 @@ public class PortfolioImpl implements Portfolio {
       return null;
     }
 
-     public void load(String filePath) {
+    public void load(String filePath) {
       try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
         while ((line = reader.readLine()) != null) {
