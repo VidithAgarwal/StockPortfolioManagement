@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import model.Portfolio;
 import model.PortfolioImpl;
@@ -193,17 +194,38 @@ public class StockControllerImpl implements StockController {
 
     int input = in.nextInt();
     if (!validateUserChoice(input)) {
-      save();
+      getTotalValue();
       return;
     }
     in.nextLine();
 
-    view.print("Enter the date for which you want to get the total price of portfolio. ");
-    String date = in.nextLine();
-    double totalValue = portfolioDirectory.get(input).portfolioValue(date);
-    view.showTotalValue(totalValue);
+    boolean validDate = false;
+    String date;
+    do {
+      view.print("Enter the date for which you want to get the total price of the portfolio. ");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = in.nextLine();
+      if (isValidDateFormat(date)) {
+        validDate = true;
+      } else {
+        view.print("Invalid date format.\n");
+      }
+    } while (!validDate);
+    view.print("Wait until the total value is calculated");
+    //double totalValue = portfolioDirectory.get(input).portfolioValue(date);
+    //view.showTotalValue(totalValue);
+    try {
+      double totalValue = portfolioDirectory.get(input).portfolioValue(date);
+      view.showTotalValue(totalValue);
+    } catch (NullPointerException e) {
+      view.print("Error: No price data found for one or more stocks on the date: " + date);
+    }
   }
 
+  private boolean isValidDateFormat(String date) {
+    String regex = "\\d{4}-\\d{2}-\\d{2}";
+    return Pattern.matches(regex, date);
+  }
   public void go() {
     int choice = 0;
 
@@ -251,3 +273,9 @@ public class StockControllerImpl implements StockController {
 
 
 }
+  
+    
+
+
+  
+    
