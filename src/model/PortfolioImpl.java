@@ -147,7 +147,7 @@ public class PortfolioImpl implements Portfolio {
         throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
       }
 
-      this.shareList.put(shareName, quantity);
+      this.shareList.put(tickerSymbol, quantity);
     }
 
     private String validateStockName(String shareName) {
@@ -192,7 +192,7 @@ public class PortfolioImpl implements Portfolio {
             } catch (NumberFormatException e) {
               throw new IllegalArgumentException();
             }
-            this.shareList.put(key, Integer.parseInt(value));
+            this.shareList.put(tickerSymbol, Integer.parseInt(value));
           } else {
             // Handle invalid line
             throw new IllegalArgumentException();
