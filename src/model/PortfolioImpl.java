@@ -141,6 +141,16 @@ public class PortfolioImpl implements Portfolio {
 
     public void addShare(String shareName, int quantity) {
      // this.shareList.put(shareName, quantity);
+      String tickerSymbol = validateStockName(shareName);
+
+      if (tickerSymbol == null) {
+        throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
+      }
+
+      this.shareList.put(shareName, quantity);
+    }
+
+    private String validateStockName(String shareName) {
       try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -150,16 +160,14 @@ public class PortfolioImpl implements Portfolio {
             String companyName = parts[1].trim().replaceAll("\\s", "");
 
             if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
-              this.shareList.put(tickerSymbol, quantity);
-              return;
+              return tickerSymbol;
             }
           }
         }
-
-        throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
       } catch (IOException e) {
         System.err.println("Error reading file: " + e.getMessage());
       }
+      return null;
     }
 
      public void load(String filePath) {
@@ -171,7 +179,10 @@ public class PortfolioImpl implements Portfolio {
             String key = parts[0].trim();
             String value = parts[1].trim();
             //validation to check correct key entered that is stock name is remaining.
-
+            String tickerSymbol = validateStockName(key);
+            if (tickerSymbol == null) {
+              throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
+            }
             // Validate value is a positive whole number
             try {
               int intValue = Integer.parseInt(value);
