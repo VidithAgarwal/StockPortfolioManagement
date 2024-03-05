@@ -22,7 +22,7 @@ public class StockImpl implements StockInterface{
     // our key B2R39JDS3MPERHL7
     // sir's key String apiKey = "W0M1JOKC82EZEQA8";
     String stockSymbol = tickerSymbol; //ticker symbol for Google
-    URL url = null;
+    URL url;
 
     try {
 
@@ -37,18 +37,16 @@ public class StockImpl implements StockInterface{
               + "no longer works");
     }
 
-    InputStream in = null;
+    InputStream in;
     StringBuilder output = new StringBuilder();
 
     try {
-      for (int i = 0; i < 26; i++) {
         in = url.openStream();
         int b;
 
         while ((b=in.read())!=-1) {
           output.append((char)b);
         }
-      }
     }
     catch (IOException e) {
       throw new IllegalArgumentException("No price data found for "+stockSymbol);
@@ -61,13 +59,17 @@ public class StockImpl implements StockInterface{
     if (this.priceData.isEmpty()) {
       fetchData();
     }
-
-    Double price = this.priceData.get(date);
-    if (price == null) {
-      throw new NullPointerException();
+    Double price;
+    try {
+      price = this.priceData.get(date);
+      if (price == null) {
+        throw new IllegalArgumentException();
+      }
+      return price;
+    } catch (NullPointerException e) {
+      throw new RuntimeException();
     }
 
-    return price;
   }
 
   private void storeFetchedData(StringBuilder output) {

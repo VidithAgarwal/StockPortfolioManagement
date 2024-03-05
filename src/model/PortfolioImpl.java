@@ -9,11 +9,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
 public class PortfolioImpl implements Portfolio {
 
 
@@ -49,9 +44,9 @@ public class PortfolioImpl implements Portfolio {
       Integer quantity = entry.getValue();
       try {
         totalValue += stock.returnPrice(date) * quantity;
-      } catch (NullPointerException e) {
-        //System.out.println("No price data found for one or more stocks on the date: " + date);
-        throw e;
+      } catch (IllegalArgumentException e) {
+//        System.out.println("No price data found for one or more stocks on the date: " + date);
+        throw new IllegalArgumentException(stock.getTicker());
       }
 
     }

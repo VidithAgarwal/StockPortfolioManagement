@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -212,13 +210,11 @@ public class StockControllerImpl implements StockController {
       }
     } while (!validDate);
     view.print("Wait until the total value is calculated");
-    //double totalValue = portfolioDirectory.get(input).portfolioValue(date);
-    //view.showTotalValue(totalValue);
     try {
       double totalValue = portfolioDirectory.get(input).portfolioValue(date);
       view.showTotalValue(totalValue);
-    } catch (NullPointerException e) {
-      view.print("Error: No price data found for one or more stocks on the date: " + date);
+    } catch (IllegalArgumentException e) {
+      view.print("Error: No price data found for " + e.getMessage() + " on the date: " + date);
     }
   }
 
