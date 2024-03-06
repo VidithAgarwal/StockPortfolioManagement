@@ -182,11 +182,17 @@ public class StockControllerImpl implements StockController {
     ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
-    int input = in.nextInt();
-    if (!validateUserChoice(input)) {
+    while(!in.hasNextInt()) {
+      String input = in.next();
+      this.view.displayError("Enter a valid choice, this option doesn't exists.");
       getTotalValue();
       return;
     }
+    int choice = in.nextInt();
+    if (!validateUserChoice(choice)) {
+      getTotalValue();
+      return;
+    };
     in.nextLine();
 
     boolean validDate = false;
@@ -203,10 +209,12 @@ public class StockControllerImpl implements StockController {
     } while (!validDate);
     view.print("Wait until the total value is calculated");
     try {
-      double totalValue = model.portfolioValue(input, date);
+      double totalValue = model.portfolioValue(choice, date);
       view.showTotalValue(totalValue);
     } catch (IllegalArgumentException e) {
       view.print("Error: No price data found for " + e.getMessage() + " on the date: " + date);
+    } catch (RuntimeException e) {
+      view.print("Data not found!");
     }
   }
 

@@ -62,7 +62,7 @@ public class StockImpl implements StockInterface{
 
   private double storeFetchedDataInCSV(StringBuilder output, String requestedDate) {
     String fileName = tickerSymbol + ".csv";
-    double price = 0;
+    double price = -1;
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
       String[] lines = output.toString().split("\n");
       for (int i = 1; i < lines.length / 2; i++) {
@@ -73,14 +73,13 @@ public class StockImpl implements StockInterface{
           String closingPriceStr = parts[4].trim();
           if (date.equals(requestedDate)) {
             price = Double.parseDouble(closingPriceStr);
-            priceData.put(date, price);
           }
           writer.write(date + "," + closingPriceStr + "\n");
         }
       }
       return price;
     } catch (IOException e) {
-      throw new IllegalArgumentException("No price data found");
+      throw new IllegalArgumentException(e.getMessage());
     }
     //return price;
   }
@@ -97,48 +96,28 @@ public class StockImpl implements StockInterface{
         }
         storeFetchedData(csvData);
       } catch (IOException e) {
-        throw new IllegalArgumentException("Data in incorrect format.");
+        throw new IllegalArgumentException(e.getMessage());
       }
     }
   }
 
   @Override
   public double returnPrice(String date) {
-//    if (this.priceData.isEmpty()) {
-//      fetchData();
-//    }
-//    Double price;
-//    try {
-//      price = this.priceData.get(date);
-//      if (price == null) {
-//        throw new IllegalArgumentException();
-//      }
-//      return price;
-//    } catch (NullPointerException e) {
-//      throw new RuntimeException();
-//    }
-
-    Double price = null;
-    try {
+    double price = 0;
       if (!this.priceData.isEmpty()) {
-        price = this.priceData.get(date);
+        price = this.priceData.getOrDefault(date, -1.0);
       } else if (!isCSVFileExists() && this.priceData.isEmpty()) {
         price = fetchData(date);
-
-        //price = getPriceFromData(date);
       } else if (isCSVFileExists()) {
-        loadDataFromCSV();
-        price = this.priceData.get(date);
+          loadDataFromCSV();
+          price = this.priceData.getOrDefault(date, -1.0);
       }
-      if (price == null) {
+
+      if (price < 0) {
         throw new IllegalArgumentException();
       }
-      return price;
-    }
-    catch (NullPointerException e) {
-      throw new RuntimeException();
-    }
 
+      return price;
   }
 
   private boolean isCSVFileExists() {

@@ -45,8 +45,9 @@ public class PortfolioImpl implements Portfolio {
       try {
         totalValue += stock.returnPrice(date) * quantity;
       } catch (IllegalArgumentException e) {
-//        System.out.println("No price data found for one or more stocks on the date: " + date);
         throw new IllegalArgumentException(stock.getTicker());
+      } catch (RuntimeException e) {
+        throw new RuntimeException(e.getMessage());
       }
 
     }
