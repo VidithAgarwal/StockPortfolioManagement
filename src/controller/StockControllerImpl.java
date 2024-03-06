@@ -8,22 +8,22 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import model.Portfolio;
+import model.PortfolioDir;
 import model.PortfolioImpl;
 import view.IView;
 
 
 public class StockControllerImpl implements StockController {
 
-  private final ArrayList<Portfolio> portfolioDirectory;
   private final IView view;
 
   private final Scanner in;
+  private final PortfolioDir model;
 
-  public StockControllerImpl(IView view, InputStream in) {
-    this.portfolioDirectory = new ArrayList<>();
+  public StockControllerImpl(IView view, InputStream in, PortfolioDir portfolioDir) {
     this.view = view;
     this.in = new Scanner(in);
+    this.model = portfolioDir;
   }
 
   public void createPortfolio() {
@@ -54,7 +54,6 @@ public class StockControllerImpl implements StockController {
 
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
             numShares);
-//    Map<String, Integer> shareQuantities = new HashMap<>();
     String shareName;
     int quantity = 0;
     for (int i = 0; i < numShares; i++) {
@@ -85,7 +84,7 @@ public class StockControllerImpl implements StockController {
       }
     }
     //newBuilder.addShare(shareName, quantity);
-    this.portfolioDirectory.add(newBuilder.build());
+    this.model.addPortfolio(newBuilder.build());
 
   }
 
@@ -116,7 +115,7 @@ public class StockControllerImpl implements StockController {
 
         try {
           newBuilder.load(pathName);
-          this.portfolioDirectory.add(newBuilder.build());
+          this.model.addPortfolio(newBuilder.build());
 
         } catch (IllegalArgumentException e) {
           view.displayError("The values provided in the path is invalid");
@@ -131,17 +130,19 @@ public class StockControllerImpl implements StockController {
   }
 
   private boolean portfolioExist(String name) {
-    for (Portfolio obj : portfolioDirectory) {
-      if (obj.getName().equals(name)) {
-        return true;
-      }
-    }
-    return false;
+//    for (Portfolio obj : portfolioDirectory) {
+//      if (obj.getName().equals(name)) {
+//        return true;
+//      }
+//    }
+//    return false;
+    return model.exists(name);
+
   }
 
 
   public void examineComposition() {
-    ArrayList<String> listOfPortfolios = getListOfPortfoliosName();
+    ArrayList<String> listOfPortfolios = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolios);
 
     int input = in.nextInt();
@@ -149,11 +150,11 @@ public class StockControllerImpl implements StockController {
       examineComposition();
       return;
     }
-    view.showComposition(portfolioDirectory.get(input).portfolioComposition());
+    view.showComposition(model.portfolioComposition(input));
   }
 
   public void save() {
-    ArrayList<String> listOfPortfolioNames = getListOfPortfoliosName();
+    ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
     int input = in.nextInt();
@@ -166,28 +167,19 @@ public class StockControllerImpl implements StockController {
     in.nextLine();
 
     String path = in.nextLine();
-    portfolioDirectory.get(input).savePortfolio(path);
+    model.savePortfolio(input, path);
   }
 
   private boolean validateUserChoice(int input) {
-    if (input >= portfolioDirectory.size() || input < 0) {
+    if (input >= model.getSize() || input < 0) {
       this.view.displayError("Enter a valid choice, this option doesn't exists.");
       return false;
     }
     return true;
   }
 
-  private ArrayList<String> getListOfPortfoliosName() {
-    ArrayList<String> listOfPortfolios = new ArrayList<>();
-    for (Portfolio obj : portfolioDirectory) {
-      listOfPortfolios.add(obj.getName());
-    }
-
-    return listOfPortfolios;
-  }
-
   public void getTotalValue() {
-    ArrayList<String> listOfPortfolioNames = getListOfPortfoliosName();
+    ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
     int input = in.nextInt();
@@ -211,7 +203,7 @@ public class StockControllerImpl implements StockController {
     } while (!validDate);
     view.print("Wait until the total value is calculated");
     try {
-      double totalValue = portfolioDirectory.get(input).portfolioValue(date);
+      double totalValue = model.portfolioValue(input, date);
       view.showTotalValue(totalValue);
     } catch (IllegalArgumentException e) {
       view.print("Error: No price data found for " + e.getMessage() + " on the date: " + date);
@@ -226,7 +218,7 @@ public class StockControllerImpl implements StockController {
     int choice = 0;
 
     while (choice != 3) {
-      if (portfolioDirectory.isEmpty()) {
+      if (model.isEmpty()) {
         view.showPrimaryMenu();
       } else {
         view.showSecondaryMenu();
@@ -245,18 +237,18 @@ public class StockControllerImpl implements StockController {
           //exit();
           break;
         case 4:
-          if (!portfolioDirectory.isEmpty()) {
+          if (!model.isEmpty()) {
             examineComposition();
           }
           break;
         case 5:
-          if (!portfolioDirectory.isEmpty()) {
+          if (!model.isEmpty()) {
             view.print("Get total value of a portfolio for certain date");
             getTotalValue();
           }
           break;
         case 6:
-          if (!portfolioDirectory.isEmpty()) {
+          if (!model.isEmpty()) {
             save();
           }
           break;
