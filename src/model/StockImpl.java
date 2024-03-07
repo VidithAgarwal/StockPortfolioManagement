@@ -23,7 +23,7 @@ public class StockImpl implements StockInterface{
   }
 
   private double fetchData(String date) {
-    String apiKey = "W0M1JOKC82EZEQA8";
+    String apiKey = "B2R39JDS3MPERHL7";
     // our key B2R39JDS3MPERHL7
     // sir's key String apiKey = "W0M1JOKC82EZEQA8";
     String stockSymbol = tickerSymbol; //ticker symbol for Google
@@ -54,7 +54,7 @@ public class StockImpl implements StockInterface{
       }
     }
     catch (IOException e) {
-      throw new IllegalArgumentException("No price data found for "+stockSymbol);
+      throw new RuntimeException("No price data found for "+stockSymbol);
     }
     return storeFetchedDataInCSV(output, date);
 
@@ -107,7 +107,12 @@ public class StockImpl implements StockInterface{
       if (!this.priceData.isEmpty()) {
         price = this.priceData.getOrDefault(date, -1.0);
       } else if (!isCSVFileExists() && this.priceData.isEmpty()) {
-        price = fetchData(date);
+        try {
+          price = fetchData(date);
+        } catch (RuntimeException e) {
+          throw e;
+        }
+
       } else if (isCSVFileExists()) {
           loadDataFromCSV();
           price = this.priceData.getOrDefault(date, -1.0);
