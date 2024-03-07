@@ -115,7 +115,7 @@ public class PortfolioImpl implements Portfolio {
     }
 
     private String validateStockName(String shareName) {
-      try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
+      try (BufferedReader reader = new BufferedReader(new FileReader("stocks.csv"))) {
         String line;
         while ((line = reader.readLine()) != null) {
           String[] parts = line.split(",");
