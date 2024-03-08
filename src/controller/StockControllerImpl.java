@@ -235,6 +235,12 @@ public class StockControllerImpl implements StockController {
       } else {
         view.showSecondaryMenu();
       }
+      if (!in.hasNextInt()) {
+        in.next();
+        view.displayError("Entered choice is not valid, enter a correct option");
+        go();
+        return;
+      }
       choice = in.nextInt();
       in.nextLine();
 
