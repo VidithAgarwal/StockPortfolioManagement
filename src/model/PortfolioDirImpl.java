@@ -1,5 +1,7 @@
 package model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -62,4 +64,46 @@ public class PortfolioDirImpl implements PortfolioDir{
   }
 
 
+  @Override
+  public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
+    File stocklistDirectory = new File(directoryPath);
+    deleteSessionCSVFiles(stocklistDirectory);
+  }
+
+//  private void deleteSessionCSVFiles(File directory) throws IOException {
+//    File[] files = directory.listFiles();
+//    if (files != null) {
+//      for (File file : files) {
+//        if (file.isDirectory()) {
+//          deleteSessionCSVFiles(file);
+//        } else if (file.getName().endsWith(".csv")) {
+//          if (!file.delete()) {
+//            throw new IOException();
+//          } else {
+//            //System.out.println("Deleted file: " + file.getName());
+//          }
+//        }
+//      }
+//    }
+//  }
+
+  private void deleteSessionCSVFiles(File directory) throws IOException {
+    File[] files = directory.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory()) {
+          deleteSessionCSVFiles(file);
+        } else {
+          String fileName = file.getName();
+          if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv") && !fileName.equals("nyse_stocks.csv")) {
+            if (!file.delete()) {
+              throw new IOException("Failed to delete file: " + file.getName());
+            } else {
+              //System.out.println("Deleted file: " + file.getName());
+            }
+          }
+        }
+      }
+    }
+  }
 }

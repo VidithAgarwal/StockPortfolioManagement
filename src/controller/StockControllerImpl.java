@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -58,7 +59,7 @@ public class StockControllerImpl implements StockController {
     int quantity = 0;
     for (int i = 0; i < numShares; i++) {
       in.nextLine();
-      view.print("Enter the name of the share: ");
+      view.print("Enter the name of the share or ticker symbol: ");
       shareName = in.nextLine();
 
       validInput = false;
@@ -265,13 +266,21 @@ public class StockControllerImpl implements StockController {
           break;
       }
     }
+    if (choice == 3) {
+      try {
+        String currentDirectory = System.getProperty("user.dir");
+        //System.out.println("Current directory: " + currentDirectory);
+        model.deleteSessionCSVFilesFromStocklist(currentDirectory);
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to delete one or more files. " );
+      }
+    }
   }
 
 
 }
-  
-    
 
 
-  
-    
+
+
+
