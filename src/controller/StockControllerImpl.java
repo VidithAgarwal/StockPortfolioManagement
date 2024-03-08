@@ -56,7 +56,6 @@ public class StockControllerImpl implements StockController {
       }
     }
 
-    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
     model.createBuilder(name);
     String shareName;
     int quantity = 0;
@@ -81,7 +80,6 @@ public class StockControllerImpl implements StockController {
       }
 
       try {
-        newBuilder.addShare(shareName, quantity);
         model.addShare(shareName, quantity);
       } catch (IllegalArgumentException e) {
         view.displayError("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
