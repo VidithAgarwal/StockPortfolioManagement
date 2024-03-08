@@ -114,8 +114,28 @@ public class PortfolioImpl implements Portfolio {
       }
     }
 
+//    private String validateStockName(String shareName) {
+//      try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//          String[] parts = line.split(",");
+//          if (parts.length >= 2) {
+//            String tickerSymbol = parts[0].trim();
+//            String companyName = parts[1].trim().replaceAll("\\s", "");
+//
+//            if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
+//              return tickerSymbol;
+//            }
+//          }
+//        }
+//      } catch (IOException e) {
+//        System.err.println("Error reading file: " + e.getMessage());
+//      }
+//      return null;
+//    }
+
     private String validateStockName(String shareName) {
-      try (BufferedReader reader = new BufferedReader(new FileReader("stocks.csv"))) {
+      try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
         String line;
         while ((line = reader.readLine()) != null) {
           String[] parts = line.split(",");
@@ -123,7 +143,9 @@ public class PortfolioImpl implements Portfolio {
             String tickerSymbol = parts[0].trim();
             String companyName = parts[1].trim().replaceAll("\\s", "");
 
-            if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
+            // Check if the entered share name matches either the company name or ticker symbol
+            if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", "")) ||
+                    tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
               return tickerSymbol;
             }
           }
@@ -131,7 +153,7 @@ public class PortfolioImpl implements Portfolio {
       } catch (IOException e) {
         System.err.println("Error reading file: " + e.getMessage());
       }
-      return null;
+      return null; // Return null if no matching ticker symbol or company name is found
     }
 
     public void load(String filePath) {
