@@ -1,13 +1,9 @@
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
 import controller.StockControllerImpl;
 import model.PortfolioDir;
@@ -19,10 +15,11 @@ public class Main {
   public static void main(String[] args) {
 
     PortfolioDir model = new PortfolioDirImpl();
-    IView view = new IViewImpl(System.out);
+    IView view = new IViewImpl(System.out, System.err);
     StockControllerImpl a = new StockControllerImpl(view, System.in, model);
     a.go();
 //    fetchAndWriteStockData("NASDAQ");
+//    fetchAndWriteStockData("NYSE");
   }
 
 //  public static void fetchAndWriteStockData(String exchange) {
@@ -74,13 +71,13 @@ public class Main {
 //
 //    String filename = "stocks.csv";
 //
-//    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+//    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
 //      String[] lines = output.toString().split("\n");
 //      for(String line : lines){
 //        String[] parts = line.split(",");
 //        if (parts[2].equals(exchange)) {
 //          if (parts[3].equals("Stock")) {
-//            writer.write(parts[0] + "," + parts[1] + "\n");
+//            writer.append(parts[0]).append(",").append(parts[1]).append("\n");
 //          }
 //        }
 //      }

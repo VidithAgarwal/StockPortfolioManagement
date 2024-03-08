@@ -23,7 +23,7 @@ public class StockImpl implements StockInterface{
   }
 
   private double fetchData(String date) {
-    String apiKey = "B2R39JDS3MPERHL7";
+    String apiKey = "W0M1JOKC82EZEQA8";
     // our key B2R39JDS3MPERHL7
     // sir's key String apiKey = "W0M1JOKC82EZEQA8";
     String stockSymbol = tickerSymbol; //ticker symbol for Google
@@ -54,6 +54,7 @@ public class StockImpl implements StockInterface{
       }
     }
     catch (IOException e) {
+      System.out.println("Hello");
       throw new RuntimeException("No price data found for "+stockSymbol);
     }
     return storeFetchedDataInCSV(output, date);

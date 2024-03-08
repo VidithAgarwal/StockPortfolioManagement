@@ -79,7 +79,7 @@ public class StockControllerImpl implements StockController {
       try {
         newBuilder.addShare(shareName, quantity);
       } catch (IllegalArgumentException e) {
-        view.print("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
+        view.displayError("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
         i--; //same share again asking
       }
     }
@@ -182,8 +182,8 @@ public class StockControllerImpl implements StockController {
     ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
-    while(!in.hasNextInt()) {
-      String input = in.next();
+    if (!in.hasNextInt()) {
+      in.next();
       this.view.displayError("Enter a valid choice, this option doesn't exists.");
       getTotalValue();
       return;
@@ -231,6 +231,12 @@ public class StockControllerImpl implements StockController {
       } else {
         view.showSecondaryMenu();
       }
+      if (!in.hasNextInt()) {
+        in.next();
+        view.displayError("Entered choice is not valid, enter a correct option");
+        go();
+        return;
+      }
       choice = in.nextInt();
       in.nextLine();
 
@@ -247,17 +253,23 @@ public class StockControllerImpl implements StockController {
         case 4:
           if (!model.isEmpty()) {
             examineComposition();
+          } else {
+            this.view.displayError("Enter a valid choice, this option doesn't exists.");
           }
           break;
         case 5:
           if (!model.isEmpty()) {
             view.print("Get total value of a portfolio for certain date");
             getTotalValue();
+          } else {
+            this.view.displayError("Enter a valid choice, this option doesn't exists.");
           }
           break;
         case 6:
           if (!model.isEmpty()) {
             save();
+          } else {
+            this.view.displayError("Enter a valid choice, this option doesn't exists.");
           }
           break;
         default:
