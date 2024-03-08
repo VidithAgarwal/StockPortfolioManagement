@@ -46,6 +46,9 @@ public class StockControllerImpl implements StockController {
       try {
         view.print("Enter the number of stocks you want to have in this portfolio: ");
         numShares = in.nextInt();
+        if (numShares <= 0) {
+          throw new InputMismatchException();
+        }
         validInput = true;
       } catch (InputMismatchException e) {
         view.displayError("Please enter a whole number");
