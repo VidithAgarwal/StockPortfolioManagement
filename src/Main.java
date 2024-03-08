@@ -23,6 +23,7 @@ public class Main {
     StockControllerImpl a = new StockControllerImpl(view, System.in, model);
     a.go();
 //    fetchAndWriteStockData("NASDAQ");
+//    fetchAndWriteStockData("NYSE");
   }
 
 //  public static void fetchAndWriteStockData(String exchange) {
@@ -74,7 +75,7 @@ public class Main {
 //
 //    String filename = "stocks.csv";
 //
-//    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+//    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
 //      String[] lines = output.toString().split("\n");
 //      for(String line : lines){
 //        String[] parts = line.split(",");

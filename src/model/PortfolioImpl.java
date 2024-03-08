@@ -135,7 +135,7 @@ public class PortfolioImpl implements Portfolio {
 //    }
 
     private String validateStockName(String shareName) {
-      try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
+      try (BufferedReader reader = new BufferedReader(new FileReader("stocks.csv"))) {
         String line;
         while ((line = reader.readLine()) != null) {
           String[] parts = line.split(",");
@@ -167,7 +167,7 @@ public class PortfolioImpl implements Portfolio {
             //validation to check correct key entered that is stock name is remaining.
             String tickerSymbol = validateStockName(key);
             if (tickerSymbol == null) {
-              throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
+              throw new IllegalArgumentException("Share name not found in stocks.csv");
             }
             // Validate value is a positive whole number
             try {

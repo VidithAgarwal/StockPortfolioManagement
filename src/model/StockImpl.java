@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.desktop.OpenURIEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,49 +57,17 @@ public class StockImpl implements StockInterface{
     catch (IOException e) {
       throw new RuntimeException("No price data found for "+stockSymbol);
     }
+    if(output.toString().charAt(0) == '{') {
+      throw new RuntimeException();
+    }
     return storeFetchedDataInCSV(output, date);
 
   }
 
-//  private double storeFetchedDataInCSV(StringBuilder output, String requestedDate) {
-//    String fileName = tickerSymbol + ".csv";
-//    double price = -1;
-//    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-//      String[] lines = output.toString().split("\n");
-//      for (int i = 1; i < lines.length / 2; i++) {
-//        String line = lines[i];
-//        String[] parts = line.split(",");
-//        if (parts.length >= 5) {
-//          String date = parts[0].trim();
-//          String closingPriceStr = parts[4].trim();
-//          if (date.equals(requestedDate)) {
-//            price = Double.parseDouble(closingPriceStr);
-//          }
-//          writer.write(date + "," + closingPriceStr + "\n");
-//        }
-//      }
-//      return price;
-//    } catch (IOException e) {
-//      throw new IllegalArgumentException(e.getMessage());
-//    }
-//    //return price;
-//  }
-
-
   private double storeFetchedDataInCSV(StringBuilder output, String requestedDate) {
     String fileName = tickerSymbol + ".csv";
     double price = -1;
-//    File stocklistDirectory = new File("stocklist");
-//    if (!stocklistDirectory.exists()) {
-//      try {
-//        if (!stocklistDirectory.mkdirs()) {
-//          throw new IOException("Failed to create directory: " + stocklistDirectory.getPath());
-//        }
-//      } catch (IOException e) {
-//        throw new IllegalArgumentException("Error creating directory: " + e.getMessage());
-//      }
-//    }
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File( fileName)))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
       String[] lines = output.toString().split("\n");
       for (int i = 1; i < lines.length / 2; i++) {
         String line = lines[i];
@@ -116,10 +85,11 @@ public class StockImpl implements StockInterface{
     } catch (IOException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
+    //return price;
   }
+
   private void loadDataFromCSV() {
     String fileName = tickerSymbol + ".csv";
-    //File csvFile = new File("stocklist", fileName);
     File csvFile = new File(fileName);
     if (csvFile.exists()) {
       try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
@@ -138,12 +108,12 @@ public class StockImpl implements StockInterface{
   @Override
   public double returnPrice(String date) {
     double price = 0;
-<<<<<<< HEAD
       if (!this.priceData.isEmpty()) {
         price = this.priceData.getOrDefault(date, -1.0);
       } else if (!isCSVFileExists() && this.priceData.isEmpty()) {
         try {
           price = fetchData(date);
+          System.out.println(price + "hello");
         } catch (RuntimeException e) {
           throw e;
         }
@@ -152,22 +122,12 @@ public class StockImpl implements StockInterface{
           loadDataFromCSV();
           price = this.priceData.getOrDefault(date, -1.0);
       }
-=======
-    if (!this.priceData.isEmpty()) {
-      price = this.priceData.getOrDefault(date, -1.0);
-    } else if (!isCSVFileExists() && this.priceData.isEmpty()) {
-      price = fetchData(date);
-    } else if (isCSVFileExists()) {
-      loadDataFromCSV();
-      price = this.priceData.getOrDefault(date, -1.0);
-    }
->>>>>>> 61b6b23a11980535342c348c72908350128f0dc2
 
-    if (price < 0) {
-      throw new IllegalArgumentException();
-    }
+      if (price < 0) {
+        throw new IllegalArgumentException();
+      }
 
-    return price;
+      return price;
   }
 
   private boolean isCSVFileExists() {
