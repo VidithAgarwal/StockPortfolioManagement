@@ -56,8 +56,8 @@ public class StockControllerImpl implements StockController {
       }
     }
 
-    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
-            numShares);
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
+    model.createBuilder(name);
     String shareName;
     int quantity = 0;
     for (int i = 0; i < numShares; i++) {
@@ -75,21 +75,20 @@ public class StockControllerImpl implements StockController {
           }
           validInput = true;
         } catch (InputMismatchException e) {
-          view.print("Please enter a positive whole number.");
+          view.displayError("Please enter a positive whole number.");
           in.nextLine();
         }
       }
 
       try {
         newBuilder.addShare(shareName, quantity);
+        model.addShare(shareName, quantity);
       } catch (IllegalArgumentException e) {
-        view.print("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
+        view.displayError("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
         i--; //same share again asking
       }
     }
-    //newBuilder.addShare(shareName, quantity);
-    this.model.addPortfolio(newBuilder.build());
-
+    this.model.addPortfolio();
   }
 
   public void loadPortfolio() {
@@ -115,11 +114,10 @@ public class StockControllerImpl implements StockController {
         if (!pathName.toLowerCase().endsWith(".csv")) {
           throw new IllegalArgumentException("File format is not CSV. Please enter a file with .csv extension.");
         }
-        PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
-
+        model.createBuilder(name);
         try {
-          newBuilder.load(pathName);
-          this.model.addPortfolio(newBuilder.build());
+          model.loadPortfolioData(pathName);
+          this.model.addPortfolio();
 
         } catch (IllegalArgumentException e) {
           view.displayError("The values provided in the path is invalid");
@@ -134,14 +132,7 @@ public class StockControllerImpl implements StockController {
   }
 
   private boolean portfolioExist(String name) {
-//    for (Portfolio obj : portfolioDirectory) {
-//      if (obj.getName().equals(name)) {
-//        return true;
-//      }
-//    }
-//    return false;
     return model.exists(name);
-
   }
 
 
@@ -257,12 +248,16 @@ public class StockControllerImpl implements StockController {
         case 4:
           if (!model.isEmpty()) {
             examineComposition();
+          } else {
+            this.view.displayError("Enter a valid choice, this option doesn't exists.");
           }
           break;
         case 5:
           if (!model.isEmpty()) {
             view.print("Get total value of a portfolio for certain date");
             getTotalValue();
+          } else {
+            this.view.displayError("Enter a valid choice, this option doesn't exists.");
           }
           break;
         case 6:
@@ -278,7 +273,6 @@ public class StockControllerImpl implements StockController {
     if (choice == 3) {
       try {
         String currentDirectory = System.getProperty("user.dir");
-        //System.out.println("Current directory: " + currentDirectory);
         model.deleteSessionCSVFilesFromStocklist(currentDirectory);
       } catch (IOException e) {
         throw new RuntimeException("Failed to delete one or more files. " );

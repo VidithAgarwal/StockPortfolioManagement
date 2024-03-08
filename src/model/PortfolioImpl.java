@@ -79,6 +79,7 @@ public class PortfolioImpl implements Portfolio {
 
 
 
+
   @Override
   public String getName() {
     return this.portfolioName;
@@ -87,11 +88,6 @@ public class PortfolioImpl implements Portfolio {
   public static class PortfolioBuilder {
     private Map<StockImpl, Integer> shareList;
     private final String portfolioName;
-
-    public PortfolioBuilder(String portfolioName, int numberOfShare) {
-      shareList = new HashMap<>(numberOfShare);
-      this.portfolioName = portfolioName;
-    }
 
     public PortfolioBuilder(String portfolioName) {
       shareList = new HashMap<>();
@@ -113,26 +109,6 @@ public class PortfolioImpl implements Portfolio {
         this.shareList.put(stock, quantity);
       }
     }
-
-//    private String validateStockName(String shareName) {
-//      try (BufferedReader reader = new BufferedReader(new FileReader("nyse_stocks.csv"))) {
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//          String[] parts = line.split(",");
-//          if (parts.length >= 2) {
-//            String tickerSymbol = parts[0].trim();
-//            String companyName = parts[1].trim().replaceAll("\\s", "");
-//
-//            if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
-//              return tickerSymbol;
-//            }
-//          }
-//        }
-//      } catch (IOException e) {
-//        System.err.println("Error reading file: " + e.getMessage());
-//      }
-//      return null;
-//    }
 
     private String validateStockName(String shareName) {
       try (BufferedReader reader = new BufferedReader(new FileReader("stocks.csv"))) {

@@ -7,9 +7,11 @@ import java.util.Map;
 public class IViewImpl implements IView{
 
   private final PrintStream out;
+  private final PrintStream err;
 
-  public IViewImpl(PrintStream out) {
+  public IViewImpl(PrintStream out, PrintStream err) {
     this.out = out;
+    this.err = err;
   }
 
   @Override
@@ -59,7 +61,7 @@ public class IViewImpl implements IView{
 
   @Override
   public void displayError(String error) {
-    out.println(error);
+    err.println(error);
   }
 
   @Override

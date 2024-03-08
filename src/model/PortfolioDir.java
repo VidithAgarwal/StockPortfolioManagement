@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface PortfolioDir {
-  void addPortfolio(Portfolio portfolio);
+  void addPortfolio();
 
   boolean exists(String name);
 
@@ -22,4 +22,8 @@ public interface PortfolioDir {
   boolean isEmpty();
 
   void deleteSessionCSVFilesFromStocklist(String dir) throws IOException;
+  void createBuilder(String portfolioName);
+  void addShare(String shareName, int quantity);
+
+  void loadPortfolioData(String pathName);
 }

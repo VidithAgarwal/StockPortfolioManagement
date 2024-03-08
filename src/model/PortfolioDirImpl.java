@@ -8,14 +8,30 @@ import java.util.Map;
 public class PortfolioDirImpl implements PortfolioDir{
 
   private final ArrayList<Portfolio> portfolioDirectory;
+  private PortfolioImpl.PortfolioBuilder builder;
 
   public PortfolioDirImpl() {
     portfolioDirectory = new ArrayList<>();
   }
 
   @Override
-  public void addPortfolio(Portfolio portfolio) {
-    portfolioDirectory.add(portfolio);
+  public void addPortfolio() {
+    portfolioDirectory.add(builder.build());
+  }
+
+  @Override
+  public void createBuilder(String portfolioName) {
+    builder = new PortfolioImpl.PortfolioBuilder(portfolioName);
+  }
+
+  @Override
+  public void addShare(String shareName, int quantity) {
+    builder.addShare(shareName, quantity);
+  }
+
+  @Override
+  public void loadPortfolioData(String pathName) {
+    builder.load(pathName);
   }
 
   @Override
@@ -62,6 +78,10 @@ public class PortfolioDirImpl implements PortfolioDir{
   public boolean isEmpty() {
     return portfolioDirectory.isEmpty();
   }
+
+//  public vo
+//  PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
+//          numShares);
 
 
   @Override
