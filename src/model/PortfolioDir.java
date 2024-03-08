@@ -1,5 +1,6 @@
 package model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -19,4 +20,6 @@ public interface PortfolioDir {
   double portfolioValue(int input, String date);
 
   boolean isEmpty();
+
+  void deleteSessionCSVFilesFromStocklist(String dir) throws IOException;
 }
