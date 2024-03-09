@@ -5,12 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import model.PortfolioDir;
-import model.PortfolioImpl;
 import view.IView;
 
 
@@ -28,56 +26,20 @@ public class StockControllerImpl implements StockController {
   }
 
   public void createPortfolio() {
-    view.print("Enter the name of the portfolio: ");
+    String name = inputPortfolioNameFromUser();
 
-    String name = in.nextLine();
 
-    boolean found = this.portfolioExist(name);
-
-    if (found) {
-      this.view.displayError("Portfolio with this name already exists!");
-      createPortfolio();
-      return;
-    }
-
-    int numShares = 0;
-    boolean validInput = false;
-    while (!validInput) {
-      try {
-        view.print("Enter the number of stocks you want to have in this portfolio: ");
-        numShares = in.nextInt();
-        if (numShares <= 0) {
-          throw new InputMismatchException();
-        }
-        validInput = true;
-      } catch (InputMismatchException e) {
-        view.displayError("Please enter a whole number");
-        in.nextLine();
-      }
-    }
+    int numShares = inputPositiveInteger("Enter the number of stocks you want to have in this " +
+            "portfolio: ");
 
     model.createBuilder(name);
-    String shareName;
-    int quantity = 0;
     for (int i = 0; i < numShares; i++) {
       in.nextLine();
       view.print("Enter the name of the share or ticker symbol: ");
-      shareName = in.nextLine();
+      String shareName = in.nextLine();
 
-      validInput = false;
-      while (!validInput) {
-        try {
-          view.print("Enter the quantity of " + shareName + " you have: ");
-          quantity = in.nextInt();
-          if (quantity <= 0) {
-            throw new InputMismatchException();
-          }
-          validInput = true;
-        } catch (InputMismatchException e) {
-          view.displayError("Please enter a positive whole number.");
-          in.nextLine();
-        }
-      }
+      int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you have: ");
+
 
       try {
         model.addShare(shareName, quantity);
@@ -89,15 +51,43 @@ public class StockControllerImpl implements StockController {
     this.model.addPortfolio();
   }
 
-  public void loadPortfolio() {
+  private boolean isNegative(int numShares) {
+    return numShares < 0;
+  }
+
+  private String  inputPortfolioNameFromUser() {
     view.print("Enter the name of the portfolio: ");
+
     String name = in.nextLine();
+
     boolean found = this.portfolioExist(name);
+
     if (found) {
       this.view.displayError("Portfolio with this name already exists!");
-      this.loadPortfolio();
-      return;
+      return inputPortfolioNameFromUser();
     }
+
+    return name;
+  }
+
+  int inputPositiveInteger(String message) {
+    view.print(message);
+    while (!in.hasNextInt()) {
+      view.displayError("Please enter a whole number");
+      in.next();
+      view.print(message);
+    }
+
+    int input = in.nextInt();
+    if(isNegative(input)) {
+      view.displayError("Enter a positive whole number");
+      return inputPositiveInteger(message);
+    }
+    return input;
+  }
+
+  public void loadPortfolio() {
+    String name = inputPortfolioNameFromUser();
     view.print("Enter the full path of the file you want to load data from: ");
     String pathName = in.nextLine();
     //validation of correct path and csv format file.
@@ -116,7 +106,6 @@ public class StockControllerImpl implements StockController {
         try {
           model.loadPortfolioData(pathName);
           this.model.addPortfolio();
-
         } catch (IllegalArgumentException e) {
           view.displayError("The values provided in the path is invalid");
         }
@@ -138,11 +127,7 @@ public class StockControllerImpl implements StockController {
     ArrayList<String> listOfPortfolios = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolios);
 
-    int input = in.nextInt();
-    if (!validateUserChoice(input)) {
-      examineComposition();
-      return;
-    }
+    int input = validateUserChoice();
     view.showComposition(model.portfolioComposition(input));
   }
 
@@ -150,11 +135,8 @@ public class StockControllerImpl implements StockController {
     ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
-    int input = in.nextInt();
-    if (!validateUserChoice(input)) {
-      save();
-      return;
-    }
+    int input = validateUserChoice();
+    in.nextLine();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     //shouldn't this be in view , just the sentence.
     in.nextLine();
@@ -163,29 +145,21 @@ public class StockControllerImpl implements StockController {
     model.savePortfolio(input, path);
   }
 
-  private boolean validateUserChoice(int input) {
-    if (input >= model.getSize() || input < 0) {
+  private int validateUserChoice() {
+    int choice = inputPositiveInteger("Enter the Portfolio number you want to select.");
+    if (choice >= model.getSize() || choice < 0) {
       this.view.displayError("Enter a valid choice, this option doesn't exists.");
-      return false;
+      return validateUserChoice();
     }
-    return true;
+    return choice;
+
   }
 
   public void getTotalValue() {
     ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
-    while(!in.hasNextInt()) {
-      String input = in.next();
-      this.view.displayError("Enter a valid choice, this option doesn't exists.");
-      getTotalValue();
-      return;
-    }
-    int choice = in.nextInt();
-    if (!validateUserChoice(choice)) {
-      getTotalValue();
-      return;
-    };
+    int choice = validateUserChoice();
     in.nextLine();
 
     boolean validDate = false;
@@ -224,13 +198,7 @@ public class StockControllerImpl implements StockController {
       } else {
         view.showSecondaryMenu();
       }
-      if (!in.hasNextInt()) {
-        in.next();
-        view.displayError("Entered choice is not valid, enter a correct option");
-        go();
-        return;
-      }
-      choice = in.nextInt();
+      choice = inputPositiveInteger("Enter your choice: ");
       in.nextLine();
 
       switch (choice) {
@@ -268,13 +236,11 @@ public class StockControllerImpl implements StockController {
           break;
       }
     }
-    if (choice == 3) {
-      try {
-        String currentDirectory = System.getProperty("user.dir");
-        model.deleteSessionCSVFilesFromStocklist(currentDirectory);
-      } catch (IOException e) {
-        throw new RuntimeException("Failed to delete one or more files. " );
-      }
+    try {
+      String currentDirectory = System.getProperty("user.dir");
+      model.deleteSessionCSVFilesFromStocklist(currentDirectory);
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to delete one or more files. ");
     }
   }
 

@@ -20,7 +20,6 @@ public class IViewImpl implements IView{
     out.println("1. Create a portfolio");
     out.println("2. Load a portfolio");
     out.println("3. Exit");
-    out.print("Enter your choice: ");
   }
 
   @Override
@@ -32,7 +31,6 @@ public class IViewImpl implements IView{
     out.println("4. Get composition of a portfolio");
     out.println("5. Get total value of a portfolio for certain date");
     out.println("6. Save a portfolio");
-    out.print("Enter your choice: ");
   }
 
   @Override
@@ -56,7 +54,6 @@ public class IViewImpl implements IView{
     for (int i = 0; i < listOfPortfolios.size(); i++) {
       out.println(i + "\t\t\t\t\t" + listOfPortfolios.get(i));
     }
-    out.println("Enter the Portfolio number you want to select.");
   }
 
   @Override

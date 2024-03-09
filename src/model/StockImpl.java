@@ -111,13 +111,7 @@ public class StockImpl implements StockInterface{
       if (!this.priceData.isEmpty()) {
         price = this.priceData.getOrDefault(date, -1.0);
       } else if (!isCSVFileExists() && this.priceData.isEmpty()) {
-        try {
           price = fetchData(date);
-          System.out.println(price + "hello");
-        } catch (RuntimeException e) {
-          throw e;
-        }
-
       } else if (isCSVFileExists()) {
           loadDataFromCSV();
           price = this.priceData.getOrDefault(date, -1.0);
