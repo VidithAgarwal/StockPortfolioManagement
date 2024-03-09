@@ -99,7 +99,7 @@ public class PortfolioImpl implements Portfolio {
       String tickerSymbol = validateStockName(shareName);
 
       if (tickerSymbol == null) {
-        throw new IllegalArgumentException("Share name not found in nyse_stocks.csv");
+        throw new IllegalArgumentException("Share name not found in stocks.csv");
       }
       StockImpl stock = new StockImpl(tickerSymbol);
       if (shareList.containsKey(stock)) {
