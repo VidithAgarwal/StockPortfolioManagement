@@ -2,6 +2,8 @@ package model;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.util.Map;
 //import org.mockito.Mockito;
 
@@ -201,7 +203,22 @@ public class modelTest {
     }
   }
 
+  @Test
+  public void testSaveToWrongFilePath() {
+    //Portfolio mockPortfolio = Mockito.mock(Portfolio.class);
+    portfolioDir.createBuilder("Test Portfolio");
+    portfolioDir.addShare("Apple Inc", 10);
+    portfolioDir.addPortfolio();
+    String testPath = "/Users/sachi/Desktop/ass4";
+    //will have to change this path
+    try {
+      portfolioDir.savePortfolio(0, testPath);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Error exporting portfolio to file: " + e.getMessage(), e.getMessage());
+    }
+  }
+
+
+
 
 }
-
-
