@@ -16,7 +16,7 @@ public class StockImpl implements StockInterface {
   private final String tickerSymbol;
   private final Map<String, Double> priceData;
 
-  public StockImpl(String tickerSymbol) {
+  StockImpl(String tickerSymbol) {
     this.tickerSymbol = tickerSymbol;
     priceData = new HashMap<>();
   }

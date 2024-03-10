@@ -1,12 +1,10 @@
 package controller;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-
 import model.PortfolioDir;
 import view.IView;
 
@@ -105,7 +103,7 @@ public class StockControllerImpl implements StockController {
     return name;
   }
 
-  String inputPath() {
+  private String inputPath() {
     view.print("Enter the full path of the file you want to load data from: ");
     String pathName = in.nextLine();
     File file = new File(pathName);
@@ -129,7 +127,7 @@ public class StockControllerImpl implements StockController {
     return choice;
   }
 
-  int inputPositiveInteger(String message) {
+  private int inputPositiveInteger(String message) {
     view.print(message);
     while (!in.hasNextInt()) {
       view.displayError("Please enter a whole number");
@@ -145,7 +143,7 @@ public class StockControllerImpl implements StockController {
     return input;
   }
 
-  int inputPortfolioChoice() {
+  private int inputPortfolioChoice() {
     ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
 
@@ -156,7 +154,7 @@ public class StockControllerImpl implements StockController {
     return model.exists(name);
   }
 
-  String inputDate() {
+  private String inputDate() {
     boolean validDate = false;
     String date;
     do {
@@ -241,7 +239,7 @@ public class StockControllerImpl implements StockController {
     return exit;
   }
 
-  boolean startMenu() {
+  private boolean startMenu() {
 
     int choice = 0;
     view.showPrimaryMenu();
@@ -261,8 +259,6 @@ public class StockControllerImpl implements StockController {
     }
     return false;
   }
-
-
 }
 
 
