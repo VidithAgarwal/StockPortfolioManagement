@@ -1,0 +1,101 @@
+package model;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+
+public class MockModel implements PortfolioDir {
+
+//  private String logger;
+//
+//  public MockModel() {
+//    logger = "";
+//  }
+//
+//
+//  public String getLogger() {
+//    return this.logger;
+//  }
+
+  private StringBuilder log;
+  private final int uniqueCode;
+
+  public MockModel(StringBuilder log,int uniqueCode) {
+    this.log = log;
+    this.uniqueCode = uniqueCode;
+  }
+
+  @Override
+  public void addPortfolio() {
+
+
+  }
+
+  @Override
+  public boolean exists(String name) {
+    log.append("Portfolio Name:" + name +  "\n");
+
+    return false;
+  }
+
+  @Override
+  public ArrayList<String> getListOfPortfoliosName() {
+
+
+    return null;
+  }
+
+  @Override
+  public Map<String, Integer> portfolioComposition(int input) {
+    log.append("Select portfolio number:" + input + "\n");
+    return null;
+  }
+
+  @Override
+  public int getSize() {
+
+
+    return 0;
+  }
+
+  @Override
+  public void savePortfolio(int input, String path) {
+    log.append("Select portfolio number:" + input + "Path:" + path + "\n");
+  }
+
+  @Override
+  public double portfolioValue(int input, String date) {
+    log.append("Select portfolio number:" + input + "Date for total value:" + date + "\n");
+
+    return 0;
+  }
+
+  @Override
+  public boolean isEmpty() {
+
+
+    return false;
+  }
+
+  @Override
+  public void deleteSessionCSVFilesFromStocklist(String dir) throws IOException {
+    log.append("Directory from which files deleted after session:" + dir + "\n");
+  }
+
+  @Override
+  public void createBuilder(String portfolioName) {
+    log.append("Portfolio Name:" + portfolioName +  "\n");
+
+  }
+
+  @Override
+  public void addShare(String shareName, int quantity) {
+    log.append("Share: " + shareName + "Quantity " + quantity + "\n");
+
+  }
+
+  @Override
+  public void loadPortfolioData(String pathName) {
+    log.append("Path of portfolio to be loaded:" + pathName +  "\n");
+  }
+}
