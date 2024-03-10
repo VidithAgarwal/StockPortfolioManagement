@@ -79,11 +79,6 @@ public class PortfolioDirImpl implements PortfolioDir{
     return portfolioDirectory.isEmpty();
   }
 
-//  public vo
-//  PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name,
-//          numShares);
-
-
   @Override
   public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
     File stocklistDirectory = new File(directoryPath);

@@ -27,10 +27,10 @@ public class IViewImpl implements IView{
     out.println("Main Menu");
     out.println("1. Create a portfolio");
     out.println("2. Load a portfolio");
-    out.println("3. Exit");
-    out.println("4. Get composition of a portfolio");
-    out.println("5. Get total value of a portfolio for certain date");
-    out.println("6. Save a portfolio");
+    out.println("3. Get composition of a portfolio");
+    out.println("4. Get total value of a portfolio for certain date");
+    out.println("5. Save a portfolio");
+    out.println("6. Exit");
   }
 
   @Override

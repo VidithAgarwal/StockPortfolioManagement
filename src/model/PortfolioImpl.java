@@ -42,14 +42,7 @@ public class PortfolioImpl implements Portfolio {
     for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
       StockImpl stock = entry.getKey();
       Integer quantity = entry.getValue();
-      try {
-        totalValue += stock.returnPrice(date) * quantity;
-      } catch (IllegalArgumentException e) {
-        throw new IllegalArgumentException(stock.getTicker());
-      } catch (RuntimeException e) {
-        throw new RuntimeException(e.getMessage());
-      }
-
+      totalValue += stock.returnPrice(date) * quantity;
     }
     return totalValue;
   }
@@ -65,13 +58,11 @@ public class PortfolioImpl implements Portfolio {
       parentDir.mkdirs(); // Create parent directories recursively
     }
 
-
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
       for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
         writer.write(entry.getKey().getTicker() + ": " + entry.getValue());
         writer.newLine();
       }
-      System.out.println("Portfolio exported to " + filePath + " successfully.");
     } catch (IOException e) {
       System.err.println("Error exporting portfolio to file: " + e.getMessage());
     }
@@ -95,7 +86,6 @@ public class PortfolioImpl implements Portfolio {
     }
 
     public void addShare(String shareName, int quantity) {
-      // this.shareList.put(shareName, quantity);
       String tickerSymbol = validateStockName(shareName);
 
       if (tickerSymbol == null) {
