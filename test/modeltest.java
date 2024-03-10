@@ -1,9 +1,6 @@
-package model;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Map;
 //import org.mockito.Mockito;
 
@@ -11,8 +8,11 @@ import java.util.Map;
 
 import java.util.ArrayList;
 
+import model.PortfolioDirImpl;
+import model.PortfolioImpl;
+
 import static org.junit.Assert.assertEquals;
-public class modelTest {
+public class modeltest {
 
   private PortfolioDirImpl portfolioDir;
 
@@ -50,7 +50,7 @@ public class modelTest {
   @Test
   public void testLoadPortfolioData() {
     portfolioDir.createBuilder("Test Portfolio");
-    String testPath = "/Users/sachi/Desktop/ass4.test.csv";
+    String testPath = System.getProperty("user.dir") + "/ass4.test.csv";
     portfolioDir.loadPortfolioData(testPath);
 
   }
@@ -63,7 +63,7 @@ public class modelTest {
     portfolioDir.addShare("Captivision Inc", 20);
     portfolioDir.addPortfolio();
     //will have to change this path
-    String testPath = "/Users/sachi/Desktop/ass4.test.csv";
+    String testPath = System.getProperty("user.dir") + "/test.ass4.txt";
     portfolioDir.savePortfolio(0, testPath);
 
     //Mockito.verify(mockPortfolio).savePortfolio(testPath);
@@ -209,7 +209,7 @@ public class modelTest {
     portfolioDir.createBuilder("Test Portfolio");
     portfolioDir.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio();
-    String testPath = "/Users/sachi/Desktop/ass4";
+    String testPath = "";
     //will have to change this path
     try {
       portfolioDir.savePortfolio(0, testPath);
