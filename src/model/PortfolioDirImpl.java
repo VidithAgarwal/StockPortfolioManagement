@@ -85,22 +85,6 @@ public class PortfolioDirImpl implements PortfolioDir{
     deleteSessionCSVFiles(stocklistDirectory);
   }
 
-//  private void deleteSessionCSVFiles(File directory) throws IOException {
-//    File[] files = directory.listFiles();
-//    if (files != null) {
-//      for (File file : files) {
-//        if (file.isDirectory()) {
-//          deleteSessionCSVFiles(file);
-//        } else if (file.getName().endsWith(".csv")) {
-//          if (!file.delete()) {
-//            throw new IOException();
-//          } else {
-//            //System.out.println("Deleted file: " + file.getName());
-//          }
-//        }
-//      }
-//    }
-//  }
 
   private void deleteSessionCSVFiles(File directory) throws IOException {
     File[] files = directory.listFiles();
@@ -110,7 +94,7 @@ public class PortfolioDirImpl implements PortfolioDir{
           deleteSessionCSVFiles(file);
         } else {
           String fileName = file.getName();
-          if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv") && !fileName.equals("nyse_stocks.csv")) {
+          if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv")) {
             if (!file.delete()) {
               throw new IOException("Failed to delete file: " + file.getName());
             } else {

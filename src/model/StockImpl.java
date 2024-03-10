@@ -1,19 +1,17 @@
 package model;
 
-import java.awt.desktop.OpenURIEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class StockImpl implements StockInterface{
+
+public class StockImpl implements StockInterface {
 
   private final String tickerSymbol;
   private final Map<String, Double> priceData;
@@ -36,9 +34,8 @@ public class StockImpl implements StockInterface{
               + ".co/query?function=TIME_SERIES_DAILY"
               + "&outputsize=full"
               + "&symbol"
-              + "=" + stockSymbol + "&apikey="+apiKey+"&datatype=csv");
-    }
-    catch (MalformedURLException e) {
+              + "=" + stockSymbol + "&apikey=" + apiKey + "&datatype=csv");
+    } catch (MalformedURLException e) {
       throw new RuntimeException("the alphavantage API has either changed or "
               + "no longer works");
     }
@@ -50,96 +47,53 @@ public class StockImpl implements StockInterface{
       in = url.openStream();
       int b;
 
-      while ((b=in.read())!=-1) {
-        output.append((char)b);
+      while ((b = in.read()) != -1) {
+        output.append((char) b);
       }
+    } catch (IOException e) {
+      throw new RuntimeException("No price data found for " + stockSymbol);
     }
-    catch (IOException e) {
-      throw new RuntimeException("No price data found for "+stockSymbol);
-    }
-    if(output.toString().charAt(0) == '{') {
+    if (output.toString().charAt(0) == '{') {
       throw new RuntimeException();
     }
-    return storeFetchedDataInCSV(output, date);
+    return storeFetchedData(output, date);
 
   }
 
-  private double storeFetchedDataInCSV(StringBuilder output, String requestedDate) {
+  private double storeFetchedData(StringBuilder output, String requestedDate) {
     String fileName = tickerSymbol + ".csv";
     double price = -1;
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-      String[] lines = output.toString().split("\n");
-      for (int i = 1; i < lines.length / 2; i++) {
-        String line = lines[i];
-        String[] parts = line.split(",");
-        if (parts.length >= 5) {
-          String date = parts[0].trim();
-          String closingPriceStr = parts[4].trim();
-          if (date.equals(requestedDate)) {
-            price = Double.parseDouble(closingPriceStr);
-          }
-          writer.write(date + "," + closingPriceStr + "\n");
+    String[] lines = output.toString().split("\n");
+    for (int i = 1; i < lines.length; i++) {
+      String line = lines[i];
+      String[] parts = line.split(",");
+      if (parts.length >= 5) {
+        String date = parts[0].trim();
+        String closingPriceStr = parts[4].trim();
+        double closingPrice = Double.parseDouble(closingPriceStr);
+        if (date.equals(requestedDate)) {
+          price = closingPrice;
         }
+        this.priceData.put(date, closingPrice);
       }
-      return price;
-    } catch (IOException e) {
-      throw new IllegalArgumentException(e.getMessage());
     }
-    //return price;
+
+
+    FileHandler fileHandler = new FileHandler();
+    fileHandler.save(fileName, this.priceData);
+
+
+    return price;
   }
 
   private void loadDataFromCSV() {
     String fileName = tickerSymbol + ".csv";
-    File csvFile = new File(fileName);
-    if (csvFile.exists()) {
-      try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
-        String line;
-        StringBuilder csvData = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-          csvData.append(line).append("\n");
-        }
-        storeFetchedData(csvData);
-      } catch (IOException e) {
-        throw new IllegalArgumentException();
-      }
-    }
-  }
-
-  @Override
-  public double returnPrice(String date) {
-    double price = 0;
-      if (!this.priceData.isEmpty()) {
-        price = this.priceData.getOrDefault(date, -1.0);
-      } else if (!isCSVFileExists()) {
-          price = fetchData(date);
-      } else if (isCSVFileExists()) {
-          loadDataFromCSV();
-          price = this.priceData.getOrDefault(date, -1.0);
-      }
-
-      if (price < 0) {
-        throw new IllegalArgumentException(this.tickerSymbol);
-      }
-
-      return price;
-  }
-
-  private boolean isCSVFileExists() {
-    String fileName = tickerSymbol + ".csv";
-    File csvFile = new File(fileName);
-    return csvFile.exists();
-  }
-
-
-
-  private void storeFetchedData(StringBuilder output) {
-    String[] lines = output.toString().split("\n");
-    for (int i = 0; i < lines.length; i++) {
-      String line = lines[i];
-      String[] parts = line.split(",");
-      if (parts.length >= 2) {
-        String date = parts[0].trim();
-        String closingPriceStr = parts[1].trim();
+    FileHandler fileHandler = new FileHandler();
+    List<String[]> lines = fileHandler.load(fileName);
+    for (String[] line : lines) {
+      if (line.length >= 2) {
+        String date = line[0].trim();
+        String closingPriceStr = line[1].trim();
         try {
           Double closingPriceFloat = Double.parseDouble(closingPriceStr);
           this.priceData.put(date, closingPriceFloat);
@@ -147,6 +101,31 @@ public class StockImpl implements StockInterface{
         }
       }
     }
+  }
+
+  @Override
+  public double returnPrice(String date) {
+    double price = 0;
+    if (!this.priceData.isEmpty()) {
+      price = this.priceData.getOrDefault(date, -1.0);
+    } else if (!isCSVFileExists()) {
+      price = fetchData(date);
+    } else if (isCSVFileExists()) {
+      loadDataFromCSV();
+      price = this.priceData.getOrDefault(date, -1.0);
+    }
+
+    if (price < 0) {
+      throw new IllegalArgumentException(this.tickerSymbol);
+    }
+
+    return price;
+  }
+
+  private boolean isCSVFileExists() {
+    String fileName = tickerSymbol + ".csv";
+    File csvFile = new File(fileName);
+    return csvFile.exists();
   }
 
   String getTicker() {

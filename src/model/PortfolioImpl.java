@@ -1,12 +1,7 @@
 package model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PortfolioImpl implements Portfolio {
@@ -22,7 +17,6 @@ public class PortfolioImpl implements Portfolio {
       this.sharesList.put(entry.getKey(), entry.getValue());
     }
   }
-
 
 
   @Override
@@ -48,28 +42,11 @@ public class PortfolioImpl implements Portfolio {
   }
 
 
-
   @Override
   public void savePortfolio(String filePath) {
-    File file = new File(filePath);
-    File parentDir = file.getParentFile();
-
-    if (parentDir != null && !parentDir.exists()) {
-      parentDir.mkdirs(); // Create parent directories recursively
-    }
-
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-      for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
-        writer.write(entry.getKey().getTicker() + ": " + entry.getValue());
-        writer.newLine();
-      }
-    } catch (IOException e) {
-      System.err.println("Error exporting portfolio to file: " + e.getMessage());
-    }
+    FileHandler fileHandler = new FileHandler();
+    fileHandler.export(filePath, this.portfolioName, this.portfolioComposition());
   }
-
-
-
 
   @Override
   public String getName() {
@@ -77,8 +54,8 @@ public class PortfolioImpl implements Portfolio {
   }
 
   public static class PortfolioBuilder {
-    private Map<StockImpl, Integer> shareList;
     private final String portfolioName;
+    private Map<StockImpl, Integer> shareList;
 
     public PortfolioBuilder(String portfolioName) {
       shareList = new HashMap<>();
@@ -101,58 +78,50 @@ public class PortfolioImpl implements Portfolio {
     }
 
     private String validateStockName(String shareName) {
-      try (BufferedReader reader = new BufferedReader(new FileReader("stocks.csv"))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-          String[] parts = line.split(",");
-          if (parts.length >= 2) {
-            String tickerSymbol = parts[0].trim();
-            String companyName = parts[1].trim().replaceAll("\\s", "");
+      FileHandler fileHandler = new FileHandler();
+      List<String[]> lines = fileHandler.load("stocks.csv");
+      for (String[] line : lines) {
+        if (line.length >= 2) {
+          String tickerSymbol = line[0].trim();
+          String companyName = line[1].trim().replaceAll("\\s", "");
 
-            // Check if the entered share name matches either the company name or ticker symbol
-            if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", "")) ||
-                    tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
-              return tickerSymbol;
-            }
+          // Check if the entered share name matches either the company name or ticker symbol
+          if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", "")) ||
+                  tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
+            return tickerSymbol;
           }
         }
-      } catch (IOException e) {
-        System.err.println("Error reading file: " + e.getMessage());
       }
       return null; // Return null if no matching ticker symbol or company name is found
     }
 
     public void load(String filePath) {
-      try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-          String[] parts = line.split(","); // Assuming the delimiter is ","
-          if (parts.length == 2) {
-            String key = parts[0].trim();
-            String value = parts[1].trim();
-            //validation to check correct key entered that is stock name is remaining.
-            String tickerSymbol = validateStockName(key);
-            if (tickerSymbol == null) {
-              throw new IllegalArgumentException("Share name not found in stocks.csv");
-            }
-            // Validate value is a positive whole number
-            try {
-              int intValue = Integer.parseInt(value);
-              if (intValue <= 0) {
-                throw new IllegalArgumentException();
-              }
-            } catch (NumberFormatException e) {
+      FileHandler fileHandler = new FileHandler();
+      List<String[]> lines = fileHandler.load(filePath);
+      for (String[] line : lines) {
+        if (line.length == 2) {
+          String key = line[0].trim();
+          String value = line[1].trim();
+          //validation to check correct key entered that is stock name is remaining.
+          String tickerSymbol = validateStockName(key);
+          if (tickerSymbol == null) {
+            throw new IllegalArgumentException("Share name not found in stocks.csv");
+          }
+          // Validate value is a positive whole number
+          try {
+            int intValue = Integer.parseInt(value);
+            if (intValue <= 0) {
               throw new IllegalArgumentException();
             }
-            StockImpl stock = new StockImpl(tickerSymbol);
-            this.shareList.put(stock, Integer.parseInt(value));
-          } else {
-            // Handle invalid line
+          } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
           }
+          StockImpl stock = new StockImpl(tickerSymbol);
+          this.shareList.put(stock, Integer.parseInt(value));
+        } else {
+          // Handle invalid line
+          throw new IllegalArgumentException();
         }
-      } catch (IOException e) {
-        System.err.println("Error reading file: " + e.getMessage());
       }
     }
 

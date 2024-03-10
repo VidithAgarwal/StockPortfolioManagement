@@ -44,7 +44,7 @@ public class IViewImpl implements IView{
 
   @Override
   public void showTotalValue(double value) {
-    out.println("The total value of portfolio is:" + value);
+    out.println("The total value of portfolio is: $" + value);
   }
 
   @Override
