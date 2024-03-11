@@ -57,7 +57,7 @@ public class PortfolioImpl implements Portfolio {
     private final String portfolioName;
     private Map<StockImpl, Integer> shareList;
 
-    PortfolioBuilder(String portfolioName) {
+    public PortfolioBuilder(String portfolioName) {
       shareList = new HashMap<>();
       this.portfolioName = portfolioName;
     }
