@@ -65,8 +65,13 @@ public class StockControllerImpl implements StockController {
     in.nextLine();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = in.nextLine();
-    model.savePortfolio(input, path);
-    view.print("Portfolio exported to " + path + " successfully.");
+    try {
+      model.savePortfolio(input, path);
+      view.print("Portfolio exported to " + path + " successfully.");
+    }
+    catch (IllegalArgumentException e) {
+      view.displayError("File path is incorrect.");
+    }
   }
 
   public void getTotalValue() {
@@ -255,13 +260,8 @@ public class StockControllerImpl implements StockController {
         break;
       case 3:
         return true;
-        //exit();
+      //exit();
     }
     return false;
   }
 }
-
-
-
-
-

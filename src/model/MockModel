@@ -2,182 +2,80 @@ package model;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
-
-public class MockModel implements PortfolioDir {
-
-//  private String logger;
-//
-//  public MockModel() {
-//    logger = "";
-//  }
-//
-//
-//  public String getLogger() {
-//    return this.logger;
-//  }
-
-  private StringBuilder log;
-  private final int uniqueCode;
-
-  public MockModel(StringBuilder log,int uniqueCode) {
-    this.log = log;
-    this.uniqueCode = uniqueCode;
-  }
-
-  @Override
-  public void addPortfolio() {
-
-
-  }
-
-  @Override
-  public boolean exists(String name) {
-    log.append("Portfolio Name:" + name +  "\n");
-
-    return false;
-  }
-
-  @Override
-  public ArrayList<String> getListOfPortfoliosName() {
-
-
-    return null;
-  }
-
-  @Override
-  public Map<String, Integer> portfolioComposition(int input) {
-    log.append("Select portfolio number:" + input + "\n");
-    return null;
-  }
-
-  @Override
-  public int getSize() {
-
-
-    return 0;
-  }
-
-  @Override
-  public void savePortfolio(int input, String path) {
-    log.append("Select portfolio number:" + input + "Path:" + path + "\n");
-  }
-
-  @Override
-  public double portfolioValue(int input, String date) {
-    log.append("Select portfolio number:" + input + "Date for total value:" + date + "\n");
-
-    return 0;
-  }
-
-  @Override
-  public boolean isEmpty() {
-
-
-    return false;
-  }
-
-  @Override
-  public void deleteSessionCSVFilesFromStocklist(String dir) throws IOException {
-    log.append("Directory from which files deleted after session:" + dir + "\n");
-  }
-
-  @Override
-  public void createBuilder(String portfolioName) {
-    log.append("Portfolio Name:" + portfolioName +  "\n");
-
-  }
-
-  @Override
-  public void addShare(String shareName, int quantity) {
-    log.append("Share: " + shareName + "Quantity " + quantity + "\n");
-
-  }
-
-  @Override
-  public void loadPortfolioData(String pathName) {
-    log.append("Path of portfolio to be loaded:" + pathName +  "\n");
-  }
-}
-
-
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MockPortfolioDir implements PortfolioDir {
+public class MockModel implements PortfolioDir {
 
-    private ArrayList<Portfolio> portfolioDirectory = new ArrayList<>();
-    private Map<String, Integer> mockComposition = new HashMap<>();
-    private double mockValue = 1000.0;
-    private Logger logger = Logger.getLogger(MockPortfolioDir.class.getName());
+  private ArrayList<Portfolio> portfolioDirectory = new ArrayList<>();
+  private Map<String, Integer> mockComposition = new HashMap<>();
+  private double mockValue = 1000.0;
+  private StringBuilder logger ;
 
-    @Override
-    public void addPortfolio() {
-        // Do nothing in mock implementation
-    }
+  @Override
+  public void addPortfolio() {
+    // Do nothing in mock implementation
+  }
 
-    @Override
-    public void createBuilder(String portfolioName) {
-        logger.log(Level.INFO, "Creating builder for portfolio: " + portfolioName);
-    }
+  @Override
+  public void createBuilder(String portfolioName) {
+    logger.append("Creating builder for portfolio: ").append(portfolioName);
+  }
 
-    @Override
-    public void addShare(String shareName, int quantity) {
-        logger.log(Level.INFO, "Adding share: " + shareName + ", Quantity: " + quantity);
-    }
+  @Override
+  public void addShare(String shareName, int quantity) {
+    logger.append("Adding share: ").append(shareName).append(", Quantity: ").append(quantity);
+  }
 
-    @Override
-    public void loadPortfolioData(String pathName) {
-        logger.log(Level.INFO, "Loading portfolio data from path: " + pathName);
-    }
+  @Override
+  public void loadPortfolioData(String pathName) {
+    logger.append("Loading portfolio data from path: ").append(pathName);
+  }
 
-    @Override
-    public boolean exists(String name) {
-        logger.log(Level.INFO, "Checking existence of portfolio: " + name);
-        return true;
-    }
+  @Override
+  public boolean exists(String name) {
+    logger.append("Checking existence of portfolio: ").append(name);
+    return true;
+  }
 
-    @Override
-    public ArrayList<String> getListOfPortfoliosName() {
-        ArrayList<String> listOfPortfolios = new ArrayList<>();
-        listOfPortfolios.add("MockPortfolio");
-        return listOfPortfolios;
-    }
+  @Override
+  public ArrayList<String> getListOfPortfoliosName() {
+    ArrayList<String> listOfPortfolios = new ArrayList<>();
+    listOfPortfolios.add("MockPortfolio");
+    return listOfPortfolios;
+  }
 
-    @Override
-    public Map<String, Integer> portfolioComposition(int input) {
-        logger.log(Level.INFO, "Retrieving composition for portfolio at index: " + input);
-        return mockComposition;
-    }
+  @Override
+  public Map<String, Integer> portfolioComposition(int input) {
+    logger.append("Retrieving composition for portfolio at index: ").append(input);
+    return mockComposition;
+  }
 
-    @Override
-    public int getSize() {
-        return portfolioDirectory.size();
-    }
+  @Override
+  public int getSize() {
+    return portfolioDirectory.size();
+  }
 
-    @Override
-    public void savePortfolio(int input, String path) {
-        logger.log(Level.INFO, "Saving portfolio at index: " + input + " to path: " + path);
-    }
+  @Override
+  public void savePortfolio(int input, String path) {
+    logger.append("Saving portfolio at index: ").append(input).append(" to path: ").append(path);
+  }
 
-    @Override
-    public double portfolioValue(int input, String date) {
-        logger.log(Level.INFO, "Calculating portfolio value at index: " + input + ", Date: " + date);
-        return mockValue;
-    }
+  @Override
+  public double portfolioValue(int input, String date) {
+    logger.append("Calculating portfolio value at index: ").append(input).append(", Date: ").append(date);
+    return mockValue;
+  }
 
-   @Override
-   public boolean isEmpty() {
-       return portfolioDirectory.isEmpty();
-   }
+  @Override
+  public boolean isEmpty() {
+    return portfolioDirectory.isEmpty();
+  }
 
-    @Override
-    public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
-        logger.log(Level.INFO, "Deleting session CSV files from directory: " + directoryPath);
-    }
+  @Override
+  public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
+    logger.append("Deleting session CSV files from directory: ").append(directoryPath);
+  }
 }
