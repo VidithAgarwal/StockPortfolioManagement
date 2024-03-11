@@ -100,152 +100,7 @@ public class MockModel implements PortfolioDir {
   }
 }
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class MockPortfolioDir implements PortfolioDir {
-
-    private ArrayList<Portfolio> portfolioDirectory = new ArrayList<>();
-    private Map<String, Integer> mockComposition = new HashMap<>();
-    private double mockValue = 1000.0;
-
-    @Override
-    public void addPortfolio() {
-        // Do nothing in mock implementation
-    }
-
-    @Override
-    public void createBuilder(String portfolioName) {
-        // Do nothing in mock implementation
-    }
-
-    @Override
-    public void addShare(String shareName, int quantity) {
-        // Do nothing in mock implementation
-    }
-
-    @Override
-    public void loadPortfolioData(String pathName) {
-        // Do nothing in mock implementation
-    }
-
-    @Override
-    public boolean exists(String name) {
-        // Always return true in mock implementation
-        return true;
-    }
-
-    @Override
-    public ArrayList<String> getListOfPortfoliosName() {
-        // Always return a list with a single mock portfolio name
-        ArrayList<String> listOfPortfolios = new ArrayList<>();
-        listOfPortfolios.add("MockPortfolio");
-        return listOfPortfolios;
-    }
-
-    @Override
-    public Map<String, Integer> portfolioComposition(int input) {
-        // Return mock composition
-        return mockComposition;
-    }
-
-    @Override
-    public int getSize() {
-        // Return 1 for the mock portfolio directory size
-        return 1;
-    }
-
-    @Override
-    public void savePortfolio(int input, String path) {
-        // Do nothing in mock implementation
-    }
-
-    @Override
-    public double portfolioValue(int input, String date) {
-        // Return mock value
-        return mockValue;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        // Always return false in mock implementation
-        return false;
-    }
-
-    @Override
-    public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
-        // Do nothing in mock implementation
-    }
-}
-This implementation behaves similarly to the Mockito-based mock implementation provided earlier. It simulates the behavior of the PortfolioDir interface methods by returning mock data or performing no operation. You can use this mock class in your JUnit tests to isolate the controller and test its behavior independently of the actual model implementation.
-
-User
-now write tests for my controller using this mock class
-ChatGPT
-Here's an example of how you can write JUnit tests for your controller using the MockPortfolioDir mock class:
-
-java
-Copy code
-import org.junit.Before;
-import org.junit.Test;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import static org.junit.Assert.assertEquals;
-
-public class StockControllerImplTest {
-
-    private StockControllerImpl controller;
-    private MockPortfolioDir mockPortfolioDir;
-    private InputStream inputStream;
-
-    @Before
-    public void setUp() {
-        mockPortfolioDir = new MockPortfolioDir();
-        inputStream = new ByteArrayInputStream("1\n".getBytes()); // Simulate user input "1"
-        IView view = new MockView(inputStream);
-        controller = new StockControllerImpl(view, inputStream, mockPortfolioDir);
-    }
-
-    @Test
-    public void testCreatePortfolio() {
-        controller.createPortfolio();
-        assertEquals(1, mockPortfolioDir.getSize());
-    }
-
-    @Test
-    public void testLoadPortfolio() {
-        controller.loadPortfolio();
-        assertEquals(1, mockPortfolioDir.getSize());
-    }
-
-    @Test
-    public void testExamineComposition() {
-        // Assuming there's a portfolio added to the mock directory
-        mockPortfolioDir.addPortfolio();
-        controller.examineComposition();
-        // Add assertions for the expected behavior based on the mock data
-    }
-
-    @Test
-    public void testSave() {
-        // Assuming there's a portfolio added to the mock directory
-        mockPortfolioDir.addPortfolio();
-        controller.save();
-        // Add assertions for the expected behavior based on the mock data
-    }
-
-    @Test
-    public void testGetTotalValue() {
-        // Assuming there's a portfolio added to the mock directory
-        mockPortfolioDir.addPortfolio();
-        controller.getTotalValue();
-        // Add assertions for the expected behavior based on the mock data
-    }
-
-    // Add more tests for other controller methods as needed
-}
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -268,31 +123,27 @@ public class MockPortfolioDir implements PortfolioDir {
 
     @Override
     public void createBuilder(String portfolioName) {
-        // Do nothing in mock implementation
+        logger.log(Level.INFO, "Creating builder for portfolio: " + portfolioName);
     }
 
     @Override
     public void addShare(String shareName, int quantity) {
         logger.log(Level.INFO, "Adding share: " + shareName + ", Quantity: " + quantity);
-        // Do nothing in mock implementation
     }
 
     @Override
     public void loadPortfolioData(String pathName) {
         logger.log(Level.INFO, "Loading portfolio data from path: " + pathName);
-        // Do nothing in mock implementation
     }
 
     @Override
     public boolean exists(String name) {
         logger.log(Level.INFO, "Checking existence of portfolio: " + name);
-        // Always return true in mock implementation
         return true;
     }
 
     @Override
     public ArrayList<String> getListOfPortfoliosName() {
-        // Always return a list with a single mock portfolio name
         ArrayList<String> listOfPortfolios = new ArrayList<>();
         listOfPortfolios.add("MockPortfolio");
         return listOfPortfolios;
@@ -300,38 +151,33 @@ public class MockPortfolioDir implements PortfolioDir {
 
     @Override
     public Map<String, Integer> portfolioComposition(int input) {
-        // Return mock composition
+        logger.log(Level.INFO, "Retrieving composition for portfolio at index: " + input);
         return mockComposition;
     }
 
     @Override
     public int getSize() {
-        // Return 1 for the mock portfolio directory size
-        return 1;
+        return portfolioDirectory.size();
     }
 
     @Override
     public void savePortfolio(int input, String path) {
         logger.log(Level.INFO, "Saving portfolio at index: " + input + " to path: " + path);
-        // Do nothing in mock implementation
     }
 
     @Override
     public double portfolioValue(int input, String date) {
         logger.log(Level.INFO, "Calculating portfolio value at index: " + input + ", Date: " + date);
-        // Return mock value
         return mockValue;
     }
 
-    @Override
-    public boolean isEmpty() {
-        // Always return false in mock implementation
-        return false;
-    }
+   @Override
+   public boolean isEmpty() {
+       return portfolioDirectory.isEmpty();
+   }
 
     @Override
     public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
         logger.log(Level.INFO, "Deleting session CSV files from directory: " + directoryPath);
-        // Do nothing in mock implementation
     }
 }

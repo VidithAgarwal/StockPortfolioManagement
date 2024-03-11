@@ -52,7 +52,7 @@ session is over.
 
 
 
-2. PortfolioImpl :
+2. PortfolioDirImpl :
 
 Responsibility: Implements the methods defined in the PortfolioDir interface.
 Description : it has methods which are implemented to assign the inputs for creation of a single
