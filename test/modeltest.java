@@ -1,6 +1,9 @@
+package model;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Map;
 //import org.mockito.Mockito;
 
@@ -8,11 +11,8 @@ import java.util.Map;
 
 import java.util.ArrayList;
 
-import model.PortfolioDirImpl;
-import model.PortfolioImpl;
-
 import static org.junit.Assert.assertEquals;
-public class modeltest {
+public class modelTest {
 
   private PortfolioDirImpl portfolioDir;
 
@@ -151,12 +151,12 @@ public class modeltest {
     portfolioDir.createBuilder("oldage fund");
     portfolioDir.addShare("Apple Inc", 10);
     portfolioDir.addShare("Calamp Corp", 10);
-    portfolioDir.addShare("Camtek Ltd", 10);
+    portfolioDir.addShare("Capricor Therapeutics Inc", 10);
     portfolioDir.addPortfolio();
     assertEquals(2, portfolioDir.getSize());
 
-    assertEquals(2520.5, portfolioDir.portfolioValue(1,"2024-03-05"), 0.001);
-    assertEquals(2620.1, portfolioDir.portfolioValue(1,"2024-03-04"), 0.001);
+    assertEquals(1774.55, portfolioDir.portfolioValue(1,"2024-03-05"), 0.001);
+    assertEquals(1824.8, portfolioDir.portfolioValue(1,"2024-03-04"), 0.001);
   }
 
 
@@ -203,7 +203,7 @@ public class modeltest {
     }
   }
 
-  @Test
+  @Test (expected = IllegalArgumentException.class )
   public void testSaveToWrongFilePath() {
     //Portfolio mockPortfolio = Mockito.mock(Portfolio.class);
     portfolioDir.createBuilder("Test Portfolio");
@@ -211,11 +211,8 @@ public class modeltest {
     portfolioDir.addPortfolio();
     String testPath = "";
     //will have to change this path
-    try {
       portfolioDir.savePortfolio(0, testPath);
-    } catch (IllegalArgumentException e) {
-      assertEquals("Error exporting portfolio to file: " + e.getMessage(), e.getMessage());
-    }
+
   }
 
 
