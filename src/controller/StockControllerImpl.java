@@ -23,10 +23,18 @@ public class StockControllerImpl implements StockController {
   }
 
   public void createPortfolio() {
-    String name = inputPortfolioNameFromUser();
+    view.print("Enter the name of the portfolio: ");
+    String name = in.nextLine();
+    try {
+      model.createBuilder(name);
+    } catch (IllegalArgumentException e) {
+      view.displayError("Portfolio with this name already exists!");
+      createPortfolio();
+    }
     int numShares = inputPositiveInteger("Enter the number of stocks you want to have in this " +
             "portfolio: ");
-    model.createBuilder(name);
+
+
     for (int i = 0; i < numShares; i++) {
       in.nextLine();
       view.print("Enter the name of the share or ticker symbol: ");
@@ -43,10 +51,15 @@ public class StockControllerImpl implements StockController {
   }
 
   public void loadPortfolio() {
-    String name = inputPortfolioNameFromUser();
+    view.print("Enter the name of the portfolio: ");
+    String name = in.nextLine();
+    try {
+      model.createBuilder(name);
+    } catch (IllegalArgumentException e) {
+      view.displayError("Portfolio with this name already exists!");
+      loadPortfolio();
+    }
     String pathName = inputPath();
-    //validation of correct path and csv format file.
-    model.createBuilder(name);
     try {
       model.loadPortfolioData(pathName);
       this.model.addPortfolio();
@@ -94,19 +107,6 @@ public class StockControllerImpl implements StockController {
     return numShares < 0;
   }
 
-  private String  inputPortfolioNameFromUser() {
-    view.print("Enter the name of the portfolio: ");
-
-    String name = in.nextLine();
-
-    boolean found = this.portfolioExist(name);
-
-    if (found) {
-      this.view.displayError("Portfolio with this name already exists!");
-      return inputPortfolioNameFromUser();
-    }
-    return name;
-  }
 
   private String inputPath() {
     view.print("Enter the full path of the file you want to load data from: ");
@@ -153,10 +153,6 @@ public class StockControllerImpl implements StockController {
     view.showListOfPortfolios(listOfPortfolioNames);
 
     return validateUserChoice();
-  }
-
-  private boolean portfolioExist(String name) {
-    return model.exists(name);
   }
 
   private String inputDate() {

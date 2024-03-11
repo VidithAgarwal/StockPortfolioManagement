@@ -69,10 +69,17 @@ public class PortfolioImpl implements Portfolio {
         throw new IllegalArgumentException("Share name not found in stocks.csv");
       }
       StockImpl stock = new StockImpl(tickerSymbol);
-      if (shareList.containsKey(stock)) {
-        int existingQuantity = this.shareList.get(stock);
-        this.shareList.put(stock, existingQuantity + quantity);
-      } else {
+
+      boolean flag = false;
+      for (Map.Entry<StockImpl, Integer> entry : this.shareList.entrySet()) {
+        if (entry.getKey().getTicker().equals(tickerSymbol)) {
+          int existingQuantity = this.shareList.get(entry.getKey());
+          this.shareList.put(entry.getKey(), existingQuantity + quantity);
+          flag = true;
+        }
+      }
+
+      if (!flag) {
         this.shareList.put(stock, quantity);
       }
     }

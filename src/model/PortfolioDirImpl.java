@@ -21,6 +21,9 @@ public class PortfolioDirImpl implements PortfolioDir{
 
   @Override
   public void createBuilder(String portfolioName) {
+    if(portfolioNameExists(portfolioName)) {
+      throw new IllegalArgumentException();
+    }
     builder = new PortfolioImpl.PortfolioBuilder(portfolioName);
   }
 
@@ -83,6 +86,17 @@ public class PortfolioDirImpl implements PortfolioDir{
   public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
     File stocklistDirectory = new File(directoryPath);
     deleteSessionCSVFiles(stocklistDirectory);
+  }
+
+  boolean portfolioNameExists(String portfolioName) {
+
+    for (Portfolio obj : portfolioDirectory) {
+      if(obj.getName().equalsIgnoreCase(portfolioName)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 

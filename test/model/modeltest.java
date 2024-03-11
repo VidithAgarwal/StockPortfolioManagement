@@ -3,6 +3,7 @@ package model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 //import org.mockito.Mockito;
@@ -10,8 +11,12 @@ import java.util.Map;
 
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class modeltest {
 
   private PortfolioDirImpl portfolioDir;
@@ -33,6 +38,26 @@ public class modeltest {
     assertEquals(1, portfolioDir.getSize());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidStockName() {
+    portfolioDir.createBuilder("Test Portfolio1");
+    portfolioDir.addShare("India", 10);
+  }
+
+  @Test
+  public void testAddingStocksOfSameName() {
+    portfolioDir.createBuilder("Test Portfolio1");
+    portfolioDir.addShare("AAPL", 10);
+    portfolioDir.addShare("AAPL", 10);
+    portfolioDir.addPortfolio();
+    assertEquals(1, portfolioDir.getSize());
+    Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
+
+    assertEquals(1, composition.size());
+    assertEquals(20,  (int)composition.get("AAPL"));
+
+  }
+
   @Test
   public void testGetListOfPortfoliosName() {
     portfolioDir.createBuilder("Test Portfolio1");
@@ -52,7 +77,6 @@ public class modeltest {
     portfolioDir.createBuilder("Test Portfolio");
     String testPath = System.getProperty("user.dir") + "/ass4.test.csv";
     portfolioDir.loadPortfolioData(testPath);
-
   }
 
   @Test
@@ -119,6 +143,78 @@ public class modeltest {
     assertEquals(1, portfolioDir.getSize());
 
     assertEquals(1717.749, portfolioDir.portfolioValue(0,"2024-03-05"), 0.001);
+
+    File appleData = new File("AAPL.csv");
+    File CanaanData = new File("CAN.csv");
+    File CanbData = new File("CANB.csv");
+    assertTrue(appleData.exists());
+    assertTrue(CanaanData.exists());
+    assertTrue(CanbData.exists());
+
+    try {
+      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
+      assertFalse(appleData.exists());
+      assertFalse(CanbData.exists());
+      assertFalse(CanaanData.exists());
+    } catch (IOException ignored) {
+
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testValueOfPortfolioOnWeekend() {
+    portfolioDir.createBuilder("Test Portfolio");
+    portfolioDir.addShare("Apple Inc", 10);
+    portfolioDir.addShare("Canaan Inc", 10);
+    portfolioDir.addShare("Can B Corp", 10);
+    portfolioDir.addPortfolio();
+    assertEquals(1, portfolioDir.getSize());
+
+    assertEquals(1717.749, portfolioDir.portfolioValue(0,"2024-03-03"), 0.001);
+
+    File appleData = new File("AAPL.csv");
+    File CanaanData = new File("CAN.csv");
+    File CanbData = new File("CANB.csv");
+    assertFalse(appleData.exists());
+    assertFalse(CanaanData.exists());
+    assertFalse(CanbData.exists());
+
+    try {
+      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
+      assertFalse(appleData.exists());
+      assertFalse(CanbData.exists());
+      assertFalse(CanaanData.exists());
+    } catch (IOException ignored) {
+
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testValueOfPortfolioBeforeListing() {
+    portfolioDir.createBuilder("Test Portfolio");
+    portfolioDir.addShare("Apple Inc", 10);
+    portfolioDir.addShare("Canaan Inc", 10);
+    portfolioDir.addShare("Can B Corp", 10);
+    portfolioDir.addPortfolio();
+    assertEquals(1, portfolioDir.getSize());
+
+    assertEquals(1717.749, portfolioDir.portfolioValue(0,"1890-03-03"), 0.001);
+
+    File appleData = new File("AAPL.csv");
+    File CanaanData = new File("CAN.csv");
+    File CanbData = new File("CANB.csv");
+    assertFalse(appleData.exists());
+    assertFalse(CanaanData.exists());
+    assertFalse(CanbData.exists());
+
+    try {
+      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
+      assertFalse(appleData.exists());
+      assertFalse(CanbData.exists());
+      assertFalse(CanaanData.exists());
+    } catch (IOException ignored) {
+
+    }
   }
 
   @Test
@@ -133,6 +229,59 @@ public class modeltest {
     assertEquals(1717.749, portfolioDir.portfolioValue(0,"2024-03-05"), 0.001);
     assertEquals(1707.92, portfolioDir.portfolioValue(0,"2024-03-06"), 0.001);
     assertEquals(1724.0249999999999, portfolioDir.portfolioValue(0,"2024-03-08"), 0.001);
+
+    File appleData = new File("AAPL.csv");
+    File CanaanData = new File("CAN.csv");
+    File CanbData = new File("CANB.csv");
+    assertTrue(appleData.exists());
+    assertTrue(CanaanData.exists());
+    assertTrue(CanbData.exists());
+
+    try {
+      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
+      assertFalse(appleData.exists());
+      assertFalse(CanbData.exists());
+      assertFalse(CanaanData.exists());
+    } catch (IOException ignored) {
+
+    }
+  }
+
+  @Test
+  public void testValueOfTwoPortfoliosWithSameStocks() {
+    portfolioDir.createBuilder("Test Portfolio");
+    portfolioDir.addShare("Apple Inc", 10);
+    portfolioDir.addShare("Canaan Inc", 10);
+    portfolioDir.addShare("Can B Corp", 10);
+    portfolioDir.addPortfolio();
+    assertEquals(1, portfolioDir.getSize());
+
+    assertEquals(1717.749, portfolioDir.portfolioValue(0,"2024-03-05"), 0.001);
+    assertEquals(1707.92, portfolioDir.portfolioValue(0,"2024-03-06"), 0.001);
+    assertEquals(1724.0249999999999, portfolioDir.portfolioValue(0,"2024-03-08"), 0.001);
+
+    portfolioDir.createBuilder("Test Portfolio1");
+    portfolioDir.addShare("Apple Inc", 10);
+    portfolioDir.addShare("Canaan Inc", 10);
+    portfolioDir.addShare("Can B Corp", 10);
+    portfolioDir.addPortfolio();
+    assertEquals(1, portfolioDir.getSize());
+
+    File appleData = new File("AAPL.csv");
+    File CanaanData = new File("CAN.csv");
+    File CanbData = new File("CANB.csv");
+    assertTrue(appleData.exists());
+    assertTrue(CanaanData.exists());
+    assertTrue(CanbData.exists());
+
+    try {
+      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
+      assertFalse(appleData.exists());
+      assertFalse(CanbData.exists());
+      assertFalse(CanaanData.exists());
+    } catch (IOException ignored) {
+
+    }
   }
 
 
@@ -157,6 +306,28 @@ public class modeltest {
 
     assertEquals(1774.55, portfolioDir.portfolioValue(1,"2024-03-05"), 0.001);
     assertEquals(1824.8, portfolioDir.portfolioValue(1,"2024-03-04"), 0.001);
+
+    File appleData = new File("AAPL.csv");
+    File calampData = new File("CAMP.csv");
+    File CanaanData = new File("CAN.csv");
+    File CanbData = new File("CANB.csv");
+    File capricorData = new File("CAPR.csv");
+    assertTrue(appleData.exists());
+    assertTrue(calampData.exists());
+    assertTrue(CanaanData.exists());
+    assertTrue(CanbData.exists());
+    assertTrue(capricorData.exists());
+
+    try {
+      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
+      assertFalse(appleData.exists());
+      assertFalse(capricorData.exists());
+      assertFalse(CanbData.exists());
+      assertFalse(CanaanData.exists());
+      assertFalse(calampData.exists());
+    } catch (IOException ignored) {
+
+    }
   }
 
 
