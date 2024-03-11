@@ -70,7 +70,12 @@ public class StockControllerImpl implements StockController {
 
   public void examineComposition() {
     int input = inputPortfolioChoice();
-    view.showComposition(model.portfolioComposition(input));
+    try {
+      view.showComposition(model.portfolioComposition(input));
+    } catch (IllegalArgumentException e) {
+      view.displayError("The choice of portfolio doesn't exists");
+    }
+
   }
 
   public void save() {

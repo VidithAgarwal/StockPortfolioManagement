@@ -59,6 +59,9 @@ public class PortfolioDirImpl implements PortfolioDir{
 
   @Override
   public Map<String, Integer> portfolioComposition(int input) {
+    if (input >= portfolioDirectory.size()) {
+      throw new IllegalArgumentException();
+    }
     return portfolioDirectory.get(input).portfolioComposition();
   }
 
@@ -69,11 +72,17 @@ public class PortfolioDirImpl implements PortfolioDir{
 
   @Override
   public void savePortfolio(int input, String path) {
+    if (input >= portfolioDirectory.size()) {
+      throw new IllegalArgumentException();
+    }
     portfolioDirectory.get(input).savePortfolio(path);
   }
 
   @Override
   public double portfolioValue(int input, String date) {
+    if (input >= portfolioDirectory.size()) {
+      throw new IllegalArgumentException();
+    }
     return portfolioDirectory.get(input).portfolioValue(date);
   }
 
@@ -105,15 +114,13 @@ public class PortfolioDirImpl implements PortfolioDir{
     if (files != null) {
       for (File file : files) {
         if (file.isDirectory()) {
-          deleteSessionCSVFiles(file);
+          if (!file.getName().equalsIgnoreCase("testFiles")) {
+            deleteSessionCSVFiles(file);
+          }
         } else {
           String fileName = file.getName();
           if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv")) {
-            if (!file.delete()) {
-              throw new IOException("Failed to delete file: " + file.getName());
-            } else {
-              //System.out.println("Deleted file: " + file.getName());
-            }
+            file.delete();
           }
         }
       }

@@ -94,11 +94,9 @@ public class StockImpl implements StockInterface {
       if (line.length >= 2) {
         String date = line[0].trim();
         String closingPriceStr = line[1].trim();
-        try {
-          Double closingPriceFloat = Double.parseDouble(closingPriceStr);
-          this.priceData.put(date, closingPriceFloat);
-        } catch (NumberFormatException ignored) {
-        }
+        Double closingPriceFloat = Double.parseDouble(closingPriceStr);
+        this.priceData.put(date, closingPriceFloat);
+
       }
     }
   }
