@@ -43,12 +43,6 @@ public class PortfolioImpl implements Portfolio {
 
 
   @Override
-  public void savePortfolio(String filePath) {
-    FileHandler fileHandler = new FileHandler();
-    fileHandler.export(filePath, this.portfolioName, this.portfolioComposition());
-  }
-
-  @Override
   public String getName() {
     return this.portfolioName;
   }
@@ -102,9 +96,8 @@ public class PortfolioImpl implements Portfolio {
       return null; // Return null if no matching ticker symbol or company name is found
     }
 
-    public void load(String filePath) {
-      FileHandler fileHandler = new FileHandler();
-      List<String[]> lines = fileHandler.load(filePath);
+    public void load(List<String[]> lines) {
+
       for (String[] line : lines) {
         if (line.length == 2) {
           String key = line[0].trim();

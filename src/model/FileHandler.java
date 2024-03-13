@@ -11,26 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FileHandler {
-  void export(String path, String portfolioName, Map<String, Integer> composition) {
-    File file = new File(path);
-    File parentDir = file.getParentFile();
-
-    if (parentDir != null && !parentDir.exists()) {
-      parentDir.mkdirs(); // Create parent directories recursively
-    }
-
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-      writer.write("Portfolio Name: " + portfolioName + "\n\n");
-      writer.write("Stock,Quantity" + "\n");
-      for (Map.Entry<String, Integer> entry : composition.entrySet()) {
-        writer.write(entry.getKey() + "," + entry.getValue());
-        writer.newLine();
-      }
-    } catch (IOException e) {
-      throw new IllegalArgumentException();
-    }
-  }
-
   public List<String[]> load(String filePath) {
     List<String[]> lines = new ArrayList<>();
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {

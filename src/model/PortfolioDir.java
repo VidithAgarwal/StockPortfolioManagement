@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface PortfolioDir {
-  void addPortfolio();
-
-  boolean exists(String name);
+  void addPortfolio(PortfolioImpl.PortfolioBuilder newBuilder);
 
   ArrayList<String> getListOfPortfoliosName();
 
@@ -15,15 +13,8 @@ public interface PortfolioDir {
 
   int getSize();
 
-  void savePortfolio(int input, String path);
-
-  double portfolioValue(int input, String date);
+  double portfolioValue(int input, int day, int month, int year);
 
   boolean isEmpty();
-
-  void deleteSessionCSVFilesFromStocklist(String dir) throws IOException;
-  void createBuilder(String portfolioName);
-  void addShare(String shareName, int quantity);
-
-  void loadPortfolioData(String pathName);
+  boolean portfolioNameExists(String portfolioName);
 }

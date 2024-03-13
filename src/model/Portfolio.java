@@ -8,7 +8,5 @@ public interface Portfolio {
 
   double portfolioValue (String date);
 
-  void savePortfolio (String path);
-
   String getName();
 }

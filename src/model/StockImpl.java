@@ -104,14 +104,19 @@ public class StockImpl implements StockInterface {
   @Override
   public double returnPrice(String date) {
     double price = 0;
-    if (!this.priceData.isEmpty()) {
-      price = this.priceData.getOrDefault(date, -1.0);
-    } else if (!isCSVFileExists()) {
-      price = fetchData(date);
-    } else if (isCSVFileExists()) {
-      loadDataFromCSV();
-      price = this.priceData.getOrDefault(date, -1.0);
+    try {
+      if (!this.priceData.isEmpty()) {
+        price = this.priceData.getOrDefault(date, -1.0);
+      } else if (!isCSVFileExists()) {
+        price = fetchData(date);
+      } else if (isCSVFileExists()) {
+        loadDataFromCSV();
+        price = this.priceData.getOrDefault(date, -1.0);
+      }
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(this.tickerSymbol);
     }
+
 
     if (price < 0) {
       throw new IllegalArgumentException(this.tickerSymbol);

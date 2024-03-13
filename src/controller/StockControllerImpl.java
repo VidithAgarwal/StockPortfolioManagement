@@ -3,9 +3,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+
 import model.PortfolioDir;
+import model.PortfolioImpl;
 import view.IView;
 
 
@@ -16,6 +19,7 @@ public class StockControllerImpl implements StockController {
   private final Scanner in;
   private final PortfolioDir model;
 
+
   public StockControllerImpl(IView view, InputStream in, PortfolioDir portfolioDir) {
     this.view = view;
     this.in = new Scanner(in);
@@ -23,14 +27,8 @@ public class StockControllerImpl implements StockController {
   }
 
   public void createPortfolio() {
-    view.print("Enter the name of the portfolio: ");
-    String name = in.nextLine();
-    try {
-      model.createBuilder(name);
-    } catch (IllegalArgumentException e) {
-      view.displayError("Portfolio with this name already exists!");
-      createPortfolio();
-    }
+    String name = inputPortfolioName();
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
     int numShares = inputPositiveInteger("Enter the number of stocks you want to have in this " +
             "portfolio: ");
 
@@ -41,31 +39,25 @@ public class StockControllerImpl implements StockController {
       String shareName = in.nextLine();
       int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you have: ");
       try {
-        model.addShare(shareName, quantity);
+        newBuilder.addShare(shareName, quantity);
       } catch (IllegalArgumentException e) {
         view.displayError("Error: " + e.getMessage() + "\nPlease enter a valid share name.\n");
         i--; //same share again asking
       }
     }
-    this.model.addPortfolio();
+    this.model.addPortfolio(newBuilder);
   }
 
   public void loadPortfolio() {
-    view.print("Enter the name of the portfolio: ");
-    String name = in.nextLine();
+    String name = inputPortfolioName();
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
     try {
-      model.createBuilder(name);
+      newBuilder.load(inputPath());
     } catch (IllegalArgumentException e) {
-      view.displayError("Portfolio with this name already exists!");
-      loadPortfolio();
+      view.displayError("The values provided in the file is invalid");
     }
-    String pathName = inputPath();
-    try {
-      model.loadPortfolioData(pathName);
-      this.model.addPortfolio();
-    } catch (IllegalArgumentException e) {
-      view.displayError("The values provided in the path is invalid");
-    }
+
+    model.addPortfolio(newBuilder);
   }
 
   public void examineComposition() {
@@ -73,7 +65,7 @@ public class StockControllerImpl implements StockController {
     try {
       view.showComposition(model.portfolioComposition(input));
     } catch (IllegalArgumentException e) {
-      view.displayError("The choice of portfolio doesn't exists");
+      view.displayError(e.getMessage());
     }
 
   }
@@ -83,12 +75,12 @@ public class StockControllerImpl implements StockController {
     in.nextLine();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = in.nextLine();
+    Persistence persistence = new Persistence();
     try {
-      model.savePortfolio(input, path);
+      persistence.exportAsCSV(path, model.portfolioComposition(input));
       view.print("Portfolio exported to " + path + " successfully.");
-    }
-    catch (IllegalArgumentException e) {
-      view.displayError("File path is incorrect.");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
     }
   }
 
@@ -96,36 +88,71 @@ public class StockControllerImpl implements StockController {
     int choice = inputPortfolioChoice();
     in.nextLine();
 
-    String date = inputDate();
+    int[] date = inputDate();
+
     view.print("Wait until the total value is calculated");
     try {
-      double totalValue = model.portfolioValue(choice, date);
+      double totalValue = model.portfolioValue(choice, date[0], date[1], date[2]);
       view.showTotalValue(totalValue);
     } catch (IllegalArgumentException e) {
-      view.print("Error: No price data found for " + e.getMessage() + " on the date: " + date);
+      if (e.getMessage() != null) {
+        view.print("No price data found for " + e.getMessage() + " on the " +
+        "date: " + date);
+      } else {
+        view.print("Invalid date!");
+      }
     } catch (RuntimeException e) {
-      view.print("Data not found!");
+      view.print("The data could not be fetched today, try again later!");
     }
+  }
+
+  private boolean validateDate(int day, int month, int year) {
+    if (month < 1 || month > 12) {
+      return false;
+    }
+
+    if (day < 1 || day > 31) {
+      return false;
+    }
+
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+      return false;
+    }
+
+    if (month == 2) {
+      boolean isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+      return (!isLeapYear || day <= 29) && (isLeapYear || day <= 28);
+    }
+
+    return year >= 0 && year <= 9999;
   }
 
   private boolean isNegative(int numShares) {
     return numShares < 0;
   }
 
+  private String inputPortfolioName() {
+    view.print("Enter the name of the portfolio: ");
+    String portfolioName = in.nextLine();
+    if (model.portfolioNameExists(portfolioName)) {
+      view.displayError("Portfolio with this name already exists!");
+      return inputPortfolioName();
+    }
+    return portfolioName;
+  }
 
-  private String inputPath() {
+
+  private List<String[]> inputPath() {
     view.print("Enter the full path of the file you want to load data from: ");
     String pathName = in.nextLine();
-    File file = new File(pathName);
-    if (!file.exists()) {
-      view.displayError("File not found. Please enter a valid file path.");
+
+    Persistence persistence = new Persistence();
+    try {
+      return persistence.loadFromCSV(pathName);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
       return inputPath();
     }
-    if (!pathName.toLowerCase().endsWith(".csv")) {
-      view.displayError("File format is not CSV. Please enter a file with .csv extension.");
-      return inputPath();
-    }
-    return pathName;
   }
 
   private int validateUserChoice() {
@@ -160,26 +187,38 @@ public class StockControllerImpl implements StockController {
     return validateUserChoice();
   }
 
-  private String inputDate() {
+  private int[] inputDate() {
     boolean validDate = false;
     String date;
+    int day = 0, month = 0, year = 0;
     do {
       view.print("Enter the date for which you want to get the total price of the portfolio. ");
       view.print("The date should be in this format yyyy-mm-dd: ");
       date = in.nextLine();
+
       if (isValidDateFormat(date)) {
-        validDate = true;
+        String[] dateParts = date.split("-");
+        year = Integer.parseInt(dateParts[0].trim());
+        month = Integer.parseInt(dateParts[1].trim());
+        day = Integer.parseInt(dateParts[2].trim());
+
+        if (validateDate(day, month, year)) {
+          validDate = true;
+        } else {
+          view.displayError("Invalid date!");
+        }
       } else {
         view.displayError("Invalid date format.");
       }
     } while (!validDate);
-    return date;
+    return new int[]{day, month, year};
   }
 
   private boolean isValidDateFormat(String date) {
     String regex = "\\d{4}-\\d{2}-\\d{2}";
     return Pattern.matches(regex, date);
   }
+
   public void go() {
     boolean exit = false;
     while (!exit) {
@@ -187,6 +226,29 @@ public class StockControllerImpl implements StockController {
         exit = startMenu();
       } else {
         exit = secondMenu();
+      }
+    }
+  }
+
+  public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
+    File stocklistDirectory = new File(directoryPath);
+    deleteSessionCSVFiles(stocklistDirectory);
+  }
+
+  private void deleteSessionCSVFiles(File directory) throws IOException {
+    File[] files = directory.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory()) {
+          if (!file.getName().equalsIgnoreCase("testFiles")) {
+            deleteSessionCSVFiles(file);
+          }
+        } else {
+          String fileName = file.getName();
+          if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv")) {
+            file.delete();
+          }
+        }
       }
     }
   }
@@ -237,7 +299,7 @@ public class StockControllerImpl implements StockController {
     if (exit) {
       try {
         String currentDirectory = System.getProperty("user.dir");
-        model.deleteSessionCSVFilesFromStocklist(currentDirectory);
+        deleteSessionCSVFilesFromStocklist(currentDirectory);
       } catch (IOException e) {
         throw new RuntimeException("Failed to delete one or more files. ");
       }

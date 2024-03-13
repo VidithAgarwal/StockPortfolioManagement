@@ -8,43 +8,14 @@ import java.util.Map;
 public class PortfolioDirImpl implements PortfolioDir{
 
   private final ArrayList<Portfolio> portfolioDirectory;
-  private PortfolioImpl.PortfolioBuilder builder;
 
   public PortfolioDirImpl() {
     portfolioDirectory = new ArrayList<>();
   }
 
   @Override
-  public void addPortfolio() {
-    portfolioDirectory.add(builder.build());
-  }
-
-  @Override
-  public void createBuilder(String portfolioName) {
-    if(portfolioNameExists(portfolioName)) {
-      throw new IllegalArgumentException();
-    }
-    builder = new PortfolioImpl.PortfolioBuilder(portfolioName);
-  }
-
-  @Override
-  public void addShare(String shareName, int quantity) {
-    builder.addShare(shareName, quantity);
-  }
-
-  @Override
-  public void loadPortfolioData(String pathName) {
-    builder.load(pathName);
-  }
-
-  @Override
-  public boolean exists(String name) {
-    for (Portfolio obj : portfolioDirectory) {
-      if (obj.getName().equals(name)) {
-        return true;
-      }
-    }
-    return false;
+  public void addPortfolio(PortfolioImpl.PortfolioBuilder newBuilder) {
+    portfolioDirectory.add(newBuilder.build());
   }
 
   @Override
@@ -59,8 +30,8 @@ public class PortfolioDirImpl implements PortfolioDir{
 
   @Override
   public Map<String, Integer> portfolioComposition(int input) {
-    if (input >= portfolioDirectory.size()) {
-      throw new IllegalArgumentException();
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
     return portfolioDirectory.get(input).portfolioComposition();
   }
@@ -71,33 +42,45 @@ public class PortfolioDirImpl implements PortfolioDir{
   }
 
   @Override
-  public void savePortfolio(int input, String path) {
-    if (input >= portfolioDirectory.size()) {
-      throw new IllegalArgumentException();
+  public double portfolioValue(int input, int day, int month, int year) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
-    portfolioDirectory.get(input).savePortfolio(path);
-  }
 
-  @Override
-  public double portfolioValue(int input, String date) {
-    if (input >= portfolioDirectory.size()) {
+    if (month < 1 || month > 12) {
       throw new IllegalArgumentException();
     }
+
+    if (day < 1 || day > 31) {
+      throw new IllegalArgumentException();
+    }
+
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+      throw new IllegalArgumentException();
+    }
+
+    if (month == 2) {
+      boolean isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+      if ((isLeapYear && day > 29) || (!isLeapYear && day > 28)) {
+        throw new IllegalArgumentException();
+      }
+    }
+
+    if (year > 9999 || year < 0) {
+      throw new IllegalArgumentException();
+    }
+    String date = String.format("%04d-%02d-%02d", year, month, day);
     return portfolioDirectory.get(input).portfolioValue(date);
   }
+
+
 
   @Override
   public boolean isEmpty() {
     return portfolioDirectory.isEmpty();
   }
 
-  @Override
-  public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
-    File stocklistDirectory = new File(directoryPath);
-    deleteSessionCSVFiles(stocklistDirectory);
-  }
-
-  boolean portfolioNameExists(String portfolioName) {
+  public boolean portfolioNameExists(String portfolioName) {
 
     for (Portfolio obj : portfolioDirectory) {
       if(obj.getName().equalsIgnoreCase(portfolioName)) {
@@ -106,24 +89,5 @@ public class PortfolioDirImpl implements PortfolioDir{
     }
 
     return false;
-  }
-
-
-  private void deleteSessionCSVFiles(File directory) throws IOException {
-    File[] files = directory.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        if (file.isDirectory()) {
-          if (!file.getName().equalsIgnoreCase("testFiles")) {
-            deleteSessionCSVFiles(file);
-          }
-        } else {
-          String fileName = file.getName();
-          if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv")) {
-            file.delete();
-          }
-        }
-      }
-    }
   }
 }
