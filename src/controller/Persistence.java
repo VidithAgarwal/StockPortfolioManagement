@@ -47,7 +47,10 @@ class Persistence {
       String line;
       while ((line = reader.readLine()) != null) {
         String[] parts = line.split(",");
-        lines.add(parts);
+        if (!parts[0].equalsIgnoreCase("Stock")) {
+          System.out.println(parts[0]);
+          lines.add(parts);
+        }
       }
     } catch (IOException e) {
       System.err.println("Error reading file: " + e.getMessage());

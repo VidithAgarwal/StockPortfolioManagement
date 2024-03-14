@@ -1,4 +1,9 @@
 
+import java.io.ByteArrayInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import controller.StockControllerImpl;
 import model.PortfolioDir;
 import model.PortfolioDirImpl;
@@ -10,7 +15,8 @@ public class Main {
 
         PortfolioDir model = new PortfolioDirImpl();
         IView view = new IViewImpl(System.out, System.err);
-        StockControllerImpl a = new StockControllerImpl(view, System.in, model);
+        StockControllerImpl a = new StockControllerImpl(view, new InputStreamReader(System.in),
+                model);
         a.go();
     }
 }

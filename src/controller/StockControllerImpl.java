@@ -1,7 +1,6 @@
 package controller;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,14 +15,18 @@ public class StockControllerImpl implements StockController {
 
   private final IView view;
 
-  private final Scanner in;
+  private final Readable in;
   private final PortfolioDir model;
 
+  private final Scanner scan;
 
-  public StockControllerImpl(IView view, InputStream in, PortfolioDir portfolioDir) {
+
+
+  public StockControllerImpl(IView view, Readable in, PortfolioDir portfolioDir) {
     this.view = view;
-    this.in = new Scanner(in);
+    this.in = in;
     this.model = portfolioDir;
+    this.scan = new Scanner(this.in);
   }
 
   public void createPortfolio() {
@@ -34,9 +37,8 @@ public class StockControllerImpl implements StockController {
 
 
     for (int i = 0; i < numShares; i++) {
-      in.nextLine();
       view.print("Enter the name of the share or ticker symbol: ");
-      String shareName = in.nextLine();
+      String shareName = scan.nextLine();
       int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you have: ");
       try {
         newBuilder.addShare(shareName, quantity);
@@ -45,7 +47,11 @@ public class StockControllerImpl implements StockController {
         i--; //same share again asking
       }
     }
-    this.model.addPortfolio(newBuilder);
+    try {
+      this.model.addPortfolio(newBuilder);
+    } catch (IllegalArgumentException e) {
+      view.displayError("Cannot create portfolio with no stocks!");
+    }
   }
 
   public void loadPortfolio() {
@@ -55,9 +61,14 @@ public class StockControllerImpl implements StockController {
       newBuilder.load(inputPath());
     } catch (IllegalArgumentException e) {
       view.displayError("The values provided in the file is invalid");
+      return;
     }
 
-    model.addPortfolio(newBuilder);
+    try {
+      this.model.addPortfolio(newBuilder);
+    } catch (IllegalArgumentException e) {
+      view.displayError("Cannot create portfolio with no stocks!");
+    }
   }
 
   public void examineComposition() {
@@ -67,14 +78,13 @@ public class StockControllerImpl implements StockController {
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
     }
-
   }
 
   public void save() {
+//    Scanner scan = new Scanner(this.in);
     int input = inputPortfolioChoice();
-    in.nextLine();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
-    String path = in.nextLine();
+    String path = scan.nextLine();
     Persistence persistence = new Persistence();
     try {
       persistence.exportAsCSV(path, model.portfolioComposition(input));
@@ -86,7 +96,6 @@ public class StockControllerImpl implements StockController {
 
   public void getTotalValue() {
     int choice = inputPortfolioChoice();
-    in.nextLine();
 
     int[] date = inputDate();
 
@@ -133,7 +142,7 @@ public class StockControllerImpl implements StockController {
 
   private String inputPortfolioName() {
     view.print("Enter the name of the portfolio: ");
-    String portfolioName = in.nextLine();
+    String portfolioName = scan.nextLine();
     if (model.portfolioNameExists(portfolioName)) {
       view.displayError("Portfolio with this name already exists!");
       return inputPortfolioName();
@@ -143,8 +152,9 @@ public class StockControllerImpl implements StockController {
 
 
   private List<String[]> inputPath() {
+//    Scanner scan = new Scanner(this.in);
     view.print("Enter the full path of the file you want to load data from: ");
-    String pathName = in.nextLine();
+    String pathName = scan.nextLine();
 
     Persistence persistence = new Persistence();
     try {
@@ -165,14 +175,19 @@ public class StockControllerImpl implements StockController {
   }
 
   private int inputPositiveInteger(String message) {
+//    Scanner scan = new Scanner(this.in);
     view.print(message);
-    while (!in.hasNextInt()) {
+
+
+
+    while (!scan.hasNextInt()) {
       view.displayError("Please enter a whole number");
-      in.next();
+      scan.next();
       view.print(message);
     }
+    int input = scan.nextInt();
+    scan.nextLine();
 
-    int input = in.nextInt();
     if(isNegative(input)) {
       view.displayError("Enter a positive whole number");
       return inputPositiveInteger(message);
@@ -188,13 +203,14 @@ public class StockControllerImpl implements StockController {
   }
 
   private int[] inputDate() {
+//    Scanner scan = new Scanner(this.in);
     boolean validDate = false;
     String date;
     int day = 0, month = 0, year = 0;
     do {
       view.print("Enter the date for which you want to get the total price of the portfolio. ");
       view.print("The date should be in this format yyyy-mm-dd: ");
-      date = in.nextLine();
+      date = scan.nextLine();
 
       if (isValidDateFormat(date)) {
         String[] dateParts = date.split("-");
@@ -254,12 +270,10 @@ public class StockControllerImpl implements StockController {
   }
 
   private boolean secondMenu() {
-
     int choice = 0;
 
     view.showSecondaryMenu();
     choice = inputPositiveInteger("Enter your choice: ");
-    in.nextLine();
     boolean exit = false;
     switch (choice) {
       case 1:
@@ -308,11 +322,9 @@ public class StockControllerImpl implements StockController {
   }
 
   private boolean startMenu() {
-
     int choice = 0;
     view.showPrimaryMenu();
     choice = inputPositiveInteger("Enter your choice: ");
-    in.nextLine();
 
     switch (choice) {
       case 1:

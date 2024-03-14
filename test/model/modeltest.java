@@ -1,82 +1,79 @@
-//package model;
-//
-//import org.junit.Before;
-//import org.junit.Test;
-//
-//import java.io.File;
-//import java.io.IOException;
-//import java.util.Map;
-//
-//
-//
-//import java.util.ArrayList;
-//
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertTrue;
-//
-//public class modeltest {
-//
-//  private PortfolioDirImpl portfolioDir;
-//
-//  @Before
-//  public void setUp() {
-//    portfolioDir = new PortfolioDirImpl();
-//  }
+package model;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 
 
-//  @Test
-//  public void testAddPortfolio() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    portfolioDir.addShare("Apple Inc", 10);
-//    portfolioDir.addPortfolio(newBuilder);
-//    assertEquals(1, portfolioDir.getSize());
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testInvalidStockName() {
-//    portfolioDir.createBuilder("Test Portfolio1");
-//    portfolioDir.addShare("India", 10);
-//  }
-//
-//  @Test
-//  public void testAddingStocksOfSameName() {
-//    portfolioDir.createBuilder("Test Portfolio1");
-//    portfolioDir.addShare("AAPL", 10);
-//    portfolioDir.addShare("AAPL", 10);
-//    portfolioDir.addPortfolio(newBuilder);
-//    assertEquals(1, portfolioDir.getSize());
-//    Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
-//
-//    assertEquals(1, composition.size());
-//    assertEquals(20,  (int)composition.get("AAPL"));
-//
-//    File appleData = new File("AAPL.csv");
-//    assertFalse(appleData.exists());
-//
-//    try {
-//      portfolioDir.deleteSessionCSVFilesFromStocklist(System.getProperty("user.dir"));
-//      assertFalse(appleData.exists());
-//    } catch (IOException ignored) {
-//
-//    }
-//
-//  }
-//
-//  @Test
-//  public void testGetListOfPortfoliosName() {
-//    portfolioDir.createBuilder("Test Portfolio1");
-//    portfolioDir.addPortfolio(newBuilder);
-//    portfolioDir.createBuilder("Test Portfolio2");
-//    portfolioDir.addPortfolio(newBuilder);
-//
-//    ArrayList<String> listOfPortfolios = portfolioDir.getListOfPortfoliosName();
-//
-//    assertEquals("Test Portfolio1", listOfPortfolios.get(0));
-//    assertEquals("Test Portfolio2", listOfPortfolios.get(1));
-//  }
-//
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class modeltest {
+
+  private PortfolioDirImpl portfolioDir;
+
+  @Before
+  public void setUp() {
+    portfolioDir = new PortfolioDirImpl();
+  }
+
+
+
+  @Test
+  public void testAddPortfolio() {
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("Test " +
+            "Portfolio");
+    newBuilder.addShare("Apple Inc", 10);
+    portfolioDir.addPortfolio(newBuilder);
+    assertEquals(1, portfolioDir.getSize());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidStockName() {
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("Test " +
+            "Portfolio");
+    newBuilder.addShare("India", 10);
+    portfolioDir.addPortfolio(newBuilder);
+  }
+
+  @Test
+  public void testAddingStocksOfSameName() {
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("Test " +
+            "Portfolio");
+    newBuilder.addShare("Apple Inc", 10);
+    newBuilder.addShare("Apple Inc", 10);
+    portfolioDir.addPortfolio(newBuilder);
+    assertEquals(1, portfolioDir.getSize());
+    Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
+
+    assertEquals(1, composition.size());
+    assertEquals(20,  (int)composition.get("AAPL"));
+  }
+
+  @Test
+  public void testGetListOfPortfoliosName() {
+    PortfolioImpl.PortfolioBuilder firstBuilder = new PortfolioImpl.PortfolioBuilder("Test " +
+            "Portfolio1");
+    firstBuilder.addShare("Apple Inc", 10);
+    portfolioDir.addPortfolio(firstBuilder);
+    PortfolioImpl.PortfolioBuilder secondBuilder = new PortfolioImpl.PortfolioBuilder("Test " +
+            "Portfolio2");
+    secondBuilder.addShare("GOOG", 10);
+    portfolioDir.addPortfolio(secondBuilder);
+
+    ArrayList<String> listOfPortfolios = portfolioDir.getListOfPortfoliosName();
+
+    assertEquals("Test Portfolio1", listOfPortfolios.get(0));
+    assertEquals("Test Portfolio2", listOfPortfolios.get(1));
+  }
+
 //  @Test (expected = IllegalArgumentException.class)
 //  public void testTwoPortfoliosWithSameName() {
 //    portfolioDir.createBuilder("Test Portfolio");
@@ -364,20 +361,26 @@
 //
 //  @Test
 //  public void testValueOfManyPortfolioManyDateHavingSomeSameShare() {
-//    portfolioDir.createBuilder("college fund");
-//    portfolioDir.addShare("Apple Inc", 10);
-//    portfolioDir.addShare("Canaan Inc", 10);
-//    portfolioDir.addShare("Can B Corp", 10);
+//    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("college fund");
+//    newBuilder.addShare("Apple Inc", 10);
+//    newBuilder.addShare("Canaan Inc", 10);
+//    newBuilder.addShare("Can B Corp", 10);
 //    portfolioDir.addPortfolio(newBuilder);
 //    assertEquals(1, portfolioDir.getSize());
 //
-//    assertEquals(1717.749, portfolioDir.portfolioValue(0,"2024-03-05"), 0.001);
-//    assertEquals(1724.0249999999999, portfolioDir.portfolioValue(0,"2024-03-08"), 0.001);
+//    assertEquals(1717.749, portfolioDir.portfolioValue(0, 5, 3, 2024), 0.001);
+//    assertEquals(1724.0249999999999, portfolioDir.portfolioValue(0, 8, 3, 2024),
+//            0.001);
 //
+//    PortfolioImpl.PortfolioBuilder second_builder = new PortfolioImpl.PortfolioBuilder("college " +
+//            "fund");
+//    second_builder.addShare("Apple Inc", 10);
+//    second_builder.addShare("Canaan Inc", 10);
+//    second_builder.addShare("Capricor Therapeutics Inc", 10);
+//    portfolioDir.addPortfolio(newBuilder);
+//    assertEquals(1, portfolioDir.getSize());
 //    portfolioDir.createBuilder("oldage fund");
-//    portfolioDir.addShare("Apple Inc", 10);
-//    portfolioDir.addShare("Calamp Corp", 10);
-//    portfolioDir.addShare("Capricor Therapeutics Inc", 10);
+//
 //    portfolioDir.addPortfolio(newBuilder);
 //    assertEquals(2, portfolioDir.getSize());
 //
@@ -406,64 +409,52 @@
 //      System.out.println(e.getMessage());
 //    }
 //  }
-//
-//
-//  @Test
-//  public void testIsEmptyWhenEmpty() {
-//    assertEquals(true,portfolioDir.isEmpty());
-//  }
-//
-//  @Test
-//  public void testIsEmptyAfterAddingElements() {
-//    portfolioDir.createBuilder("oldage fund");
-//    portfolioDir.addPortfolio(newBuilder);
-//    portfolioDir.createBuilder("college fund");
-//    portfolioDir.addPortfolio(newBuilder);
-//
-//    assertEquals(false, portfolioDir.isEmpty());
-//
-//    ArrayList<String> listOfPortfolios = portfolioDir.getListOfPortfoliosName();
-//
-//    assertEquals("oldage fund", listOfPortfolios.get(0));
-//    assertEquals("college fund", listOfPortfolios.get(1));
-//  }
-//
-//  @Test
-//  public void testExistsWhenPortfolioExists() {
-//    portfolioDir.createBuilder("oldage fund");
-//    portfolioDir.addPortfolio(newBuilder);
-//
-//    // Check if the portfolio exists
-//    assertEquals(true,portfolioDir.exists("oldage fund"));
-//    assertEquals(false,portfolioDir.exists("college fund"));
-//
-//  }
-//
-//  @Test
-//  public void testWrongAddShare() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//
-//    try {
-//      portfolioDir.addShare("Appple", 10);
-//      portfolioDir.addPortfolio(newBuilder);
-//    } catch (IllegalArgumentException e) {
-//      assertEquals("Share name not found in stocks.csv", e.getMessage());
-//    }
-//  }
-//
-//  @Test (expected = IllegalArgumentException.class )
-//  public void testSaveToWrongFilePath() {
-//    //Portfolio mockPortfolio = Mockito.mock(Portfolio.class);
-//    portfolioDir.createBuilder("Test Portfolio");
-//    portfolioDir.addShare("Apple Inc", 10);
-//    portfolioDir.addPortfolio(newBuilder);
-//    String testPath = "";
-//    //will have to change this path
-//      portfolioDir.savePortfolio(0, testPath);
-//
-//  }
-//
-//
-//
-//
-//}
+
+
+  @Test
+  public void testIsEmptyWhenEmpty() {
+    assertTrue(portfolioDir.isEmpty());
+  }
+
+  @Test
+  public void testIsEmptyAfterAddingElements() {
+    PortfolioImpl.PortfolioBuilder firstBuilder = new PortfolioImpl.PortfolioBuilder("oldage fund");
+    firstBuilder.addShare("Apple Inc", 10);    PortfolioImpl.PortfolioBuilder secondBuilder =
+            new PortfolioImpl.PortfolioBuilder("oldage fund");
+    secondBuilder.addShare("Goog", 10);
+    portfolioDir.addPortfolio(firstBuilder);
+    portfolioDir.addPortfolio(secondBuilder);
+
+    assertFalse(portfolioDir.isEmpty());
+
+    ArrayList<String> listOfPortfolios = portfolioDir.getListOfPortfoliosName();
+
+    assertEquals("oldage fund", listOfPortfolios.get(0));
+    assertEquals("college fund", listOfPortfolios.get(1));
+  }
+
+  @Test
+  public void testExistsWhenPortfolioExists() {
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("oldage fund");
+    newBuilder.addShare("Apple Inc", 10);
+
+    // Check if the portfolio exists
+    assertTrue(portfolioDir.portfolioNameExists("oldage fund"));
+    assertFalse(portfolioDir.portfolioNameExists("college fund"));
+
+  }
+
+  @Test
+  public void testWrongAddShare() {
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("Test " +
+            "Portfolio1");
+    newBuilder.addShare("Apple Inc", 10);
+    try {
+      newBuilder.addShare("Appple", 10);
+      portfolioDir.addPortfolio(newBuilder);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Share name not found in stocks.csv", e.getMessage());
+    }
+  }
+
+}

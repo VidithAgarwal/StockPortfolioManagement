@@ -1,7 +1,6 @@
 package model;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -80,6 +79,7 @@ public class PortfolioDirImpl implements PortfolioDir{
     return portfolioDirectory.isEmpty();
   }
 
+  @Override
   public boolean portfolioNameExists(String portfolioName) {
 
     for (Portfolio obj : portfolioDirectory) {

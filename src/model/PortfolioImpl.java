@@ -126,6 +126,9 @@ public class PortfolioImpl implements Portfolio {
     }
 
     public Portfolio build() {
+      if (this.shareList.isEmpty()) {
+        throw new IllegalArgumentException();
+      }
       return new PortfolioImpl(this.portfolioName, shareList);
     }
   }
