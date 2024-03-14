@@ -107,10 +107,10 @@ public class MockModel implements PortfolioDir {
   @Override
   public double portfolioValue(int input, int day, int month, int year) {
     logger.append("Retrieving composition for portfolio at index: ").append(input)
-                    .append(" For " + "the day: ")
-                            .append(day).append(" month: ")
+            .append(" For " + "the day: ")
+            .append(day).append(" month: ")
             .append(month).append(" year: ")
-                    .append(year);
+            .append(year);
     return mockValue;
   }
 
