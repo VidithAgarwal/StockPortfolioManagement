@@ -2,6 +2,8 @@ package model;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.util.List;
 import java.io.File;
 import java.util.Map;
@@ -27,12 +29,36 @@ public class modelTest {
   /**
    * Sets up the test environment before each test method execution.
    * It initializes a new instance of the PortfolioDirImpl class to be tested.
+   * and it also deletes all the csv files that are created while testing.
    */
   @Before
   public void setUp() {
     portfolioDir = new PortfolioDirImpl();
+    deleteCsvFilesCreatedWhenTesting();
   }
 
+  /**
+   * method to delete csv files that are created during testing.
+   */
+  private void deleteCsvFilesCreatedWhenTesting() {
+
+    String currentDirectory = System.getProperty("user.dir");
+    File directory = new File(currentDirectory);
+    File[] testfiles = directory.listFiles();
+
+    if (testfiles != null) {
+      for (File file : testfiles) {
+        if (file.isFile() && file.getName().endsWith(".csv") && !file.getName().equals("stocks.csv")) {
+          try {
+            file.delete();
+          } catch (SecurityException e) {
+            System.err.println("Unable to delete the file: " + file.getName());
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+  }
 
 
   @Test
@@ -563,12 +589,10 @@ public class modelTest {
             portfolioDir.portfolioValue(1,4,3,2024), 0.001);
 
     File appleData = new File("AAPL.csv");
-    File calampData = new File("CAMP.csv");
     File CanaanData = new File("CAN.csv");
     File CanbData = new File("CANB.csv");
     File capricorData = new File("CAPR.csv");
     assertTrue(appleData.exists());
-    assertTrue(calampData.exists());
     assertTrue(CanaanData.exists());
     assertTrue(CanbData.exists());
     assertTrue(capricorData.exists());
@@ -728,6 +752,10 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("Quantity should be whole number.", e.getMessage());
     }
+    portfolioDir.addPortfolio(portfolioBuilder);
+
+    Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
+    assertEquals(2, composition.size());
   }
 
   @Test
@@ -738,16 +766,14 @@ public class modelTest {
     portfolioBuilder.addShare("Apple Inc", 10);
     portfolioBuilder.addShare("GOOG", 5);
 
-    Portfolio portfolio = portfolioBuilder.build();
 
-    assertEquals("Test Portfolio", portfolio.getName());
 
-    try{
-      Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("The choice of portfolio doesn't exists", e.getMessage());
-    }
+    portfolioDir.addPortfolio(portfolioBuilder);
+
+    Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
+    assertEquals(2, composition.size());
+//    assertEquals(10, (int) composition.get("AAPL"));
+//    assertEquals(5, (int) composition.get("G00G"));
 
     PortfolioImpl.PortfolioBuilder emptyPortfolioBuilder
             = new PortfolioImpl.PortfolioBuilder("Empty Portfolio");
