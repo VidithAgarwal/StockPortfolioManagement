@@ -12,7 +12,7 @@ import model.PortfolioImpl;
 import view.IView;
 
 /**
- * Implementation of the StockController interface providing methods to control.
+ * Implementation of the StockController interface providing methods to control
  * the flow of the application in the MVC architecture.
  * This class has methods to delegate the input from user and give the input to model.
  * and get the output from model and print it using the view methods.
@@ -61,7 +61,7 @@ public class StockControllerImpl implements StockController {
    * This method passes this data to the model through addShare method called by portfolio builder.
    * and delegates to model that creates portfolio through addPortfolio method.
    */
-  public void createPortfolio() {
+  private void createPortfolio() {
     String name = inputPortfolioName();
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
     int numShares = inputPositiveInteger("Enter the number of stocks you want to have in this "
@@ -91,7 +91,7 @@ public class StockControllerImpl implements StockController {
    * And takes in the path from the user to load portfolio data from.
    * throws exception if the file contains invalid data format or file cannot be loaded.
    */
-  public void loadPortfolio() {
+  private void loadPortfolio() {
     String name = inputPortfolioName();
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
     try {
@@ -113,7 +113,7 @@ public class StockControllerImpl implements StockController {
    * this method displays the composition of a portfolio selected by the user through the view.
    * The values in portfolio its composition is got from the model.
    */
-  public void examineComposition() {
+  private void examineComposition() {
     int input = inputPortfolioChoice();
     try {
       view.showComposition(model.portfolioComposition(input));
@@ -128,7 +128,7 @@ public class StockControllerImpl implements StockController {
    * the valid user input for portfolio to be selected is taken and that file is saved using.
    * exportAsCSV method in the persistence class in controller.
    */
-  public void save() {
+  private void save() {
     int input = inputPortfolioChoice();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = scan.nextLine();
@@ -146,7 +146,7 @@ public class StockControllerImpl implements StockController {
    * total value is calculated in portfolioValue method in model to which the input date is passed.
    * the view methods are also called to pass error messages if data is not found for the date.
    */
-  public void getTotalValue() {
+  private void getTotalValue() {
     int choice = inputPortfolioChoice();
 
     int[] date = inputDate();
@@ -350,7 +350,7 @@ public class StockControllerImpl implements StockController {
    * @param directoryPath the path to the directory containing session CSV files.
    * @throws IOException if an I/O error occurs when deleting the csv.
    */
-  public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
+  private void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
     File stocklistDirectory = new File(directoryPath);
     deleteSessionCSVFiles(stocklistDirectory);
   }

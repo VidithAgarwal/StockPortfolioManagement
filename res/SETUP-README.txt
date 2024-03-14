@@ -4,6 +4,10 @@ The jar file should be present in the folder along with stocks.csv that has the 
 along with the ticker symbol that is used in the program to verify if the stock name or ticker
 symbol entered by the user is valid or not.
 
+To run the jar file go to the command prompt and get to the folder in which the jar file and stock
+.csv is present and write the following command:
+java -jar Assignment4.jar.
+
 --- In order to run the program for creating a portfolio with 3 different stocks,
 the steps are following:
 
@@ -23,13 +27,13 @@ portfolio is given as College Fund
 Enter the name of the portfolio:
 College Fund
 
-3. Then the number of stocks that will be added in the portfolio is asked, which can be a whole
-number only.
+3. Then the number of stocks that the user wants to be added in the portfolio is asked which can be
+a whole number only.
 
 Enter the number of stocks you want to have in this portfolio:
 3
 
-4. Now, 3 stock names and their quantity will be asked, the quantity can also be whole number only.
+4. Now, 3 stock names and their quantity will be asked, the quantity should be a whole number only.
 
 Enter the name of the share or ticker symbol:
 Apple Inc
@@ -106,7 +110,7 @@ Enter your choice:
 
 10. After 4 is entered, the list of existing portfolios is shown, from which we are required to
 select the Oldage Fund portfolio that is second portfolio, to get its total value. So, for that
-the No. of Portfolio shown along with Oldage Fund is entered that is 1 :
+the No. of the Portfolio shown along with Oldage Fund is entered that is 1 :
 
 Get total value of a portfolio for certain date
 The list of existing portfolios:
@@ -150,7 +154,7 @@ this data.
 
 -- The dates for which the program can run:
 There is no restriction provided on the dates for which the user can ask the value of the portfolio,
-however, if the stock data is not found for a particular date which can be saturday/sunday,
+however, if the price data is not found for a particular date which can be saturday/sunday,
 then the message is printed that stock data not found for this date.
 
 Also, for getting value of a portfolio which has certain stocks which weren't listed in the stock
