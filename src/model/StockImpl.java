@@ -11,16 +11,40 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * StockImpl class implements StockInterface class.
+ * It has methods to fetch the data from api, store the data in csv files to decrease the number.
+ * of api calls and also store the data in price data object for faster retrieval of
+ * stock price on a particular date.
+ */
 public class StockImpl implements StockInterface {
 
+  /**
+   * it has the ticker symbol for which the price data is to be found and api is called.
+   */
   private final String tickerSymbol;
+
+  /**
+   * priceData object stores the date and respective price of the stock data.
+   */
   private final Map<String, Double> priceData;
 
+  /**
+   * StockImpl constructor has tickerSymbol as argument for which the price data is found.
+   * @param tickerSymbol has the tickerSymbol for which the user asks to get the price data.
+   *                     on a particular date.
+   */
   public StockImpl(String tickerSymbol) {
     this.tickerSymbol = tickerSymbol;
     priceData = new HashMap<>();
   }
 
+  /**
+   * fetchData method is used to call the api for the stockSymbol using api Key.
+   * It also calls the storeFetchedData method to store the fetched data in a csv file.
+   * @param date is the data for which the user is asking to get the price for the stock.
+   * @return the price of the particular stock on that date.
+   */
   private double fetchData(String date) {
     String apiKey = "W0M1JOKC82EZEQA8";
     // our key B2R39JDS3MPERHL7
@@ -60,6 +84,16 @@ public class StockImpl implements StockInterface {
 
   }
 
+
+  /**
+   * storeFetchedData is used to store the data got from the api call in the csv file.
+   * it does this with the help of file handler, save method.
+   * It also searches for the price on the particular date while storing the data for all dates.
+   * in the csv file.
+   * @param output is the price for the stock on dates fetched when the api is called.
+   * @param requestedDate is the date for which the price is requested by the user for that stock.
+   * @return the price for the stock on a particular date.
+   */
   private double storeFetchedData(StringBuilder output, String requestedDate) {
     String fileName = tickerSymbol + ".csv";
     double price = -1;
@@ -78,7 +112,6 @@ public class StockImpl implements StockInterface {
       }
     }
 
-
     FileHandler fileHandler = new FileHandler();
     fileHandler.save(fileName, this.priceData);
 
@@ -86,6 +119,12 @@ public class StockImpl implements StockInterface {
     return price;
   }
 
+
+  /**
+   * loadDatFromCSV is used to load the csv file of a particular ticker symbol using.
+   * the file handler load method and puts the data in the price data object that contains.
+   * the date and closing price data for the tickerSymbol.
+   */
   private void loadDataFromCSV() {
     String fileName = tickerSymbol + ".csv";
     FileHandler fileHandler = new FileHandler();
@@ -101,6 +140,12 @@ public class StockImpl implements StockInterface {
     }
   }
 
+
+  /**
+   * returnPrice method gets the price for the tickerSymbol on a particular date.
+   * @param date is the date for which user wants to get the stock price.
+   * @return the price for the tickerSymbol on a particular date.
+   */
   @Override
   public double returnPrice(String date) {
     double price = 0;
@@ -117,7 +162,6 @@ public class StockImpl implements StockInterface {
       throw new IllegalArgumentException(this.tickerSymbol);
     }
 
-
     if (price < 0) {
       throw new IllegalArgumentException(this.tickerSymbol);
     }
@@ -125,12 +169,20 @@ public class StockImpl implements StockInterface {
     return price;
   }
 
+  /**
+   * this method is used to check is a CSV file exists for not for a particular tickerSymbol.
+   * @return true if the csv file exists for else returns false.
+   */
   private boolean isCSVFileExists() {
     String fileName = tickerSymbol + ".csv";
     File csvFile = new File(fileName);
     return csvFile.exists();
   }
 
+  /**
+   * this method is used to get ticker symbol that is being used.
+   * @return the tickerSymbol string.
+   */
   String getTicker() {
     return this.tickerSymbol;
   }
