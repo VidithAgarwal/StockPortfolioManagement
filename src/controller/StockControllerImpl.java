@@ -15,7 +15,6 @@ public class StockControllerImpl implements StockController {
 
   private final IView view;
 
-  private final Readable in;
   private final PortfolioDir model;
 
   private final Scanner scan;
@@ -24,9 +23,8 @@ public class StockControllerImpl implements StockController {
 
   public StockControllerImpl(IView view, Readable in, PortfolioDir portfolioDir) {
     this.view = view;
-    this.in = in;
     this.model = portfolioDir;
-    this.scan = new Scanner(this.in);
+    this.scan = new Scanner(in);
   }
 
   public void createPortfolio() {
@@ -81,7 +79,6 @@ public class StockControllerImpl implements StockController {
   }
 
   public void save() {
-//    Scanner scan = new Scanner(this.in);
     int input = inputPortfolioChoice();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = scan.nextLine();

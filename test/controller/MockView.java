@@ -32,20 +32,17 @@ public class MockView implements IView {
 
   @Override
   public void showTotalValue(double value) {
-    printedOutput.append("The total value of portfolio is: $").append(value).append("\n");
+    printedOutput.append(value).append("\n");
   }
 
   @Override
   public void showListOfPortfolios(ArrayList<String> listOfPortfolios) {
-    // this we can remove
-    for (int i = 0; i < listOfPortfolios.size(); i++) {
-      printedOutput.append(i).append(listOfPortfolios.get(i)).append("\n");
-    }
+      printedOutput.append(listOfPortfolios.get(0)).append("\n");
   }
 
   @Override
   public void displayError(String error) {
-    printedOutput.append(error).append("\n");
+    printedOutput.append("Error").append("\n");
   }
 
   @Override

@@ -18,8 +18,10 @@ public class MockModel implements PortfolioDir {
   private double mockValue;
   private final StringBuilder logger = new StringBuilder();
 
-  public MockModel(Map<String, Integer> map) {
+  public MockModel(Map<String, Integer> map, String mockName, double mockValue) {
     mockComposition = map;
+    this.mockName = mockName;
+    this.mockValue = mockValue;
   }
 
   public MockModel(double mockValue) {
@@ -38,7 +40,7 @@ public class MockModel implements PortfolioDir {
   @Override
   public void addPortfolio(PortfolioImpl.PortfolioBuilder newBuilder) {
     portfolioDirectory.add(newBuilder.build());
-    logger.append(portfolioDirectory.get(0).getName()).append('\n');
+    logger.append(portfolioDirectory.get(portfolioDirectory.size() - 1).getName()).append('\n');
   }
 
   @Override
@@ -62,7 +64,7 @@ public class MockModel implements PortfolioDir {
   @Override
   public double portfolioValue(int input, int day, int month, int year) {
     logger.append("Retrieving composition for portfolio at index: ").append(input).
-            append("For " + "the day: ").
+            append(" For " + "the day: ").
             append(day).append(" month: ").
             append(month).append(" year: ").
             append(year);
