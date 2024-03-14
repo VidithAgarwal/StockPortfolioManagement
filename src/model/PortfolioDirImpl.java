@@ -4,10 +4,21 @@ package model;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class PortfolioDirImpl implements PortfolioDir{
+/**
+ * Implementation of the PortfolioDir interface.
+ * It provides methods for managing portfolios, such adding portfolios, get list of portfolio.
+ * as well as retrieving portfolio composition and total value of portfolio in portfolio directory.
+ */
+public class PortfolioDirImpl implements PortfolioDir {
 
+  /**
+   * Array list to store the portfolio objects.
+   */
   private final ArrayList<Portfolio> portfolioDirectory;
 
+  /**
+   * Constructor to initialize the portfolio directory with the array list.
+   */
   public PortfolioDirImpl() {
     portfolioDirectory = new ArrayList<>();
   }
@@ -83,7 +94,7 @@ public class PortfolioDirImpl implements PortfolioDir{
   public boolean portfolioNameExists(String portfolioName) {
 
     for (Portfolio obj : portfolioDirectory) {
-      if(obj.getName().equalsIgnoreCase(portfolioName)) {
+      if (obj.getName().equalsIgnoreCase(portfolioName)) {
         return true;
       }
     }

@@ -4,11 +4,27 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class IViewImpl implements IView{
+/**
+ * Implementation of the IView interface providing methods to display menus, portfolio composition,
+ * total portfolio value, list of portfolios, and error messages.
+ */
+public class IViewImpl implements IView {
 
+  /**
+   * PrintStream for standard output.
+   */
   private final PrintStream out;
+
+  /**
+   * PrintStream for error output.
+   */
   private final PrintStream err;
 
+  /**
+   * Constructor to initialize the IViewImpl object with PrintStreams for output and error.
+   * @param out PrintStream for standard output, initializes out parameter.
+   * @param err PrintStream for error output, initializes in parameter.
+   */
   public IViewImpl(PrintStream out, PrintStream err) {
     this.out = out;
     this.err = err;
