@@ -1,4 +1,5 @@
 package controller;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,17 +11,42 @@ import model.PortfolioDir;
 import model.PortfolioImpl;
 import view.IView;
 
-
+/**
+ * Implementation of the StockController interface providing methods to control.
+ * the flow of the application in the MVC architecture.
+ * This class has methods to delegate the input from user and give the input to model.
+ * and get the output from model and print it using the view methods.
+ */
 public class StockControllerImpl implements StockController {
 
+  /**
+   * view object that is required to call the view method in controller.
+   */
   private final IView view;
 
+  /**
+   * The Readable object used for reading input.
+   */
   private final Readable in;
+
+  /**
+   * model object of portfolioDir that is required to call the portfolioDir methods in controller.
+   */
   private final PortfolioDir model;
 
+  /**
+   * The Scanner object used for reading input.
+   */
   private final Scanner scan;
 
 
+  /**
+   * Constructs a StockControllerImpl object with the specified view, input stream.
+   * and portfolio directory.
+   * @param view The view component responsible for displaying information to the user.
+   * @param in The input stream used to get the user input.
+   * @param portfolioDir The portfolio directory model component representing the model object.
+   */
 
   public StockControllerImpl(IView view, Readable in, PortfolioDir portfolioDir) {
     this.view = view;
@@ -29,11 +55,17 @@ public class StockControllerImpl implements StockController {
     this.scan = new Scanner(this.in);
   }
 
+  /**
+   * This method get the input for creating a new portfolio by prompting user for portfolio name.
+   * the number of stocks in portfolio, stock names/ ticker symbol, and their quantities.
+   * This method passes this data to the model through addShare method called by portfolio builder.
+   * and delegates to model that creates portfolio through addPortfolio method.
+   */
   public void createPortfolio() {
     String name = inputPortfolioName();
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
-    int numShares = inputPositiveInteger("Enter the number of stocks you want to have in this " +
-            "portfolio: ");
+    int numShares = inputPositiveInteger("Enter the number of stocks you want to have in this "
+            + "portfolio: ");
 
 
     for (int i = 0; i < numShares; i++) {
@@ -54,6 +86,11 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * This method takes in the name of portfolio which should be given to the loaded portfolio file.
+   * And takes in the path from the user to load portfolio data from.
+   * throws exception if the file contains invalid data format or file cannot be loaded.
+   */
   public void loadPortfolio() {
     String name = inputPortfolioName();
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(name);
@@ -71,6 +108,10 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * this method displays the composition of a portfolio selected by the user through the view.
+   * The values in portfolio its composition is got from the model.
+   */
   public void examineComposition() {
     int input = inputPortfolioChoice();
     try {
@@ -80,8 +121,13 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * This method takes in path from user for saving portfolio.
+   * If the path is incorrect an exception is thrown.
+   * the valid user input for portfolio to be selected is taken and that file is saved using.
+   * exportAsCSV method in the persistence class in controller.
+   */
   public void save() {
-//    Scanner scan = new Scanner(this.in);
     int input = inputPortfolioChoice();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = scan.nextLine();
@@ -94,6 +140,11 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * this method gets the total value for the portfolio selected by the user.
+   * total value is calculated in portfolioValue method in model to which the input date is passed.
+   * the view methods are also called to pass error messages if data is not found for the date.
+   */
   public void getTotalValue() {
     int choice = inputPortfolioChoice();
 
@@ -105,8 +156,8 @@ public class StockControllerImpl implements StockController {
       view.showTotalValue(totalValue);
     } catch (IllegalArgumentException e) {
       if (e.getMessage() != null) {
-        view.print("No price data found for " + e.getMessage() + " on the " +
-        "date: " + date);
+        view.print("No price data found for " + e.getMessage() + " on the "
+                + "date: " + date);
       } else {
         view.print("Invalid date!");
       }
@@ -115,6 +166,13 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * this method is used to validate date, if it is a valid date or not.
+   * @param day is the day of the date entered.
+   * @param month is the month of the date entered.
+   * @param year is the year of the date entered.
+   * @return true if date is valid or else returns false.
+   */
   private boolean validateDate(int day, int month, int year) {
     if (month < 1 || month > 12) {
       return false;
@@ -136,6 +194,12 @@ public class StockControllerImpl implements StockController {
     return year >= 0 && year <= 9999;
   }
 
+
+  /**
+   * this method is used for validation that num of shares entered by user are not negative.
+   * @param numShares number of shares entered by the user to be added in portfolio.
+   * @return boolean value true if num of shares is less than 0.
+   */
   private boolean isNegative(int numShares) {
     return numShares < 0;
   }
@@ -151,8 +215,13 @@ public class StockControllerImpl implements StockController {
   }
 
 
+  /**
+   * Prompts the user to input a file path and validates it.
+   * used for validation in loading the portfolio.
+   * the file is loaded using persistence class in controller.
+   * @return The validated file path input by the user.
+   */
   private List<String[]> inputPath() {
-//    Scanner scan = new Scanner(this.in);
     view.print("Enter the full path of the file you want to load data from: ");
     String pathName = scan.nextLine();
 
@@ -165,6 +234,10 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * Validates user input to ensure it is a valid choice among available portfolios.
+   * @return validated portfolio choice input by user, if wrong choice then displays error message.
+   */
   private int validateUserChoice() {
     int choice = inputPositiveInteger("Enter the Portfolio number you want to select.");
     if (choice >= model.getSize() || choice < 0) {
@@ -174,11 +247,13 @@ public class StockControllerImpl implements StockController {
     return choice;
   }
 
+  /**
+   * Validates user input to ensure it is a positive whole number.
+   * @param message The message to prompt the user for input.
+   * @return The positive integer input by the user.
+   */
   private int inputPositiveInteger(String message) {
-//    Scanner scan = new Scanner(this.in);
     view.print(message);
-
-
 
     while (!scan.hasNextInt()) {
       view.displayError("Please enter a whole number");
@@ -188,13 +263,18 @@ public class StockControllerImpl implements StockController {
     int input = scan.nextInt();
     scan.nextLine();
 
-    if(isNegative(input)) {
+    if (isNegative(input)) {
       view.displayError("Enter a positive whole number");
       return inputPositiveInteger(message);
     }
     return input;
   }
 
+  /**
+   * this method is used to show the list of portfolios to the user using the view.
+   * and then asks the user to enter the valid portfolio choice from the list.
+   * @return the portfolio number chosen by the user.
+   */
   private int inputPortfolioChoice() {
     ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
     view.showListOfPortfolios(listOfPortfolioNames);
@@ -202,11 +282,16 @@ public class StockControllerImpl implements StockController {
     return validateUserChoice();
   }
 
+  /**
+   * Prompts the user to input a date using view methods and validates the format of the date.
+   * @return The date in day, month , year array format for further date validation.
+   */
   private int[] inputDate() {
-//    Scanner scan = new Scanner(this.in);
     boolean validDate = false;
     String date;
-    int day = 0, month = 0, year = 0;
+    int day = 0;
+    int month = 0;
+    int year = 0;
     do {
       view.print("Enter the date for which you want to get the total price of the portfolio. ");
       view.print("The date should be in this format yyyy-mm-dd: ");
@@ -226,15 +311,28 @@ public class StockControllerImpl implements StockController {
       } else {
         view.displayError("Invalid date format.");
       }
-    } while (!validDate);
+    }
+    while (!validDate);
     return new int[]{day, month, year};
   }
 
+  /**
+   * this method checks the format of the date.
+   * @param date is the date that is passed to the method.
+   * @return boolean value true if the format is correct for date entered else false.
+   */
   private boolean isValidDateFormat(String date) {
     String regex = "\\d{4}-\\d{2}-\\d{2}";
     return Pattern.matches(regex, date);
   }
 
+  /**
+   * Initiates the main functionality of the application, handling the flow of the user interface.
+   * It prompts the user with the appropriate menu based on the state of the portfolio directory.
+   * If the portfolio directory is empty, it displays the primary menu.
+   * otherwise, it displays the secondary menu.
+   * The method continues looping until the user chooses to exit the application.
+   */
   public void go() {
     boolean exit = false;
     while (!exit) {
@@ -246,11 +344,21 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * Deletes session CSV files from the code after exit is entered and the session has ended.
+   * @param directoryPath the path to the directory containing session CSV files.
+   * @throws IOException if an I/O error occurs when deleting the csv.
+   */
   public void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
     File stocklistDirectory = new File(directoryPath);
     deleteSessionCSVFiles(stocklistDirectory);
   }
 
+  /**
+   * Recursively deletes session CSV files from the directory.
+   * @param directory The directory from which the csv files are to be deleted.
+   * @throws IOException If an I/O error occurs when deleting the files recursively.
+   */
   private void deleteSessionCSVFiles(File directory) throws IOException {
     File[] files = directory.listFiles();
     if (files != null) {
@@ -269,6 +377,11 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * Displays the secondary menu and handles user choices accordingly.
+   * Based on the user input the specific methods are called.
+   * @return true if the user chooses to exit the application, false for other choices.
+   */
   private boolean secondMenu() {
     int choice = 0;
 
@@ -321,6 +434,13 @@ public class StockControllerImpl implements StockController {
     return exit;
   }
 
+
+  /**
+   * Starts the main menu of the application.
+   * this method is used when there is no portfolio created.
+   * and calls the other methods based on choice entered.
+   * @return true if the user chooses to exit the application, false otherwise.
+   */
   private boolean startMenu() {
     int choice = 0;
     view.showPrimaryMenu();
@@ -336,6 +456,9 @@ public class StockControllerImpl implements StockController {
       case 3:
         return true;
       //exit();
+//      default:
+//        this.view.displayError("Enter a valid choice, this option doesn't exists.");
+//        break;
     }
     return false;
   }
