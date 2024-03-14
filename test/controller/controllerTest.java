@@ -638,7 +638,7 @@ public class controllerTest {
 
   @Test
   public void testSavePortfolio()  {
-    String path = System.getProperty("user.dir") + "/testFiles/output1.csv";
+    String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
     String[] expectedOutputLog = {"Enter your choice: ",
             "Test Portfolio", "Enter the Portfolio number you want to select.",
             "Enter the proper path with file name in which you would like to save portfolio.",
@@ -656,11 +656,37 @@ public class controllerTest {
     for (int i = 0; i < outputLogChecker.length; i++){
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
+    assertTrue(new File(path).exists());
+  }
+
+  @Test
+  public void testSaveAndThenLoadPortfolio()  {
+    String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
+    String[] expectedOutputLog = {"Enter your choice: ",
+            "Test Portfolio", "Enter the Portfolio number you want to select.",
+            "Enter the proper path with file name in which you would like to save portfolio.",
+            "Portfolio exported to " + path + " successfully.",
+            "Enter your choice: ", "Enter the name of the portfolio: ", "Enter the full path of " +
+            "the file you want to load data from: ", "File loaded successfully", "Enter your " +
+            "choice: "};
+    Reader in = new StringReader("5\n1\n" + path + "\n2\nTest2\n" + path + "\n6\n");
+    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder("Vidith");
+    newBuilder.addShare("AAPL", 20);
+    mockModel.addPortfolio(newBuilder);
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+    assertTrue(new File(path).exists());
   }
 
   @Test
   public void testSavePortfolioForInvalidPortfolioChoice()  {
-    String path = System.getProperty("user.dir") + "/testFiles/output1.csv";
+    String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
     String[] expectedOutputLog = {"Enter your choice: ",
             "Test Portfolio", "Enter the Portfolio number you want to select.", "Error", "Enter " +
             "the Portfolio number you want to select.",
@@ -677,11 +703,12 @@ public class controllerTest {
     for (int i = 0; i < outputLogChecker.length; i++){
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
+    assertTrue(new File(path).exists());
   }
 
   @Test
   public void testSavePortfolioForNegativePortfolioChoice()  {
-    String path = System.getProperty("user.dir") + "/testFiles/output1.csv";
+    String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
     String[] expectedOutputLog = {"Enter your choice: ",
             "Test Portfolio", "Enter the Portfolio number you want to select.", "Error", "Enter " +
             "the Portfolio number you want to select.",
@@ -702,7 +729,7 @@ public class controllerTest {
 
   @Test
   public void testSavePortfolioForInvalidFileType()  {
-    String path = System.getProperty("user.dir") + "/testFiles/output1.txt";
+    String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.txt";
     String[] expectedOutputLog = {"Enter your choice: ",
             "Test Portfolio", "Enter the Portfolio number you want to select.", "Error", "Enter " +
             "the Portfolio number you want to select.",
@@ -801,6 +828,82 @@ public class controllerTest {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
+
+  @Test
+  public void testingGoWithInvalidChoice() {
+    String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
+    Reader in = new StringReader("7\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testingGoWithNegativeChoice() {
+    String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
+    Reader in = new StringReader("-7\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testingGoWithNegativeStringType() {
+    String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
+    Reader in = new StringReader("seven\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testingGoWithForPrimaryMenu() {
+    String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
+    Reader in = new StringReader("3\n");
+
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testingGoWithForPrimaryMenuForInvalidChoice() {
+    String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
+    Reader in = new StringReader("7\n3\n");
+
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
 }
-
-

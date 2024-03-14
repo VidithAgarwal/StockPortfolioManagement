@@ -456,10 +456,9 @@ public class StockControllerImpl implements StockController {
         break;
       case 3:
         return true;
-      //exit();
-//      default:
-//        this.view.displayError("Enter a valid choice, this option doesn't exists.");
-//        break;
+      default:
+        this.view.displayError("Enter a valid choice, this option doesn't exists.");
+        return false;
     }
     return false;
   }

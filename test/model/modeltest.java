@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.io.File;
 import java.util.Map;
@@ -44,7 +45,6 @@ public class modeltest {
     String currentDirectory = System.getProperty("user.dir");
     File directory = new File(currentDirectory);
     File[] testfiles = directory.listFiles();
-
     if (testfiles != null) {
       for (File file : testfiles) {
         if (file.isFile() && file.getName().endsWith(".csv") && !file.getName().equals("stocks.csv")) {
