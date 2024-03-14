@@ -14,10 +14,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class represents a test suite for testing the functionality of the model classes.
+ */
 public class modelTest {
 
+  /**
+   * Represents an instance of PortfolioDirImpl used for testing purposes.
+   */
   private PortfolioDirImpl portfolioDir;
 
+  /**
+   * Sets up the test environment before each test method execution.
+   * It initializes a new instance of the PortfolioDirImpl class to be tested.
+   */
   @Before
   public void setUp() {
     portfolioDir = new PortfolioDirImpl();
