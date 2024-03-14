@@ -3,7 +3,7 @@ package model;
 /**
  * StockInterface class is used to implement methods for fetching the stock price data.
  */
-public interface StockInterface {
+interface StockInterface {
 
   /**
    * return price method is used to get the price of a particular stock for entered date.

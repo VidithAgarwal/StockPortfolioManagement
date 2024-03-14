@@ -14,7 +14,7 @@ import java.util.Map;
  * This class FileHandler as methods for loading the data from files, that are created when.
  * api is called for a stock data. It also saves the data to a file, which is fetched from api.
  */
-public class FileHandler {
+class FileHandler {
 
   /**
    * Loads data from a file located at the specified file path.

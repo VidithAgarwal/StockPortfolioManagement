@@ -106,6 +106,7 @@ public class StockControllerImpl implements StockController {
     } catch (IllegalArgumentException e) {
       view.displayError("Cannot create portfolio with no stocks!");
     }
+    view.print("File loaded successfully");
   }
 
   /**

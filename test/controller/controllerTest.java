@@ -3,6 +3,7 @@ package controller;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -11,6 +12,8 @@ import java.util.Map;
 import model.PortfolioImpl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class controllerTest {
 
@@ -694,6 +697,7 @@ public class controllerTest {
     for (int i = 0; i < outputLogChecker.length; i++){
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
+    assertTrue(new File(path).exists());
   }
 
   @Test
@@ -714,8 +718,89 @@ public class controllerTest {
     for (int i = 0; i < outputLogChecker.length; i++){
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
+    assertFalse(new File(path).exists());
   }
 
+  @Test
+  public void testSavePortfolioForEmptyFileName()  {
+    String path = System.getProperty("user.dir") + "/testFiles/.csv";
+    String[] expectedOutputLog = {"Enter your choice: ",
+            "Test Portfolio", "Enter the Portfolio number you want to select.", "Error", "Enter " +
+            "the Portfolio number you want to select.",
+            "Enter the proper path with file name in which you would like to save portfolio.",
+            "Error",
+            "Enter your choice: "};
+    Reader in = new StringReader("5\n-3\n0\n" + path + "\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+    assertFalse(new File(path).exists());
+  }
+
+  @Test
+  public void testLoadPortfolio()  {
+    String path = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
+    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the portfolio: ",
+            "Enter the full path of the file you want to load data from: ", "File loaded " +
+            "successfully",
+            "Enter your choice: "};
+    Reader in = new StringReader("2\nTest\n" + path + "\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testLoadPortfolioWithNonExistingFile()  {
+    String incorrectPath = System.getProperty("user.dir") + "/testFiles/load.csv";
+    String correctPath = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
+    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the portfolio: ",
+            "Enter the full path of the file you want to load data from: ", "Error", "Enter the " +
+            "full path of the file you want to load data from: ", "File " +
+            "loaded" +
+            " successfully",
+            "Enter your choice: "};
+    Reader in = new StringReader("2\nTest\n" + incorrectPath + "\n" + correctPath + "\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testLoadPortfolioWithInvalidFileType()  {
+    String incorrectPath = System.getProperty("user.dir") + "/testFiles/load.txt";
+    String correctPath = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
+    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the portfolio: ",
+            "Enter the full path of the file you want to load data from: ", "Error", "Enter the " +
+            "full path of the file you want to load data from: ", "File " +
+            "loaded" +
+            " successfully",
+            "Enter your choice: "};
+    Reader in = new StringReader("2\nTest\n" + incorrectPath + "\n" + correctPath + "\n6\n");
+
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.go();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    for (int i = 0; i < outputLogChecker.length; i++){
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
 }
 
 

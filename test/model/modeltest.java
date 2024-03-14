@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class represents a test suite for testing the functionality of the model classes.
  */
-public class modelTest {
+public class modeltest {
 
   /**
    * Represents an instance of PortfolioDirImpl used for testing purposes.
@@ -29,12 +29,11 @@ public class modelTest {
   /**
    * Sets up the test environment before each test method execution.
    * It initializes a new instance of the PortfolioDirImpl class to be tested.
-   * and it also deletes all the csv files that are created while testing.
    */
   @Before
   public void setUp() {
     portfolioDir = new PortfolioDirImpl();
-    deleteCsvFilesCreatedWhenTesting();
+
   }
 
   /**
@@ -75,7 +74,6 @@ public class modelTest {
     PortfolioImpl.PortfolioBuilder newBuilder
             = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     newBuilder.addShare("India", 10);
-    portfolioDir.addPortfolio(newBuilder);
   }
 
   @Test (expected = IllegalArgumentException.class)
@@ -84,6 +82,7 @@ public class modelTest {
             = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     newBuilder.addShare("AAPL", -10);
     portfolioDir.addPortfolio(newBuilder);
+
   }
 
   @Test
@@ -145,6 +144,7 @@ public class modelTest {
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
     portfolioDir.portfolioValue(1, 1,1,2022);
+
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -252,7 +252,6 @@ public class modelTest {
     PortfolioImpl.PortfolioBuilder firstBuilder
             = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
-    firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
     try {
       assertEquals(1000.749,
@@ -260,6 +259,12 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("AAPL", e.getMessage());
     }
+
+    File appleData = new File("AAPL.csv");
+    assertTrue(appleData.exists());
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
   }
 
   @Test
@@ -267,7 +272,6 @@ public class modelTest {
     PortfolioImpl.PortfolioBuilder firstBuilder
             = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
-    firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
     try {
       assertEquals(1000.749,
@@ -275,6 +279,12 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("AAPL", e.getMessage());
     }
+
+    File appleData = new File("AAPL.csv");
+    assertTrue(appleData.exists());
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
   }
 
   @Test
@@ -282,7 +292,6 @@ public class modelTest {
     PortfolioImpl.PortfolioBuilder firstBuilder
             = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
-    firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
     try {
       assertEquals(1000.749,
@@ -290,6 +299,12 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("AAPL", e.getMessage());
     }
+
+    File appleData = new File("AAPL.csv");
+    assertTrue(appleData.exists());
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
   }
 
   @Test
@@ -299,8 +314,18 @@ public class modelTest {
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
-      assertEquals(3177.4,
-              portfolioDir.portfolioValue(0, 1,3,2024), 0.001);
+    assertEquals(3177.4,
+            portfolioDir.portfolioValue(0, 1,3,2024), 0.001);
+
+
+    File appleData = new File("AAPL.csv");
+    File googData = new File("GOOG.csv");
+    assertTrue(appleData.exists());
+    assertTrue(googData.exists());
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
+    assertFalse(googData.exists());
   }
 
   @Test
@@ -312,6 +337,15 @@ public class modelTest {
     portfolioDir.addPortfolio(firstBuilder);
     assertEquals(3177.4,
             portfolioDir.portfolioValue(0, 01,03,2024), 0.001);
+
+    File appleData = new File("AAPL.csv");
+    File googData = new File("GOOG.csv");
+    assertTrue(appleData.exists());
+    assertTrue(googData.exists());
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
+    assertFalse(googData.exists());
   }
 
   @Test (expected = IllegalArgumentException.class)
@@ -409,6 +443,7 @@ public class modelTest {
 
     assertEquals("Test Portfolio", listOfPortfolios.get(0));
     assertEquals("Test Portfolio2", listOfPortfolios.get(1));
+    deleteCsvFilesCreatedWhenTesting();
   }
 
   @Test (expected = IllegalArgumentException.class)
@@ -445,6 +480,11 @@ public class modelTest {
     assertTrue(appleData.exists());
     assertTrue(CanaanData.exists());
     assertTrue(CanbData.exists());
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
+    assertFalse(CanaanData.exists());
+    assertFalse(CanbData.exists());
 
   }
 
@@ -462,6 +502,7 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("CANB", e.getMessage());
     }
+    deleteCsvFilesCreatedWhenTesting();
   }
 
   @Test
@@ -479,6 +520,7 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("AAPL", e.getMessage());
     }
+    deleteCsvFilesCreatedWhenTesting();
   }
 
 
@@ -506,6 +548,10 @@ public class modelTest {
     assertTrue(CanaanData.exists());
     assertTrue(CanbData.exists());
 
+    deleteCsvFilesCreatedWhenTesting();
+    assertFalse(appleData.exists());
+    assertFalse(CanaanData.exists());
+    assertFalse(CanbData.exists());
   }
 
 
@@ -555,6 +601,11 @@ public class modelTest {
     assertTrue(CanaanData.exists());
     assertTrue(CanbData.exists());
 
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
+    assertFalse(CanaanData.exists());
+    assertFalse(CanbData.exists());
   }
 
 
@@ -597,6 +648,12 @@ public class modelTest {
     assertTrue(CanbData.exists());
     assertTrue(capricorData.exists());
 
+    deleteCsvFilesCreatedWhenTesting();
+
+    assertFalse(appleData.exists());
+    assertFalse(capricorData.exists());
+    assertFalse(CanbData.exists());
+    assertFalse(CanaanData.exists());
   }
 
 
@@ -623,6 +680,7 @@ public class modelTest {
 
     assertEquals("oldage fund", listOfPortfolios.get(0));
     assertEquals("college fund", listOfPortfolios.get(1));
+
   }
 
   @Test
@@ -647,7 +705,7 @@ public class modelTest {
       newBuilder.addShare("Appple", 10);
       portfolioDir.addPortfolio(newBuilder);
     } catch (IllegalArgumentException e) {
-      assertEquals("Share name not found in stocks.csv.", e.getMessage());
+      assertEquals("Share name not found in stocks.csv", e.getMessage());
     }
   }
 
@@ -693,7 +751,7 @@ public class modelTest {
 
     assertEquals(26, composition.size());
     assertEquals(10, (int) composition.get("AAPL"));
-    assertEquals(10, (int) composition.get("G00G"));
+    assertEquals(10, (int) composition.get("GOOG"));
     assertEquals(10, (int) composition.get("CAR"));
     assertEquals(10, (int) composition.get("CART"));
     assertEquals(10, (int) composition.get("CARV"));
@@ -718,6 +776,8 @@ public class modelTest {
     assertEquals(10, (int) composition.get("CASY"));
     assertEquals(10, (int) composition.get("CCB"));
     assertEquals(10, (int) composition.get("BOF"));
+
+    deleteCsvFilesCreatedWhenTesting();
   }
 
 
@@ -736,7 +796,7 @@ public class modelTest {
     try {
       portfolioBuilder.addShare("Invalid Share", 5);
     } catch (IllegalArgumentException e) {
-      assertEquals("Share name not found in stocks.csv.", e.getMessage());
+      assertEquals("Share name not found in stocks.csv", e.getMessage());
     }
 
     // Adding share with negative quantity
@@ -756,6 +816,7 @@ public class modelTest {
 
     Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
     assertEquals(2, composition.size());
+    deleteCsvFilesCreatedWhenTesting();
   }
 
   @Test
@@ -772,8 +833,6 @@ public class modelTest {
 
     Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
     assertEquals(2, composition.size());
-//    assertEquals(10, (int) composition.get("AAPL"));
-//    assertEquals(5, (int) composition.get("G00G"));
 
     PortfolioImpl.PortfolioBuilder emptyPortfolioBuilder
             = new PortfolioImpl.PortfolioBuilder("Empty Portfolio");
@@ -782,6 +841,7 @@ public class modelTest {
       emptyPortfolioBuilder.build();
     } catch (IllegalArgumentException e) {
     }
+    deleteCsvFilesCreatedWhenTesting();
   }
 
 
@@ -829,91 +889,7 @@ public class modelTest {
     } catch (IllegalArgumentException e) {
       assertEquals("Share name not found in stocks.csv", e.getMessage());
     }
+    deleteCsvFilesCreatedWhenTesting();
   }
-
-  //
-//  //here , in load we also require portfolio name from user but its taken in controller.
-//  @Test
-//  public void testLoadPortfolioData() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    String testPath = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
-//    portfolioDir.loadPortfolioData(testPath);
-//    portfolioDir.addPortfolio(newBuilder);
-//
-//    Map<String, Integer> composition = portfolioDir.portfolioComposition(0);
-//
-//    assertEquals(2, composition.size());
-//    assertEquals(10, (int) composition.get("AAPL"));
-//    assertEquals(20, (int) composition.get("CAPT"));
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testLoadPortfolioForInvalidStockName() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    String testPath = System.getProperty("user.dir") + "/testFiles/invalidLoadTest.csv";
-//    portfolioDir.loadPortfolioData(testPath);
-//    portfolioDir.addPortfolio(newBuilder);
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testLoadPortfolioForFractionQuantity() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    String testPath = System.getProperty("user.dir") + "/testFiles/invalidLoadTest1.csv";
-//    portfolioDir.loadPortfolioData(testPath);
-//    portfolioDir.addPortfolio(newBuilder);
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testLoadPortfolioForNegativeQuantity() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    String testPath = System.getProperty("user.dir") + "/testFiles/invalidLoadTest2.csv";
-//    portfolioDir.loadPortfolioData(testPath);
-//    portfolioDir.addPortfolio(newBuilder);
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testLoadPortfolioForNonIntegerQuantity() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    String testPath = System.getProperty("user.dir") + "/testFiles/invalidLoadTest3.csv";
-//    portfolioDir.loadPortfolioData(testPath);
-//    portfolioDir.addPortfolio(newBuilder);
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testLoadPortfolioForInvalidFormat() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    String testPath = System.getProperty("user.dir") + "/testFiles/invalidLoadTest4.csv";
-//    portfolioDir.loadPortfolioData(testPath);
-//    portfolioDir.addPortfolio(newBuilder);
-//  }
-//
-//
-
-//
-//  @Test
-//  public void testSavePortfolio() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    portfolioDir.addShare("Apple Inc", 10);
-//    portfolioDir.addShare("Captivision Inc", 20);
-//    portfolioDir.addPortfolio(newBuilder);
-//    //will have to change this path
-//    String testPath = System.getProperty("user.dir") + "/testFiles/test.ass4.csv";
-//    portfolioDir.savePortfolio(0, testPath);
-//    File savedFile = new File(testPath);
-//    assertTrue(savedFile.exists());
-//
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testSavePortfolioForPortfolioThatDoesnotExists() {
-//    portfolioDir.createBuilder("Test Portfolio");
-//    portfolioDir.addShare("Apple Inc", 10);
-//    portfolioDir.addShare("Captivision Inc", 20);
-//    portfolioDir.addPortfolio(newBuilder);
-//    //will have to change this path
-//    String testPath = System.getProperty("user.dir") + "/testFiles/test.ass4.csv";
-//    portfolioDir.savePortfolio(1, testPath);
-//  }
-//
 
 }

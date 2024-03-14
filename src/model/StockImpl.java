@@ -17,7 +17,7 @@ import java.util.Map;
  * of api calls and also store the data in price data object for faster retrieval of
  * stock price on a particular date.
  */
-public class StockImpl implements StockInterface {
+class StockImpl implements StockInterface {
 
   /**
    * it has the ticker symbol for which the price data is to be found and api is called.

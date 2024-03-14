@@ -26,9 +26,14 @@ class Persistence {
     if (!file.getName().endsWith(".csv")) {
       throw new IllegalArgumentException("File provided must be CSV!");
     }
+
     File parentDir = file.getParentFile();
 
-    if (parentDir != null && !parentDir.exists()) {
+    if (parentDir == null || ".csv".equals(file.getName())) {
+      throw new IllegalArgumentException("Invalid Path");
+    }
+
+    if (!parentDir.exists()) {
       parentDir.mkdirs(); // Create parent directories recursively
     }
 
@@ -64,7 +69,6 @@ class Persistence {
       while ((line = reader.readLine()) != null) {
         String[] parts = line.split(",");
         if (!parts[0].equalsIgnoreCase("Stock")) {
-          System.out.println(parts[0]);
           lines.add(parts);
         }
       }

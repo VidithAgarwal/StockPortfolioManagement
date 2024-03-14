@@ -105,6 +105,10 @@ public class PortfolioImpl implements Portfolio {
       }
       StockImpl stock = new StockImpl(tickerSymbol);
 
+      if (quantity <= 0 ) {
+        throw new IllegalArgumentException("Quantity should be whole number.");
+      }
+
       boolean flag = false;
       for (Map.Entry<StockImpl, Integer> entry : this.shareList.entrySet()) {
         if (entry.getKey().getTicker().equals(tickerSymbol)) {
