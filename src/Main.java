@@ -27,6 +27,6 @@ public class Main {
     StockControllerImpl controller = new StockControllerImpl(view, new InputStreamReader(System.in),
             model);
 
-    controller.go();
+    controller.execute();
   }
 }

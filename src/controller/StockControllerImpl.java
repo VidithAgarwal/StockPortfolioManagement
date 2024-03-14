@@ -334,7 +334,7 @@ public class StockControllerImpl implements StockController {
    * otherwise, it displays the secondary menu.
    * The method continues looping until the user chooses to exit the application.
    */
-  public void go() {
+  public void execute() {
     boolean exit = false;
     while (!exit) {
       if (model.isEmpty()) {
@@ -456,6 +456,7 @@ public class StockControllerImpl implements StockController {
         break;
       case 3:
         return true;
+      //exit();
       default:
         this.view.displayError("Enter a valid choice, this option doesn't exists.");
         return false;
