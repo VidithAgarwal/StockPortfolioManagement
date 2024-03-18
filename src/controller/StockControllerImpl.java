@@ -1,7 +1,7 @@
 package controller;
 
 import java.io.File;
-import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,11 +25,6 @@ public class StockControllerImpl implements StockController {
   private final IView view;
 
   /**
-   * The Readable object used for reading input.
-   */
-  private final Readable in;
-
-  /**
    * model object of portfolioDir that is required to call the portfolioDir methods in controller.
    */
   private final PortfolioDir model;
@@ -43,16 +38,16 @@ public class StockControllerImpl implements StockController {
   /**
    * Constructs a StockControllerImpl object with the specified view, input stream.
    * and portfolio directory.
-   * @param view The view component responsible for displaying information to the user.
-   * @param in The input stream used to get the user input.
+   *
+   * @param view         The view component responsible for displaying information to the user.
+   * @param in           The input stream used to get the user input.
    * @param portfolioDir The portfolio directory model component representing the model object.
    */
 
   public StockControllerImpl(IView view, Readable in, PortfolioDir portfolioDir) {
     this.view = view;
-    this.in = in;
     this.model = portfolioDir;
-    this.scan = new Scanner(this.in);
+    this.scan = new Scanner(in);
   }
 
   /**
@@ -158,7 +153,7 @@ public class StockControllerImpl implements StockController {
     } catch (IllegalArgumentException e) {
       if (e.getMessage() != null) {
         view.print("No price data found for " + e.getMessage() + " on the "
-                + "date: " + date);
+                + "date: " + date[2] + "-" + date[1] + "-" + date[0]);
       } else {
         view.print("Invalid date!");
       }
@@ -169,9 +164,10 @@ public class StockControllerImpl implements StockController {
 
   /**
    * this method is used to validate date, if it is a valid date or not.
-   * @param day is the day of the date entered.
+   *
+   * @param day   is the day of the date entered.
    * @param month is the month of the date entered.
-   * @param year is the year of the date entered.
+   * @param year  is the year of the date entered.
    * @return true if date is valid or else returns false.
    */
   private boolean validateDate(int day, int month, int year) {
@@ -198,6 +194,7 @@ public class StockControllerImpl implements StockController {
 
   /**
    * this method is used for validation that num of shares entered by user are not negative.
+   *
    * @param numShares number of shares entered by the user to be added in portfolio.
    * @return boolean value true if num of shares is less than 0.
    */
@@ -220,6 +217,7 @@ public class StockControllerImpl implements StockController {
    * Prompts the user to input a file path and validates it.
    * used for validation in loading the portfolio.
    * the file is loaded using persistence class in controller.
+   *
    * @return The validated file path input by the user.
    */
   private List<String[]> inputPath() {
@@ -237,6 +235,7 @@ public class StockControllerImpl implements StockController {
 
   /**
    * Validates user input to ensure it is a valid choice among available portfolios.
+   *
    * @return validated portfolio choice input by user, if wrong choice then displays error message.
    */
   private int validateUserChoice() {
@@ -250,6 +249,7 @@ public class StockControllerImpl implements StockController {
 
   /**
    * Validates user input to ensure it is a positive whole number.
+   *
    * @param message The message to prompt the user for input.
    * @return The positive integer input by the user.
    */
@@ -274,6 +274,7 @@ public class StockControllerImpl implements StockController {
   /**
    * this method is used to show the list of portfolios to the user using the view.
    * and then asks the user to enter the valid portfolio choice from the list.
+   *
    * @return the portfolio number chosen by the user.
    */
   private int inputPortfolioChoice() {
@@ -285,6 +286,7 @@ public class StockControllerImpl implements StockController {
 
   /**
    * Prompts the user to input a date using view methods and validates the format of the date.
+   *
    * @return The date in day, month , year array format for further date validation.
    */
   private int[] inputDate() {
@@ -319,6 +321,7 @@ public class StockControllerImpl implements StockController {
 
   /**
    * this method checks the format of the date.
+   *
    * @param date is the date that is passed to the method.
    * @return boolean value true if the format is correct for date entered else false.
    */
@@ -346,34 +349,41 @@ public class StockControllerImpl implements StockController {
   }
 
   /**
-   * Deletes session CSV files from the code after exit is entered and the session has ended.
-   * @param directoryPath the path to the directory containing session CSV files.
-   * @throws IOException if an I/O error occurs when deleting the csv.
+   * This method deletes all folders in a specified directory,
+   * except for the folder named with the current date's name. This can be useful for
+   * cleanup operations where only the most recent data should be preserved.
+   *
+   * @param directoryPath Path to the directory where folders will be deleted.
    */
-  private void deleteSessionCSVFilesFromStocklist(String directoryPath) throws IOException {
-    File stocklistDirectory = new File(directoryPath);
-    deleteSessionCSVFiles(stocklistDirectory);
+  private void deleteCSVFilesFromStocklist(String directoryPath) {
+    File directory = new File(directoryPath);
+
+    LocalDate currentDate = LocalDate.now();
+
+    File[] files = directory.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        // Check if it's a directory and not the current date folder
+        if (file.isDirectory() && !file.getName().equals("" + currentDate)) {
+          deleteCSVFiles(file);
+        }
+      }
+    }
   }
 
   /**
    * Recursively deletes session CSV files from the directory.
+   *
    * @param directory The directory from which the csv files are to be deleted.
-   * @throws IOException If an I/O error occurs when deleting the files recursively.
    */
-  private void deleteSessionCSVFiles(File directory) throws IOException {
-    File[] files = directory.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        if (file.isDirectory()) {
-          if (!file.getName().equalsIgnoreCase("testFiles")) {
-            deleteSessionCSVFiles(file);
-          }
-        } else {
-          String fileName = file.getName();
-          if (fileName.endsWith(".csv") && !fileName.equals("stocks.csv")) {
-            file.delete();
-          }
-        }
+  private void deleteCSVFiles(File directory) {
+    File[] allContents = directory.listFiles();
+    if (allContents != null) {
+      for (File file : allContents) {
+        deleteCSVFiles(file);
+      }
+      if (!directory.delete()) {
+        view.displayError("Failed to delete directory: " + directory.getName());
       }
     }
   }
@@ -381,6 +391,7 @@ public class StockControllerImpl implements StockController {
   /**
    * Displays the secondary menu and handles user choices accordingly.
    * Based on the user input the specific methods are called.
+   *
    * @return true if the user chooses to exit the application, false for other choices.
    */
   private boolean secondMenu() {
@@ -418,19 +429,14 @@ public class StockControllerImpl implements StockController {
         break;
       case 6:
         exit = true;
-        //exit();
         break;
       default:
         this.view.displayError("Enter a valid choice, this option doesn't exists.");
         break;
     }
     if (exit) {
-      try {
-        String currentDirectory = System.getProperty("user.dir");
-        deleteSessionCSVFilesFromStocklist(currentDirectory);
-      } catch (IOException e) {
-        throw new RuntimeException("Failed to delete one or more files. ");
-      }
+      String currentDirectory = System.getProperty("user.dir") + "/Data";
+      deleteCSVFilesFromStocklist(currentDirectory);
     }
     return exit;
   }
@@ -440,6 +446,7 @@ public class StockControllerImpl implements StockController {
    * Starts the main menu of the application.
    * this method is used when there is no portfolio created.
    * and calls the other methods based on choice entered.
+   *
    * @return true if the user chooses to exit the application, false otherwise.
    */
   private boolean startMenu() {

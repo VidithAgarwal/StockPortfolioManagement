@@ -37,11 +37,6 @@ public class ControllerTest {
   private MockView mockView;
 
   /**
-   * Represents a mock composition map used for testing purposes.
-   */
-  private Map<String, Integer> mockComposition;
-
-  /**
    * Represents a mock name used for testing purposes.
    */
   private String mockName;
@@ -57,7 +52,7 @@ public class ControllerTest {
    */
   @Before
   public void setUp() {
-    mockComposition = new HashMap<>();
+    Map<String, Integer> mockComposition = new HashMap<>();
     mockComposition.put("AAPL", 20);
     mockComposition.put("Goog", 10);
     mockName = "Test Portfolio";
@@ -818,7 +813,7 @@ public class ControllerTest {
 
   @Test
   public void testLoadPortfolio()  {
-    String path = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
+    String path = System.getProperty("user.dir") + "/test/testFiles/loadTest.csv";
     String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
             + "portfolio: ", "Enter the full path of the file you want to load data "
             + "from: ", "File loaded "
@@ -836,8 +831,8 @@ public class ControllerTest {
 
   @Test
   public void testLoadPortfolioWithNonExistingFile()  {
-    String incorrectPath = System.getProperty("user.dir") + "/testFiles/load.csv";
-    String correctPath = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
+    String incorrectPath = System.getProperty("user.dir") + "/test/testFiles/load.csv";
+    String correctPath = System.getProperty("user.dir") + "/test/testFiles/loadTest.csv";
     String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
             + "portfolio: ", "Enter the full path of the file you want to load data "
             + "from: ", "Error", "Enter the "
@@ -857,8 +852,8 @@ public class ControllerTest {
 
   @Test
   public void testLoadPortfolioWithInvalidFileType()  {
-    String incorrectPath = System.getProperty("user.dir") + "/testFiles/load.txt";
-    String correctPath = System.getProperty("user.dir") + "/testFiles/loadTest.csv";
+    String incorrectPath = System.getProperty("user.dir") + "/test/testFiles/load.txt";
+    String correctPath = System.getProperty("user.dir") + "/test/testFiles/loadTest.csv";
     String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
             + "portfolio: ", "Enter the full path of the file you want to load data "
             + "from: ", "Error", "Enter the "

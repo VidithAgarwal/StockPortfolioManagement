@@ -60,8 +60,8 @@ class Persistence {
       throw new IllegalArgumentException("File not found. Please enter a valid file path.");
     }
     if (!filePath.toLowerCase().endsWith(".csv")) {
-      throw new IllegalArgumentException("File format is not CSV. Please enter a file with .csv " +
-              "extension.");
+      throw new IllegalArgumentException("File format is not CSV. Please enter a file with .csv "
+              + "extension.");
     }
     List<String[]> lines = new ArrayList<>();
     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

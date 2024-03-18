@@ -137,8 +137,9 @@ public class PortfolioImpl implements Portfolio {
           String companyName = line[1].trim().replaceAll("\\s", "");
 
           // Check if the entered share name matches either the company name or ticker symbol
-          if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", "")) ||
-                  tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))) {
+          if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))
+                  || tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s",
+                  ""))) {
             return tickerSymbol;
           }
         }

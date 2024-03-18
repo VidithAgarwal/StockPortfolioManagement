@@ -54,7 +54,7 @@ public class IViewImpl implements IView {
     out.println("Composition of Portfolio");
     out.println("Stock Name\tStock Quantity");
     for (Map.Entry<String, Integer> entry : composition.entrySet()) {
-      out.println(entry.getKey() + "\t\t\t\t" + entry.getValue());
+      out.printf("%-20s %d\n", entry.getKey(), entry.getValue());
     }
   }
 
@@ -68,7 +68,7 @@ public class IViewImpl implements IView {
     out.println("The list of existing portfolios:");
     out.println("No. of Portfolio\tPortfolio Name");
     for (int i = 0; i < listOfPortfolios.size(); i++) {
-      out.println(i + "\t\t\t\t\t" + listOfPortfolios.get(i));
+      out.printf("%-20s %s\n", i, listOfPortfolios.get(i));
     }
   }
 

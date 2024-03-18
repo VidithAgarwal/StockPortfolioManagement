@@ -1,5 +1,3 @@
-
-
 import java.io.InputStreamReader;
 
 import controller.StockControllerImpl;

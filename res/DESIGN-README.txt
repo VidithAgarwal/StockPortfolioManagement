@@ -56,18 +56,22 @@ value and controller takes in the date from the user and send the choice of the 
 to the portfolioValue method of the model which delegates the portfolioValue functionality to the
 method in Portfolio class, and it calls a method getPrice for each stock inside the portfolio which
 takes in the date for which the price is required. the returnPrice method checks if the file for
-that stock is present or not, if it is not present it call the fetch data method which uses Alpha
-advantage api to get the historical price data. It then stores that historical data in a newly
-created file and also in the hashmap priceData. If priceData already has data then the api is not
-called or if the file exists the api is not called and the price for that particular date and stock
-is returned to the portfolio class which adds it to the total value. Similarly, this is done for each
-stock in the portfolio and the computed value is sent to the controller which sends it to the view
-to display it to the user.
+that stock is present or not for the current date, if it is not present it call the fetch data
+method which uses Alpha advantage api to get the historical price data. It then stores that
+historical data in a newly created file and also in the hashmap priceData. If priceData already has
+data then the api is not called or if the file exists the api is not called and the price for that
+ particular date and stock is returned to the portfolio class which adds it to the total value.
+ Similarly, this is done for each stock in the portfolio and the computed value is sent to the
+ controller which sends it to the view to display it to the user.
 
 If the user wishes to save the portfolio it chooses which portfolio to save and gives a path to the
 controller. The controller then gets the composition of that portfolio from the getComposition
 method and sends that map to the save method in the persistence class where it writes to the csv
 file user has provided.
+
+On exit of the program all the folders inside the Data folder is deleted other than the folder
+containing the historical data of different stocks that were fetched today. As the date changes the
+folder is deleted upon exit as a new folder with that date's name will be created.
 
 Our program supports all stocks in NYSE and NASDAQ, and it supports all the dates
 
@@ -107,10 +111,6 @@ value is to be found and the date for which the total value is to be calculated 
 portfolioValue method of the Portfolio for further calculations and getting the price. The date is
 taken as day, month and year in integers.
 7. isEmpty() : this method checks if the portfolio directory list is empty.
-
-12. deleteSessionCSVFilesFromStocklist() : this method is used to delete the csv files that are created
-during a session when the stock data is fetched on the api call. The files are deleted when the
-session is over.
 
 
 
@@ -190,21 +190,21 @@ Controller :
 
 1. StockController : This class represents a controller with a single action method.
 It's designed to handle specific
-requests within an application. The go() method is the primary entry point for the
+requests within an application. The execute() method is the primary entry point for the
 action this controller performs.
-
-Methods
 
 2. StockControllerImpl : has the model, view and scanner object for taking input,
 showing the desired output through view and performing the required operations using the model.
-he go method works based on the choice entered by user and delegates to the view and model methods
+he execute method works based on the choice entered by user and delegates to the view and model
+methods
 for getting the output. The other methods such as create portfolio, load portfolio, save portfolio,
 get composition, get total value of portfolio, save, examine composition
 are written to call the respective model method for passing inputs from the controller and calling
 the view for those methods to show the output, the output from the model is passed to the view by
-the controller for showing it to user. It also has method to delete the session files that are
-created during a session for stock fetched data when api is called. The controller also has
-validation methods that are used to validate the user inputs.
+the controller for showing it to user. On exit of the program all the folders inside the Data folder
+is deleted other than the folder containing the historical data of different stocks that were
+fetched today. As the date changes the folder is deleted upon exit as a new folder with that date's
+name will be created.
 
 3. Persistence : this class has methods that help in loading and saving the csv files for
  persisting the stock data that is associated with a portfolio , this function is done by

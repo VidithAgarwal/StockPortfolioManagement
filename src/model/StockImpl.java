@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,9 @@ class StockImpl implements StockInterface {
    * @return the price for the stock on a particular date.
    */
   private double storeFetchedData(StringBuilder output, String requestedDate) {
-    String fileName = tickerSymbol + ".csv";
+    LocalDate currentDate = LocalDate.now();
+    String fileName =
+            System.getProperty("user.dir") + "/Data/" + currentDate + "/" + tickerSymbol + ".csv";
     double price = -1;
     String[] lines = output.toString().split("\n");
     for (int i = 1; i < lines.length; i++) {
@@ -121,12 +124,14 @@ class StockImpl implements StockInterface {
 
 
   /**
-   * loadDatFromCSV is used to load the csv file of a particular ticker symbol using.
-   * the file handler load method and puts the data in the price data object that contains.
-   * the date and closing price data for the tickerSymbol.
+   * loadDatFromCSV is used to load the csv file of a particular ticker symbol present in the
+   * current date's folder using the file handler load method and puts the data in the price data
+   * object that contains the date and closing price data for the tickerSymbol.
    */
   private void loadDataFromCSV() {
-    String fileName = tickerSymbol + ".csv";
+    LocalDate currentDate = LocalDate.now();
+    String fileName =
+            System.getProperty("user.dir") + "/Data/" + currentDate + "/" + tickerSymbol + ".csv";
     FileHandler fileHandler = new FileHandler();
     List<String[]> lines = fileHandler.load(fileName);
     for (String[] line : lines) {
@@ -170,11 +175,13 @@ class StockImpl implements StockInterface {
   }
 
   /**
-   * this method is used to check is a CSV file exists for not for a particular tickerSymbol.
+   * this method is used to check is a CSV file exists or not for a particular tickerSymbol.
    * @return true if the csv file exists for else returns false.
    */
   private boolean isCSVFileExists() {
-    String fileName = tickerSymbol + ".csv";
+    LocalDate currentDate = LocalDate.now();
+    String fileName =
+            System.getProperty("user.dir") + "/Data/" + currentDate + "/" + tickerSymbol + ".csv";
     File csvFile = new File(fileName);
     return csvFile.exists();
   }
