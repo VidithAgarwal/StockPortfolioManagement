@@ -10,5 +10,5 @@ interface StockInterface {
    * @param date is the date for which user wants to get the stock price.
    * @return the price value of the stock on a particular date.
    */
-  double returnPrice(String date);
+//  double returnPrice(String date);
 }

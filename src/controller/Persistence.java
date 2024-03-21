@@ -48,6 +48,31 @@ class Persistence {
     }
   }
 
+  void save(String path, Map<String, ArrayList<Double>> historicalData) {
+    File file = new File(path);
+    File parentDir = file.getParentFile();
+
+    if (!parentDir.exists()) {
+      parentDir.mkdirs(); // Create parent directories recursively
+    }
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+      for (Map.Entry<String, ArrayList<Double>> entry : historicalData.entrySet()) {
+        StringBuilder priceList = new StringBuilder();
+        for (int i = 0; i < entry.getValue().size(); i++) {
+          priceList.append(entry.getValue().get(i));
+          if (i < entry.getValue().size() - 1) {
+            priceList.append(",");
+          }
+        }
+        writer.write(entry.getKey() + "," + priceList);
+        writer.newLine();
+      }
+    } catch (IOException e) {
+      throw new IllegalArgumentException();
+    }
+  }
+
 
   /**
    * Loads data from a CSV file located at the specified file path.

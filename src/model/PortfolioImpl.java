@@ -1,8 +1,12 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import controller.StockData;
 
 /**
  * Implementation of the Portfolio interface representing methods for a single portfolio.
@@ -49,13 +53,23 @@ public class PortfolioImpl implements Portfolio {
     return composition;
   }
 
+  private double getClosingPriceOnDate(String ticker, StockData api, String date) {
+    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+    return priceData.get(date).get(1);
+  }
+
   @Override
-  public double portfolioValue(String date) {
+  public double portfolioValue(String date, StockData api) {
     double totalValue = 0;
     for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
       StockImpl stock = entry.getKey();
       Integer quantity = entry.getValue();
-      totalValue += stock.returnPrice(date) * quantity;
+      try {
+        Double closingPrice = getClosingPriceOnDate(stock.getTicker(), api, date);
+        totalValue += closingPrice * quantity;
+      } catch (RuntimeException e) {
+        throw new IllegalArgumentException(stock.getTicker());
+      }
     }
     return totalValue;
   }

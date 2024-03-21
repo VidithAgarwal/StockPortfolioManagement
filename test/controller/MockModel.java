@@ -105,7 +105,7 @@ public class MockModel implements PortfolioDir {
    * @return The value of the mock portfolio at the specified index.
    */
   @Override
-  public double portfolioValue(int input, int day, int month, int year) {
+  public double portfolioValue(int input, int day, int month, int year, StockData api) {
     logger.append("Retrieving composition for portfolio at index: ").append(input)
             .append(" For " + "the day: ")
             .append(day).append(" month: ")

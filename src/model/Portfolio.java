@@ -2,6 +2,8 @@ package model;
 
 import java.util.Map;
 
+import controller.StockData;
+
 /**
  * Portfolio interface has the methods that are related to single portfolio object.
  * It gets the composition, portfolio value, name of a single portfolio and saves a portfolio.
@@ -20,7 +22,7 @@ public interface Portfolio {
    * @param date is the date for which the portfolio value is to be determined.
    * @return the price of the portfolio on the particular date entered.
    */
-  double portfolioValue(String date);
+  double portfolioValue(String date, StockData api);
 
   /**
    * it gets the name of the portfolio.

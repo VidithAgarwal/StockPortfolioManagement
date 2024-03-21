@@ -4,6 +4,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Map;
 
+import controller.StockData;
+
 /**
  * Implementation of the PortfolioDir interface.
  * It provides methods for managing portfolios, such adding portfolios, get list of portfolio.
@@ -52,7 +54,7 @@ public class PortfolioDirImpl implements PortfolioDir {
   }
 
   @Override
-  public double portfolioValue(int input, int day, int month, int year) {
+  public double portfolioValue(int input, int day, int month, int year, StockData api) {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
@@ -80,7 +82,7 @@ public class PortfolioDirImpl implements PortfolioDir {
       throw new IllegalArgumentException();
     }
     String date = String.format("%04d-%02d-%02d", year, month, day);
-    return portfolioDirectory.get(input).portfolioValue(date);
+    return portfolioDirectory.get(input).portfolioValue(date, api);
   }
 
 

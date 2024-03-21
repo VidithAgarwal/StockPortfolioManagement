@@ -3,12 +3,17 @@ package controller;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import model.PortfolioDir;
 import model.PortfolioImpl;
+import model.StockStatistic;
+import model.StockStatisticsImpl;
 import view.IView;
 
 /**
@@ -144,11 +149,13 @@ public class StockControllerImpl implements StockController {
   private void getTotalValue() {
     int choice = inputPortfolioChoice();
 
-    int[] date = inputDate();
+    int[] date = inputDate("Enter the date for which you want to get the total price of the portfolio. ");
 
     view.print("Wait until the total value is calculated");
+
     try {
-      double totalValue = model.portfolioValue(choice, date[0], date[1], date[2]);
+      StockData api = new StockData();
+      double totalValue = model.portfolioValue(choice, date[0], date[1], date[2], api);
       view.showTotalValue(totalValue);
     } catch (IllegalArgumentException e) {
       if (e.getMessage() != null) {
@@ -190,6 +197,34 @@ public class StockControllerImpl implements StockController {
 
     return year >= 0 && year <= 9999;
   }
+
+//  private void gainOrLose() {
+//    StockData api = new StockData();
+//    String ticker = scan.nextLine();
+//    int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that" +
+//            " " +
+//            "date: ");
+//    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+//
+//    LocalDate date = LocalDate.of(dateArray[2], dateArray[1],dateArray[0]);
+//
+//    String result = StockStatisticsImpl.gainOrLoseOnDate(date, priceData);
+//
+//    view.print(result);
+//  }
+//
+//  private void gainOrLoseOverPeriod() {
+//    StockData api = new StockData();
+//    String ticker = scan.nextLine();
+//    int[] startDateArray = inputDate("Enter the start date");
+//    int[] endDateArray = inputDate("Enter the end date");
+//    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+//    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+//    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
+//    String result = StockStatistic.gainOrLoseOverPeriod(startDate, endDate, priceData);
+//
+//    view.print(result);
+//  }
 
 
   /**
@@ -289,14 +324,14 @@ public class StockControllerImpl implements StockController {
    *
    * @return The date in day, month , year array format for further date validation.
    */
-  private int[] inputDate() {
+  private int[] inputDate(String message) {
     boolean validDate = false;
     String date;
     int day = 0;
     int month = 0;
     int year = 0;
     do {
-      view.print("Enter the date for which you want to get the total price of the portfolio. ");
+      view.print(message);
       view.print("The date should be in this format yyyy-mm-dd: ");
       date = scan.nextLine();
 

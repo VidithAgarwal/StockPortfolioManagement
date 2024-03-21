@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Map;
 
+import controller.StockData;
+
 /**
  * The PortfolioDir interface represents a directory of portfolios.
  * It provides methods for managing portfolios, such as adding portfolio, getting list of portfolio.
@@ -44,7 +46,7 @@ public interface PortfolioDir {
    * @param year the year of date for which total value is to be found.
    * @return the total value of portfolio.
    */
-  double portfolioValue(int input, int day, int month, int year);
+  double portfolioValue(int input, int day, int month, int year, StockData api);
 
   /**
    * Checks if the directory is empty (contains no portfolios).
