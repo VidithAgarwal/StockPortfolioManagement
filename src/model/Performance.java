@@ -129,9 +129,7 @@ public class Performance {
   }
 
 
-  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value,
-                                           long totalDays, Portfolio portfolioName, TreeMap <String,
-          Double> selectedData ) {
+  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value, long totalDays, FlexiblePortfolio portfolioName, TreeMap <String, Double> selectedData ) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusDays(interval * i);
@@ -150,8 +148,7 @@ public class Performance {
     }
   }
 
-  public TreeMap<String, Double> portfolioPerformance ( Portfolio portfolioName, LocalDate start,
-                                                        LocalDate end) {
+  public TreeMap<String, Double> portfolioPerformance ( FlexiblePortfolio portfolioName, LocalDate start,  LocalDate end) {
     double value = 0;
     TreeMap<String, Double> selectedData = new TreeMap<>();
     long totalDays = ChronoUnit.DAYS.between(start, end);
@@ -244,14 +241,14 @@ public class Performance {
 
 
   // to convert to required date format.
-  private String dateFormat(String dateString) {
+  public String dateFormat(String dateString) {
     LocalDate date = LocalDate.parse(dateString);
     String formattedDate = date.format(DateTimeFormatter.ofPattern("MMM yyyy"));
     return formattedDate;
   }
 
   //finding scale
-  public int determineScale (TreeMap<String, Double> selectedData) {
+  public int determineScale (Map<String, Double> selectedData) {
     double maxValue = Double.MIN_VALUE;
     for (double value : selectedData.values()) {
       if (value > maxValue) {
@@ -263,7 +260,7 @@ public class Performance {
   }
 
   //for printing performance in view
-  public Map<String, Integer> determineValueBasedOnScale (TreeMap<String, Double> prices, int scale) {
+  public Map<String, Integer> determineValueBasedOnScale (Map<String, Double> prices, int scale) {
     Map<String, Integer> scaledPrices = new HashMap<>();
     for (Map.Entry<String, Double> entry : prices.entrySet()) {
       String date = entry.getKey();
@@ -272,6 +269,6 @@ public class Performance {
       scaledPrices.put(date, scaledPrice);
     }
     return scaledPrices;
-}
+  }
 
 }
