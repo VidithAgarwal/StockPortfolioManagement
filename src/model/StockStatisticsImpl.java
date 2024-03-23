@@ -16,11 +16,11 @@ public class StockStatisticsImpl implements StockStatistic {
       double closingPrice = prices.get(1);
 
       if (closingPrice > openingPrice) {
-        return "Stock gained on " + dateString;
+        return tickerSymbol  + " gained on " + dateString;
       } else if (closingPrice < openingPrice) {
-        return "Stock lost on " + dateString;
+        return tickerSymbol + " lost on " + dateString;
       } else {
-        return "Stock remained unchanged on " + dateString;
+        return tickerSymbol + "remained unchanged on " + dateString;
       }
     } catch (NullPointerException e) {
       throw new IllegalArgumentException("No price data available for " + dateString);
@@ -31,18 +31,20 @@ public class StockStatisticsImpl implements StockStatistic {
   public String gainOrLoseOverPeriod(String tickerSymbol, String date1, String date2, TreeMap<String, ArrayList<Double>> priceData) {
     ArrayList<Double> prices1 = priceData.get(date1);
     ArrayList<Double> prices2 = priceData.get(date2);
-    String currentDate1;
-    String currentDate2;
-    if (prices1 == null || prices2 == null)  {
+    String currentDate1 = date1;
+    String currentDate2 = date2;
+    if (prices1 == null)  {
       currentDate1 = getNextDate(date1,priceData,date2);
-      //currentDate2 = getNextDate(date1,priceData,date2);
+    }
+    else if(prices2 == null) {
+      currentDate2 = getPreviousDate(date1,priceData);
     }
     else {
       currentDate1 = date1;
-      //currentDate2 = date2;
+      currentDate2 = date2;
     }
     prices1 = priceData.get(currentDate1);
-    //prices2 = priceData.get(currentDate2);
+    prices2 = priceData.get(currentDate2);
     if (prices1 == null || prices2 == null) {
       throw new IllegalArgumentException("No price data available for one or both of the specified dates");
     }
@@ -52,11 +54,11 @@ public class StockStatisticsImpl implements StockStatistic {
     double priceDifference = closingPrice2 - closingPrice1;
 
     if (priceDifference > 0) {
-      return "Stock gained over the period from " + currentDate1 + " to " + date2;
+      return tickerSymbol + "gained over the period from " + currentDate1 + " to " + currentDate2;
     } else if (priceDifference < 0) {
-      return "Stock lost over the period from " + currentDate1 + " to " + date2;
+      return tickerSymbol + "lost over the period from " + currentDate1 + " to " + currentDate2;
     } else {
-      return "Stock remained unchanged over the period from " + currentDate1 + " to " + date2;
+      return tickerSymbol + "remained unchanged over the period from " + currentDate1 + " to " + currentDate2;
     }
   }
 
@@ -193,7 +195,8 @@ public class StockStatisticsImpl implements StockStatistic {
     }
     else {
       throw new IllegalArgumentException();
+    }
+
   }
-}
 
 }
