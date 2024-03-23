@@ -38,6 +38,8 @@ public interface IView {
    * this method displays a list of portfolios that have been created.
    * @param listOfPortfolios ArrayList containing names of portfolios.
    */
+  //void showListOfPortfolios(ArrayList<String> listOfPortfolios);
+
   void showListOfPortfolios(Map<String, String> listOfPortfolios);
 
   /**
@@ -59,4 +61,7 @@ public interface IView {
   void choosePortfolioType();
 
   void showStockStat();
+
+  void showXDayMovingAvg(double value);
+
 }
