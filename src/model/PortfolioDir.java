@@ -1,7 +1,10 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import controller.StockData;
 
@@ -18,11 +21,13 @@ public interface PortfolioDir {
    */
   void addPortfolio(PortfolioImpl.PortfolioBuilder newBuilder);
 
+  void createFlexiblePortfolio(String portfolioName);
+
   /**
    * Retrieves the list of names of all portfolios in the directory.
    * @return the list of portfolio names.
    */
-  ArrayList<String> getListOfPortfoliosName();
+  Map<String, String> getListOfPortfoliosName();
 
   /**
    * Retrieves the composition of the portfolio at the specified index in the directory.
@@ -30,6 +35,7 @@ public interface PortfolioDir {
    * @return map containing composition of the portfolio (share name and quantity in a portfolio.)
    */
   Map<String, Integer> portfolioComposition(int input);
+  Map<String, Integer> portfolioComposition(int input, LocalDate date);
 
   /**
    * Retrieves the number of portfolios in the directory.
@@ -60,4 +66,21 @@ public interface PortfolioDir {
    * @return true if portfolio name is present or returns false.
    */
   boolean portfolioNameExists(String portfolioName);
+
+  void buyStock(int input, String stock, int quantity, LocalDate buyDate, StockData api);
+  void sellStock(int input, String stock, int quantity, LocalDate sellDate, StockData api);
+
+  double costBasis(int input, LocalDate date, StockData api);
+
+  String gainOrLose(String tickerSymbol, LocalDate date, StockData api);
+  String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2, StockData api);
+
+  double xDayMovingAvg(String tickerSymbol, LocalDate date, int x, StockData api);
+  TreeMap<String, String> crossoverOverPeriod (String tickerSymbol,
+                                           StockData api,
+                                           LocalDate startDate, LocalDate endDate);
+
+  TreeMap<String, String> movingCrossOver (String tickerSymbol, StockData api, LocalDate startDate,
+                                           LocalDate endDate
+          , int x, int y);
 }

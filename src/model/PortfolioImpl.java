@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,18 +15,14 @@ import controller.StockData;
  * for a single portfolio.
  * The static portfolio builder class in also present in the PortfolioImpl class.
  */
-public class PortfolioImpl implements Portfolio {
+public class PortfolioImpl extends AbstractPortfolio {
 
   /**
    * Map to store stock impl object that has ticker symbol and price data.
    * along with their quantities.
    */
-  private final Map<StockImpl, Integer> sharesList;
+  private final Map<String, Integer> sharesList;
 
-  /**
-   * name of the portfolio.
-   */
-  private final String portfolioName;
 
   /**
    * Private constructor for PortfolioImpl, the portfolio name is initialised here.
@@ -33,51 +30,46 @@ public class PortfolioImpl implements Portfolio {
    * @param portfolioName The name of the portfolio.
    * @param list Map containing stock data and their quantities.
    */
-  private PortfolioImpl(String portfolioName, Map<StockImpl, Integer> list) {
-    this.sharesList = new HashMap<>();
-    this.portfolioName = portfolioName;
-    for (Map.Entry<StockImpl, Integer> entry : list.entrySet()) {
-      this.sharesList.put(entry.getKey(), entry.getValue());
-    }
+  private PortfolioImpl(String portfolioName, Map<String , Integer> list) {
+    super(portfolioName);
+    this.sharesList = deepCopy(list);
   }
 
 
   @Override
   public Map<String, Integer> portfolioComposition() {
-    Map<String, Integer> composition = new HashMap<>();
-    for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
-      StockImpl stock = entry.getKey();
-      Integer value = entry.getValue();
-      composition.put(stock.getTicker(), value);
-    }
-    return composition;
-  }
-
-  private double getClosingPriceOnDate(String ticker, StockData api, String date) {
-    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
-    return priceData.get(date).get(1);
+    return deepCopy(this.sharesList);
   }
 
   @Override
-  public double portfolioValue(String date, StockData api) {
-    double totalValue = 0;
-    for (Map.Entry<StockImpl, Integer> entry : this.sharesList.entrySet()) {
-      StockImpl stock = entry.getKey();
-      Integer quantity = entry.getValue();
-      try {
-        Double closingPrice = getClosingPriceOnDate(stock.getTicker(), api, date);
-        totalValue += closingPrice * quantity;
-      } catch (RuntimeException e) {
-        throw new IllegalArgumentException(stock.getTicker());
-      }
-    }
-    return totalValue;
+  public Map<String, Integer> portfolioComposition(LocalDate date) {
+    return null;
+  }
+
+  @Override
+  public double costBasis(LocalDate date, StockData api) {
+    throw new IllegalArgumentException();
   }
 
 
   @Override
-  public String getName() {
-    return this.portfolioName;
+  public double portfolioValue(String date, StockData api) {
+    Map<String , Integer> composition = portfolioComposition();
+    return computeValue(date, composition, api);
+  }
+
+  @Override
+  public void buyStock(String ticker, int quantity, LocalDate date, StockData api) {
+    throw new IllegalArgumentException();
+  }
+
+  @Override
+  public void sellStock(String ticker, int quantity, LocalDate date, StockData api) {
+    throw new IllegalArgumentException();
+  }
+
+  public boolean isFlexible() {
+    return false;
   }
 
   /**
@@ -93,7 +85,7 @@ public class PortfolioImpl implements Portfolio {
     /**
      * Map to store shares data and their quantities.
      */
-    private Map<StockImpl, Integer> shareList;
+    private Map<String , Integer> shareList;
 
     /**
      * Constructor for PortfolioBuilder, that takes in the portfolio name.
@@ -117,15 +109,14 @@ public class PortfolioImpl implements Portfolio {
       if (tickerSymbol == null) {
         throw new IllegalArgumentException("Share name not found in stocks.csv");
       }
-      StockImpl stock = new StockImpl(tickerSymbol);
 
       if (quantity <= 0 ) {
         throw new IllegalArgumentException("Quantity should be whole number.");
       }
 
       boolean flag = false;
-      for (Map.Entry<StockImpl, Integer> entry : this.shareList.entrySet()) {
-        if (entry.getKey().getTicker().equals(tickerSymbol)) {
+      for (Map.Entry<String , Integer> entry : this.shareList.entrySet()) {
+        if (entry.getKey().equals(tickerSymbol)) {
           int existingQuantity = this.shareList.get(entry.getKey());
           this.shareList.put(entry.getKey(), existingQuantity + quantity);
           flag = true;
@@ -133,7 +124,7 @@ public class PortfolioImpl implements Portfolio {
       }
 
       if (!flag) {
-        this.shareList.put(stock, quantity);
+        this.shareList.put(tickerSymbol, quantity);
       }
     }
 
@@ -142,24 +133,7 @@ public class PortfolioImpl implements Portfolio {
      * @param shareName The name of the share to be validated.
      * @return The ticker symbol of the share if found, otherwise null.
      */
-    private String validateStockName(String shareName) {
-      FileHandler fileHandler = new FileHandler();
-      List<String[]> lines = fileHandler.load("stocks.csv");
-      for (String[] line : lines) {
-        if (line.length >= 2) {
-          String tickerSymbol = line[0].trim();
-          String companyName = line[1].trim().replaceAll("\\s", "");
 
-          // Check if the entered share name matches either the company name or ticker symbol
-          if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))
-                  || tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s",
-                  ""))) {
-            return tickerSymbol;
-          }
-        }
-      }
-      return null; // Return null if no matching ticker symbol or company name is found
-    }
 
     /**
      * the method gets the lines for the file that is read in controller, and stores the stock name.
@@ -186,8 +160,7 @@ public class PortfolioImpl implements Portfolio {
           } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
           }
-          StockImpl stock = new StockImpl(tickerSymbol);
-          this.shareList.put(stock, Integer.parseInt(value));
+          this.shareList.put(tickerSymbol, Integer.parseInt(value));
         } else {
           // Handle invalid line
           throw new IllegalArgumentException();

@@ -1,15 +1,11 @@
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 import controller.StockControllerImpl;
 import controller.StockData;
-import model.FlexiblePortfolio;
-import model.FlexiblePortfolioImpl;
 import model.PortfolioDir;
 import model.PortfolioDirImpl;
+import model.PortfolioImpl;
 import model.StockStatistic;
 import model.StockStatisticsImpl;
 import view.IView;
@@ -34,12 +30,27 @@ public class Main {
     StockControllerImpl controller = new StockControllerImpl(view, new InputStreamReader(System.in),
             model);
 
-//    controller.execute();
+//      model.createFlexiblePortfolio("Vidith");
+//    PortfolioImpl.PortfolioBuilder builder = new PortfolioImpl.PortfolioBuilder("Sachi");
+//    builder.addShare("AAPL", 10);
+//      model.addPortfolio(builder);
+//      view.showListOfPortfolios(model.getListOfPortfoliosName());
+//      model.buyStock(0, "AAPL", 20, LocalDate.parse("2023-01-10"), new StockData());
+//      model.buyStock(0, "AAPL", 20, LocalDate.parse("2014-01-10"), new StockData());
+//    model.sellStock(0, "AAPL", 20, LocalDate.parse("2015-01-14"), new StockData());
+//    model.sellStock(0, "AAPL", 20, LocalDate.parse("2024-01-16"), new StockData());
+//    view.print("" + model.costBasis(0,LocalDate.parse("2015-10-01"), new StockData()));
+//      view.print("" + model.costBasis(0,LocalDate.parse("2024-03-01"), new StockData()));
+//      view.showComposition(model.portfolioComposition(0, LocalDate.parse("2015-03-10")));
+//      view.showComposition(model.portfolioComposition(1));
+//      view.showTotalValue(model.portfolioValue(0, 13, 3, 2023, new StockData()));
+//      view.showTotalValue(model.portfolioValue(1, 13, 3, 2023, new StockData()));
+    controller.execute();
 
-    StockStatistic stats = new StockStatisticsImpl();
-    view.print("" + stats.xDayMovingAvg("AAPL", "2024-03-18",4,
-            new StockData().fetchHistoricalData(
-            "AAPL")));
+//    StockStatistic stats = new StockStatisticsImpl();
+//    view.print("" + stats.xDayMovingAvg("AAPL", "2024-03-18",4,
+//            new StockData().fetchHistoricalData(
+//            "AAPL")));
 
 //    FlexiblePortfolio portfolio = new FlexiblePortfolioImpl("Vidith");
 //

@@ -2,6 +2,7 @@ package view;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Interface representing the view in the Model-View-Controller architecture.
@@ -37,7 +38,7 @@ public interface IView {
    * this method displays a list of portfolios that have been created.
    * @param listOfPortfolios ArrayList containing names of portfolios.
    */
-  void showListOfPortfolios(ArrayList<String> listOfPortfolios);
+  void showListOfPortfolios(Map<String, String> listOfPortfolios);
 
   /**
    * this method displays an error message.
@@ -50,4 +51,12 @@ public interface IView {
    * @param message The message to be printed.
    */
   void print(String message);
+
+  void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate);
+
+  void printTreeMapEntries(TreeMap<String, String> treeMap);
+
+  void choosePortfolioType();
+
+  void showStockStat();
 }

@@ -1,8 +1,12 @@
 package model;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import controller.StockData;
 
@@ -17,6 +21,7 @@ public class PortfolioDirImpl implements PortfolioDir {
    * Array list to store the portfolio objects.
    */
   private final ArrayList<Portfolio> portfolioDirectory;
+  private final StockStatistic stats = new StockStatisticsImpl();
 
   /**
    * Constructor to initialize the portfolio directory with the array list.
@@ -31,13 +36,24 @@ public class PortfolioDirImpl implements PortfolioDir {
   }
 
   @Override
-  public ArrayList<String> getListOfPortfoliosName() {
-    ArrayList<String> listOfPortfolios = new ArrayList<>();
-    for (Portfolio obj : portfolioDirectory) {
-      listOfPortfolios.add(obj.getName());
+  public void createFlexiblePortfolio(String portfolioName) {
+    if (portfolioNameExists(portfolioName)) {
+      throw new IllegalArgumentException();
     }
+    portfolioDirectory.add(new FlexiblePortfolioImpl(portfolioName));
+  }
 
-    return listOfPortfolios;
+  @Override
+  public Map<String, String> getListOfPortfoliosName() {
+    Map<String, String> listOfPortfolio = new HashMap<>();
+    for (Portfolio obj : portfolioDirectory) {
+      if(obj.isFlexible()) {
+        listOfPortfolio.put(obj.getName(), "Flexible");
+      } else {
+        listOfPortfolio.put(obj.getName(), "Inflexible");
+      }
+    }
+    return listOfPortfolio;
   }
 
   @Override
@@ -46,6 +62,14 @@ public class PortfolioDirImpl implements PortfolioDir {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
     return portfolioDirectory.get(input).portfolioComposition();
+  }
+
+  @Override
+  public Map<String, Integer> portfolioComposition(int input, LocalDate date) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
+    return portfolioDirectory.get(input).portfolioComposition(date);
   }
 
   @Override
@@ -100,7 +124,86 @@ public class PortfolioDirImpl implements PortfolioDir {
         return true;
       }
     }
-
     return false;
   }
+
+  @Override
+  public void buyStock(int input, String stock, int quantity, LocalDate buyDate, StockData api) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
+    portfolioDirectory.get(input).buyStock(stock, quantity, buyDate, api);
+  }
+
+  @Override
+  public void sellStock(int input, String stock, int quantity, LocalDate sellDate, StockData api) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
+    portfolioDirectory.get(input).sellStock(stock, quantity, sellDate, api);
+  }
+
+  @Override
+  public double costBasis(int input, LocalDate date, StockData api) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
+    return portfolioDirectory.get(input).costBasis(date, api);
+  }
+
+  @Override
+  public String gainOrLose(String stock, LocalDate date, StockData api) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    return stats.gainOrLoseOnDate(tickerSymbol, date + "", api.fetchHistoricalData(tickerSymbol));
+  }
+
+  @Override
+  public String gainOrLoseOverAPeriod(String stock, LocalDate date1, LocalDate date2,
+                                      StockData api) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    return stats.gainOrLoseOverPeriod(tickerSymbol, date1 + "", date2 + "",
+            api.fetchHistoricalData(tickerSymbol));
+  }
+
+  @Override
+  public double xDayMovingAvg(String stock, LocalDate date, int x, StockData api) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    return stats.xDayMovingAvg(tickerSymbol, date + "", x, api.fetchHistoricalData(tickerSymbol));
+  }
+
+  @Override
+  public TreeMap<String, String> crossoverOverPeriod(String stock, StockData api,
+                                                  LocalDate startDate,
+                                                 LocalDate endDate) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    return stats.crossoverOverPeriod(tickerSymbol, api.fetchHistoricalData(tickerSymbol),
+            startDate + "",
+            endDate + "");
+  }
+
+  @Override
+  public TreeMap<String, String> movingCrossOver(String stock, StockData api, LocalDate startDate,
+                                LocalDate endDate, int x, int y) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    return stats.movingCrossoversOverPeriod(tickerSymbol, api.fetchHistoricalData(tickerSymbol),
+            startDate + "", endDate + "", x,
+     y);
+  }
+
+
 }

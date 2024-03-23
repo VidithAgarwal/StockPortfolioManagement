@@ -8,32 +8,37 @@ import java.util.TreeMap;
 
 import controller.StockData;
 
-public class FlexiblePortfolioImpl implements FlexiblePortfolio {
+class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   private final TreeMap<LocalDate, Map<String, Integer>> compositionOnDate;
-//  private final ArrayList<Transaction> Transactions;
+  private final ArrayList<Transaction> transactions;
 
-  private final String portfolioName;
-
-  public FlexiblePortfolioImpl(String portfolioName) {
+  FlexiblePortfolioImpl(String portfolioName) {
+    super(portfolioName);
     this.compositionOnDate = new TreeMap<>();
-    this.portfolioName = portfolioName;
+    this.transactions = new ArrayList<>();
   }
 
-  Map<String, Integer> deepCopy(Map<String, Integer> map1) {
-    Map<String, Integer> map2 = new HashMap<>();
-    for (Map.Entry<String, Integer> entry : map1.entrySet()) {
-      map2.put(entry.getKey(), entry.getValue());
-    }
-    return map2;
-  }
+
 
   @Override
-  public void buyStock(String ticker, int quantity, String date) {
-    LocalDate buyDate = LocalDate.parse(date);
+  public void buyStock(String tickerSymbol, int quantity, LocalDate buyDate, StockData api) {
+    String ticker = validateStockName(tickerSymbol);
+    if (ticker == null) {
+      throw new IllegalArgumentException("Ticker symbol doesn't exist");
+    }
+    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+    if (!priceData.containsKey("" + buyDate)) {
+      throw new IllegalArgumentException("Wrong date");
+    }
+    Transaction buyTransaction = new Transaction("buy", ticker, quantity, buyDate);
+    transactions.add(buyTransaction);
+
+
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(buyDate);
     Map<String, Integer> composition = new HashMap<>();
+
     if (closestEntry == null) {
       composition.put(ticker, quantity);
     } else {
@@ -69,19 +74,29 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
   }
 
   @Override
-  public void sellStock(String ticker, int quantity, String date) {
-    LocalDate sellDate = LocalDate.parse(date);
+  public void sellStock(String tickerSymbol, int quantity, LocalDate sellDate, StockData api) {
+    String ticker = validateStockName(tickerSymbol);
+    if (ticker == null) {
+      throw new IllegalArgumentException("Ticker symbol doesn't exist");
+    }
+
+    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+    if (!priceData.containsKey("" + sellDate)) {
+      throw new IllegalArgumentException("Wrong date");
+    }
+    Transaction sellTransaction = new Transaction("sell", ticker, quantity, sellDate);
+    transactions.add(sellTransaction);
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(sellDate);
     Map<String, Integer> composition;
     if (closestEntry == null) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("You can't sell before buying");
     } else {
       composition = deepCopy(closestEntry.getValue());
       if (composition.containsKey(ticker)) {
         int currentValue = composition.get(ticker);
         if (quantity > currentValue) {
-          throw new IllegalArgumentException();
+          throw new IllegalArgumentException("You don't have enough quantity to sell");
         }
         int newValue = currentValue - quantity;
         if (newValue == 0) {
@@ -90,7 +105,7 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
           composition.put(ticker, newValue);
         }
       } else {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("You don't have the stock you want to sell");
       }
     }
 
@@ -101,24 +116,6 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
 
   private void updateCompositionOnSell(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
                                       String ticker, int quantity) {
-//    for (Map.Entry<LocalDate, Map<String, Integer>> entry : (
-//            this.compositionOnDate.tailMap(closestEntry.getKey(), false)).entrySet()) {
-//      Map<String, Integer> futureComposition = entry.getValue();
-//      if (futureComposition.containsKey(ticker)) {
-//        int currentValue = futureComposition.get(ticker);
-//        if (quantity > currentValue) {
-//          throw new IllegalArgumentException();
-//        }
-//        int newValue = currentValue - quantity;
-//        if (newValue == 0) {
-//          futureComposition.remove(ticker);
-//        } else {
-//          futureComposition.put(ticker, newValue);
-//        }
-//      } else {
-//        throw new IllegalArgumentException();
-//      }
-//    }
     boolean isQuantityValid = true;
 
     for (Map.Entry<LocalDate, Map<String, Integer>> entry : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
@@ -136,7 +133,7 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
     }
 
     if (!isQuantityValid) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Invalid sell!");
     }
 
     // Proceed with updating the futureComposition
@@ -157,14 +154,12 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
 
   @Override
   public Map<String, Integer> portfolioComposition() {
-    return null;
+    throw new IllegalArgumentException();
   }
 
-  public Map<String, Integer> portfolioComposition(String date) {
-    LocalDate compositionDate = LocalDate.parse(date);
+  public Map<String, Integer> portfolioComposition(LocalDate date) {
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
-            compositionOnDate.floorEntry(compositionDate);
-    System.out.println(closestEntry);
+            compositionOnDate.floorEntry(date);
 
     if (closestEntry == null) {
       return new HashMap<>();
@@ -173,10 +168,23 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
     return closestEntry.getValue();
   }
 
-  private double getClosingPriceOnDate(String ticker, StockData api, String date) {
-    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
-    return priceData.get(date).get(1);
+  @Override
+  public double costBasis(LocalDate date, StockData api) {
+    double total = 0;
+    for (var transaction : transactions) {
+      if (!transaction.getDate().isAfter(date)) {
+        LocalDate buyDate = transaction.getDate();
+        String ticker = transaction.getStock();
+        int quantity = transaction.getQuantity();
+        double closingPrice = getClosingPriceOnDate(ticker, api, buyDate + "");
+        if (transaction.getType().equalsIgnoreCase("buy")) {
+          total += closingPrice * quantity;
+        }
+      }
+    }
+    return total;
   }
+
 
   @Override
   public double portfolioValue(String date, StockData api) {
@@ -184,24 +192,18 @@ public class FlexiblePortfolioImpl implements FlexiblePortfolio {
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(valueDate);
 
+    if (closestEntry == null) {
+      return 0;
+    }
+
     Map<String, Integer> composition = closestEntry.getValue();
 
-    double totalValue = 0;
-    for (Map.Entry<String, Integer> entry : composition.entrySet()) {
-      String ticker = entry.getKey();
-      Integer quantity = entry.getValue();
-      try {
-        Double closingPrice = getClosingPriceOnDate(ticker, api, date);
-        totalValue += closingPrice * quantity;
-      } catch (RuntimeException e) {
-        throw new IllegalArgumentException(ticker);
-      }
-    }
-    return totalValue;
+    return computeValue(date, composition, api);
   }
 
-  @Override
-  public String getName() {
-    return portfolioName;
+  public boolean isFlexible() {
+    return true;
   }
+
+
 }

@@ -3,13 +3,16 @@ package controller;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import model.Portfolio;
 import model.PortfolioDir;
 import model.PortfolioImpl;
 import model.StockStatistic;
@@ -23,6 +26,8 @@ import view.IView;
  * and get the output from model and print it using the view methods.
  */
 public class StockControllerImpl implements StockController {
+
+
 
   /**
    * view object that is required to call the view method in controller.
@@ -198,33 +203,101 @@ public class StockControllerImpl implements StockController {
     return year >= 0 && year <= 9999;
   }
 
-//  private void gainOrLose() {
-//    StockData api = new StockData();
-//    String ticker = scan.nextLine();
-//    int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that" +
-//            " " +
-//            "date: ");
-//    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
-//
-//    LocalDate date = LocalDate.of(dateArray[2], dateArray[1],dateArray[0]);
-//
-//    String result = StockStatisticsImpl.gainOrLoseOnDate(date, priceData);
-//
-//    view.print(result);
-//  }
-//
-//  private void gainOrLoseOverPeriod() {
-//    StockData api = new StockData();
-//    String ticker = scan.nextLine();
-//    int[] startDateArray = inputDate("Enter the start date");
-//    int[] endDateArray = inputDate("Enter the end date");
-//    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
-//    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
-//    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
-//    String result = StockStatistic.gainOrLoseOverPeriod(startDate, endDate, priceData);
-//
-//    view.print(result);
-//  }
+  private void gainOrLose() {
+    StockData api = new StockData();
+    view.print("Enter the name of the share or ticker symbol: ");
+    String ticker = scan.nextLine();
+    int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that" +
+            " " +
+            "date: ");
+
+    LocalDate date = LocalDate.of(dateArray[2], dateArray[1],dateArray[0]);
+
+    try {
+      String result = model.gainOrLose(ticker, date, api);
+      view.print(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+
+  }
+
+  private void gainOrLoseOverPeriod() {
+    StockData api = new StockData();
+    view.print("Enter the name of the share or ticker symbol: ");
+    String ticker = scan.nextLine();
+    int[] startDateArray = inputDate("Enter the start date");
+    int[] endDateArray = inputDate("Enter the end date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
+
+    try {
+      String result = model.gainOrLoseOverAPeriod(ticker, startDate, endDate, api);
+      view.print(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+
+  }
+
+  private void xDayMovingAvg() {
+    StockData api = new StockData();
+    view.print("Enter the name of the share or ticker symbol: ");
+    String ticker = scan.nextLine();
+    int[] startDateArray = inputDate("Enter the start date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+    int x = inputPositiveInteger("Enter X days before the given date you want to find the moving " +
+            "average for: ");
+    try {
+      double result = model.xDayMovingAvg(ticker, startDate, x, api);
+      view.print(result + "");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  private void crossoverOverPeriod() {
+    StockData api = new StockData();
+    view.print("Enter the name of the share or ticker symbol: ");
+    String ticker = scan.nextLine();
+    int[] startDateArray = inputDate("Enter the start date");
+    int[] endDateArray = inputDate("Enter the end date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
+    try {
+      TreeMap<String, String> result = model.crossoverOverPeriod(ticker, api, startDate, endDate);
+      view.printTreeMapEntries(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+
+  }
+
+  private void movingCrossoversOverPeriod() {
+    StockData api = new StockData();
+    view.print("Enter the name of the share or ticker symbol: ");
+    String ticker = scan.nextLine();
+    int[] startDateArray = inputDate("Enter the start date");
+    int[] endDateArray = inputDate("Enter the end date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
+    TreeMap<String, String> result = new TreeMap<>();
+
+    int x = inputPositiveInteger("Enter the value of x (shorter moving average period): ");
+    int y = inputPositiveInteger("Enter the value of y (longer moving average period, greater " +
+            "than x): ");
+
+    try {
+
+      result = model.movingCrossOver(ticker, api, startDate, endDate, x
+              , y);
+      view.printTreeMapEntries(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+
+
+  }
 
 
   /**
@@ -313,8 +386,7 @@ public class StockControllerImpl implements StockController {
    * @return the portfolio number chosen by the user.
    */
   private int inputPortfolioChoice() {
-    ArrayList<String> listOfPortfolioNames = model.getListOfPortfoliosName();
-    view.showListOfPortfolios(listOfPortfolioNames);
+    view.showListOfPortfolios(model.getListOfPortfoliosName());
 
     return validateUserChoice();
   }
@@ -413,13 +485,24 @@ public class StockControllerImpl implements StockController {
    */
   private void deleteCSVFiles(File directory) {
     File[] allContents = directory.listFiles();
+    System.out.println(directory);
+    System.out.println(Arrays.toString(allContents));
     if (allContents != null) {
       for (File file : allContents) {
         deleteCSVFiles(file);
       }
-      if (!directory.delete()) {
-        view.displayError("Failed to delete directory: " + directory.getName());
+      try {
+        if (!directory.delete()) {
+          System.out.println("Deletion failed");
+        }
+      } catch (SecurityException e) {
+        System.out.println("Security exception: " + e.getMessage());
+      } catch (Exception e) {
+        System.out.println("Exception occurred: " + e.getMessage());
       }
+//      if (!directory.delete()) {
+//        view.displayError("Failed to delete directory: " + directory.getName());
+//      }
     }
   }
 
@@ -435,9 +518,12 @@ public class StockControllerImpl implements StockController {
     view.showSecondaryMenu();
     choice = inputPositiveInteger("Enter your choice: ");
     boolean exit = false;
+    boolean showSubMenu = true;
     switch (choice) {
       case 1:
-        createPortfolio();
+        while (showSubMenu) {
+          showSubMenu = showCreateMenu();
+        }
         break;
       case 2:
         loadPortfolio();
@@ -463,6 +549,12 @@ public class StockControllerImpl implements StockController {
         }
         break;
       case 6:
+        boolean showStockMenu = true;
+        while (showStockMenu) {
+          showStockMenu = stockMenu();
+        }
+        break;
+      case 7:
         exit = true;
         break;
       default:
@@ -491,12 +583,21 @@ public class StockControllerImpl implements StockController {
 
     switch (choice) {
       case 1:
-        createPortfolio();
+        boolean showSubMenu = true;
+        while (showSubMenu) {
+          showSubMenu = showCreateMenu();
+        }
         break;
       case 2:
         loadPortfolio();
         break;
       case 3:
+        boolean showStockMenu = true;
+        while (showStockMenu) {
+          showStockMenu = stockMenu();
+        }
+        break;
+      case 4:
         return true;
       //exit();
       default:
@@ -504,5 +605,60 @@ public class StockControllerImpl implements StockController {
         return false;
     }
     return false;
+  }
+
+  private boolean showCreateMenu() {
+    int subChoice = 0;
+    view.choosePortfolioType();
+    subChoice = inputPositiveInteger("Enter your choice: ");
+    switch (subChoice) {
+      case 1:
+        createPortfolio();
+        return false;
+      case 2:
+        createInflexiblePortfolio();
+        return false;
+      case 3:
+        //exit
+        return false;
+      default:
+        this.view.displayError("Enter a valid choice, this option doesn't exists.");
+        return true;
+    }
+  }
+
+  private void createInflexiblePortfolio() {
+    String name = inputPortfolioName();
+    model.createFlexiblePortfolio(name);
+  }
+
+  private boolean stockMenu() {
+    int subChoice = 0;
+    view.showStockStat();
+    subChoice = inputPositiveInteger("Enter your choice: ");
+    switch (subChoice) {
+      case 1:
+        gainOrLose();
+        break;
+      case 2:
+        gainOrLoseOverPeriod();
+        break;
+      case 3:
+        xDayMovingAvg();
+        break;
+      case 4:
+        crossoverOverPeriod();
+        break;
+      case 5:
+        movingCrossoversOverPeriod();
+        break;
+      case 6:
+        //exit
+        return false;
+      default:
+        this.view.displayError("Enter a valid choice, this option doesn't exists.");
+        return true;
+    }
+    return true;
   }
 }

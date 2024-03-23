@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import controller.StockData;
@@ -29,4 +30,14 @@ public interface Portfolio {
    * @return the name of the portfolio.
    */
   String getName();
+
+  void buyStock(String ticker, int quantity, LocalDate date, StockData api);
+
+  void sellStock(String ticker, int quantity, LocalDate date, StockData api);
+
+  Map<String, Integer> portfolioComposition(LocalDate date);
+
+  double costBasis(LocalDate date, StockData api);
+
+  boolean isFlexible();
 }

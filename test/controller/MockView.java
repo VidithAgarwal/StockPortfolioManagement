@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 import view.IView;
 
@@ -60,11 +61,14 @@ public class MockView implements IView {
    * @param listOfPortfolios The list of portfolios.
    */
   @Override
-  public void showListOfPortfolios(ArrayList<String> listOfPortfolios) {
+  public void showListOfPortfolios(Map<String , String> listOfPortfolios) {
     for (int i = 0; i < listOfPortfolios.size(); i++) {
       printedOutput.append(listOfPortfolios.get(0)).append("\n");
     }
   }
+
+
+
 
   /**
    * Displays an error message.
@@ -83,5 +87,25 @@ public class MockView implements IView {
   @Override
   public void print(String message) {
     printedOutput.append(message).append("\n");
+  }
+
+  @Override
+  public void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
+
+  }
+
+  @Override
+  public void printTreeMapEntries(TreeMap<String, String> treeMap) {
+
+  }
+
+  @Override
+  public void choosePortfolioType() {
+
+  }
+
+  @Override
+  public void showStockStat() {
+
   }
 }

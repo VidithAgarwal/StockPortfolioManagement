@@ -1,8 +1,12 @@
 package controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import model.Portfolio;
 import model.PortfolioDir;
@@ -65,15 +69,20 @@ public class MockModel implements PortfolioDir {
     logger.append(portfolioDirectory.get(portfolioDirectory.size() - 1).getName()).append('\n');
   }
 
+  @Override
+  public void createFlexiblePortfolio(String portfolioName) {
+
+  }
+
   /**
    * Retrieves the list of names of all portfolios in the mock portfolio directory.
    * @return An ArrayList containing the name of the mock portfolio.
    */
   @Override
-  public ArrayList<String> getListOfPortfoliosName() {
+  public Map<String, String > getListOfPortfoliosName() {
     ArrayList<String> listOfPortfolios = new ArrayList<>();
     listOfPortfolios.add(mockName);
-    return listOfPortfolios;
+    return new HashMap<>();
   }
 
   /**
@@ -85,6 +94,11 @@ public class MockModel implements PortfolioDir {
   public Map<String, Integer> portfolioComposition(int input) {
     logger.append("Retrieving composition for portfolio at index: ").append(input).append('\n');
     return mockComposition;
+  }
+
+  @Override
+  public Map<String, Integer> portfolioComposition(int input, LocalDate date) {
+    return null;
   }
 
   /**
@@ -132,5 +146,49 @@ public class MockModel implements PortfolioDir {
   @Override
   public boolean portfolioNameExists(String portfolioName) {
     return false;
+  }
+
+  @Override
+  public void buyStock(int input, String stock, int quantity, LocalDate buyDate, StockData api) {
+
+  }
+
+  @Override
+  public void sellStock(int input, String stock, int quantity, LocalDate sellDate, StockData api) {
+
+  }
+
+  @Override
+  public double costBasis(int input, LocalDate date, StockData api) {
+    return 0;
+  }
+
+  @Override
+  public String gainOrLose(String tickerSymbol, LocalDate date, StockData api) {
+    return null;
+  }
+
+  @Override
+  public String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2,
+                                      StockData api) {
+    return null;
+  }
+
+  @Override
+  public double xDayMovingAvg(String tickerSymbol, LocalDate date, int x, StockData api) {
+    return 0;
+  }
+
+  @Override
+  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, StockData api,
+                                                  LocalDate startDate,
+                                                 LocalDate endDate) {
+    return null;
+  }
+
+  @Override
+  public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api, LocalDate startDate,
+                                                 LocalDate endDate, int x, int y) {
+    return null;
   }
 }
