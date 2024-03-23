@@ -1,4 +1,5 @@
 package view;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Map;
@@ -62,9 +63,11 @@ public class IViewImpl implements IView {
 
   @Override
   public void choosePortfolioType() {
-    out.println("1. Flexible Portfolio");
-    out.println("2. Inflexible Portfolio");
+    out.println("1. Inflexible Portfolio");
+    out.println("2. Flexible Portfolio");
+    out.println("3. Go back to main menu");
   }
+
 
   @Override
   public void showStockStat() {
@@ -73,13 +76,29 @@ public class IViewImpl implements IView {
     out.println("3. Get x-day moving average on a date for a stock");
     out.println("4. Over a specific time-period get crossover days for a stock");
     out.println("5. Over a specific time-period get moving crossover for a stock");
-    out.println("6. Go back to main menu");
 
   }
   @Override
   public void showTotalValue(double value) {
     out.println("The total value of portfolio is: $" + value);
   }
+
+  @Override
+  public void showXDayMovingAvg(double value) {
+    out.println("The X-day moving average is: $" + value);
+  }
+
+
+//  @Override
+//  public void showListOfPortfolios(ArrayList<String> listOfPortfolios) {
+//    //can print this message using print that list of flexible portfolio, list of inflexible portfolio
+//    // or can have a parameter as string type that gives portfolio type, but it will be changed in existing code.
+//    out.println("The list of existing portfolios:");
+//    out.println("No. of Portfolio\tPortfolio Name");
+//    for (int i = 0; i < listOfPortfolios.size(); i++) {
+//      out.printf("%-20s %s\n", i, listOfPortfolios.get(i));
+//    }
+//  }
 
   @Override
   public void showListOfPortfolios(Map<String, String> listOfPortfolios) {
@@ -97,6 +116,7 @@ public class IViewImpl implements IView {
       index++;
     }
   }
+
 
   @Override
   public void displayError(String error) {
@@ -128,7 +148,7 @@ public class IViewImpl implements IView {
     for (Map.Entry<String, String> entry : treeMap.entrySet()) {
       out.println(entry.getKey() + " : " + entry.getValue());
     }
-}
+  }
 
 
 }
