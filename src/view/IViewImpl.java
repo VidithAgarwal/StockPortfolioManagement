@@ -48,8 +48,11 @@ public class IViewImpl implements IView {
     out.println("3. Get composition of a portfolio");
     out.println("4. Get total value of a portfolio for certain date");
     out.println("5. Save a portfolio");
-    out.println("6. Get Stock Statistics");
-    out.println("7. Exit");
+    out.println("6. Buy stock");
+    out.println("7. Sell stock");
+    out.println("8. Get cost basis");
+    out.println("9. Get Stock Statistics");
+    out.println("10. Exit");
   }
 
   @Override

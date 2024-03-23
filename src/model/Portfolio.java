@@ -11,12 +11,7 @@ import controller.StockData;
  */
 public interface Portfolio {
 
-  /**
-   * portfolio composition method is used to get the composition of a portfolio.
-   * The stock name and its quantity is returned for the composition.
-   * @return the map of stock name and the quantity of stock.
-   */
-  Map<String, Integer> portfolioComposition();
+
 
   /**
    * portfolioValue method is used to get the value of a portfolio on a particular date.
@@ -35,6 +30,11 @@ public interface Portfolio {
 
   void sellStock(String ticker, int quantity, LocalDate date, StockData api);
 
+  /**
+   * portfolio composition method is used to get the composition of a portfolio.
+   * The stock name and its quantity is returned for the composition.
+   * @return the map of stock name and the quantity of stock.
+   */
   Map<String, Integer> portfolioComposition(LocalDate date);
 
   double costBasis(LocalDate date, StockData api);

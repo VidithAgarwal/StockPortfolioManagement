@@ -36,14 +36,13 @@ public class PortfolioImpl extends AbstractPortfolio {
   }
 
 
-  @Override
-  public Map<String, Integer> portfolioComposition() {
+  private Map<String, Integer> portfolioComposition() {
     return deepCopy(this.sharesList);
   }
 
   @Override
   public Map<String, Integer> portfolioComposition(LocalDate date) {
-    return null;
+    return portfolioComposition();
   }
 
   @Override

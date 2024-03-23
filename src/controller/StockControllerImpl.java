@@ -120,8 +120,10 @@ public class StockControllerImpl implements StockController {
    */
   private void examineComposition() {
     int input = inputPortfolioChoice();
+    int[] date = inputDate("Enter the date you want to see the composition for: ");
+    LocalDate compositionDate = LocalDate.of(date[2], date[1], date[1]);
     try {
-      view.showComposition(model.portfolioComposition(input));
+      view.showComposition(model.portfolioComposition(input, compositionDate));
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
     }
@@ -139,7 +141,7 @@ public class StockControllerImpl implements StockController {
     String path = scan.nextLine();
     Persistence persistence = new Persistence();
     try {
-      persistence.exportAsCSV(path, model.portfolioComposition(input));
+      persistence.exportAsCSV(path, model.portfolioComposition(input, LocalDate.now()));
       view.print("Portfolio exported to " + path + " successfully.");
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
@@ -549,12 +551,27 @@ public class StockControllerImpl implements StockController {
         }
         break;
       case 6:
+        if (!model.isEmpty()) {
+          buyStock();
+        }
+        break;
+      case 7:
+        if (!model.isEmpty()) {
+          sellStock();
+        }
+        break;
+      case 8:
+        if (!model.isEmpty()) {
+          getCostBasis();
+        }
+        break;
+      case 9:
         boolean showStockMenu = true;
         while (showStockMenu) {
           showStockMenu = stockMenu();
         }
         break;
-      case 7:
+      case 10:
         exit = true;
         break;
       default:
@@ -566,6 +583,55 @@ public class StockControllerImpl implements StockController {
       deleteCSVFilesFromStocklist(currentDirectory);
     }
     return exit;
+  }
+
+  private void getCostBasis() {
+    int choice = inputPortfolioChoice();
+
+    int[] date = inputDate("Enter the date till which you want the cost basis of the portfolio");
+    LocalDate costBasisDate = LocalDate.of(date[2], date[1],date[0]);
+
+    try {
+      double costBasis = model.costBasis(choice, costBasisDate, new StockData());
+      view.print(costBasis + "");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  private void sellStock() {
+    int choice = inputPortfolioChoice();
+
+    view.print("Enter the name of the share or ticker symbol: ");
+    String shareName = scan.nextLine();
+    int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you want to " +
+            "sell:");
+    int[] date = inputDate("Enter the date of your sale");
+    LocalDate sellDate = LocalDate.of(date[2], date[1],date[0]);
+
+    try {
+      model.sellStock(choice, shareName, quantity, sellDate, new StockData());
+      view.print(quantity + " " + shareName + " sold successfully");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  private void buyStock() {
+    int choice = inputPortfolioChoice();
+
+    view.print("Enter the name of the share or ticker symbol: ");
+    String shareName = scan.nextLine();
+    int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you want to buy:");
+    int[] date = inputDate("Enter the date of your purchase");
+    LocalDate buyDate = LocalDate.of(date[2], date[1],date[0]);
+
+    try {
+      model.buyStock(choice, shareName, quantity, buyDate, new StockData());
+      view.print(quantity + " " + shareName + " bought successfully");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
 

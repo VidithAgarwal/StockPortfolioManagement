@@ -126,7 +126,6 @@ public class StockData {
 
     try {
       if (!isCSVFileExists()) {
-        System.out.println("Hello");
         fetchData();
       } else if (isCSVFileExists()) {
         loadDataFromFile();

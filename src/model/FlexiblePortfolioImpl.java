@@ -152,10 +152,6 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
   }
 
-  @Override
-  public Map<String, Integer> portfolioComposition() {
-    throw new IllegalArgumentException();
-  }
 
   public Map<String, Integer> portfolioComposition(LocalDate date) {
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =

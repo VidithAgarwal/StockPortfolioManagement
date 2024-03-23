@@ -34,7 +34,6 @@ public interface PortfolioDir {
    * @param input the index of the portfolio.
    * @return map containing composition of the portfolio (share name and quantity in a portfolio.)
    */
-  Map<String, Integer> portfolioComposition(int input);
   Map<String, Integer> portfolioComposition(int input, LocalDate date);
 
   /**

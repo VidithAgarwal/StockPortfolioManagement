@@ -90,11 +90,11 @@ public class MockModel implements PortfolioDir {
    * @param input The index of the mock portfolio.
    * @return A map containing the composition of the mock portfolio.
    */
-  @Override
-  public Map<String, Integer> portfolioComposition(int input) {
-    logger.append("Retrieving composition for portfolio at index: ").append(input).append('\n');
-    return mockComposition;
-  }
+//  @Override
+//  public Map<String, Integer> portfolioComposition(int input) {
+//    logger.append("Retrieving composition for portfolio at index: ").append(input).append('\n');
+//    return mockComposition;
+//  }
 
   @Override
   public Map<String, Integer> portfolioComposition(int input, LocalDate date) {

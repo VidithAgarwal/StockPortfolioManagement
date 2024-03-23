@@ -108,4 +108,9 @@ public class MockView implements IView {
   public void showStockStat() {
 
   }
+
+  @Override
+  public void showXDayMovingAvg(double value) {
+
+  }
 }

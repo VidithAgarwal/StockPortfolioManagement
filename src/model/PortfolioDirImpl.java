@@ -57,14 +57,6 @@ public class PortfolioDirImpl implements PortfolioDir {
   }
 
   @Override
-  public Map<String, Integer> portfolioComposition(int input) {
-    if (input >= portfolioDirectory.size() || input < 0) {
-      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
-    }
-    return portfolioDirectory.get(input).portfolioComposition();
-  }
-
-  @Override
   public Map<String, Integer> portfolioComposition(int input, LocalDate date) {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
@@ -132,6 +124,10 @@ public class PortfolioDirImpl implements PortfolioDir {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
+
+    if (!portfolioDirectory.get(input).isFlexible()) {
+      throw new IllegalArgumentException("Cannot buy in inflexible portfolio!");
+    }
     portfolioDirectory.get(input).buyStock(stock, quantity, buyDate, api);
   }
 
@@ -140,6 +136,9 @@ public class PortfolioDirImpl implements PortfolioDir {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
+    if (!portfolioDirectory.get(input).isFlexible()) {
+      throw new IllegalArgumentException("Cannot sell in inflexible portfolio!");
+    }
     portfolioDirectory.get(input).sellStock(stock, quantity, sellDate, api);
   }
 
@@ -147,6 +146,9 @@ public class PortfolioDirImpl implements PortfolioDir {
   public double costBasis(int input, LocalDate date, StockData api) {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
+    if (!portfolioDirectory.get(input).isFlexible()) {
+      throw new IllegalArgumentException("Cannot get the cost basis of a inflexible portfolio!");
     }
     return portfolioDirectory.get(input).costBasis(date, api);
   }

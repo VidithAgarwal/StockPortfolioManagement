@@ -129,7 +129,9 @@ public class Performance {
   }
 
 
-  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value, long totalDays, FlexiblePortfolio portfolioName, TreeMap <String, Double> selectedData ) {
+  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value,
+                                           long totalDays, Portfolio portfolioName, TreeMap <String,
+          Double> selectedData ) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusDays(interval * i);
@@ -148,7 +150,8 @@ public class Performance {
     }
   }
 
-  public TreeMap<String, Double> portfolioPerformance ( FlexiblePortfolio portfolioName, LocalDate start,  LocalDate end) {
+  public TreeMap<String, Double> portfolioPerformance ( Portfolio portfolioName, LocalDate start,
+                                                        LocalDate end) {
     double value = 0;
     TreeMap<String, Double> selectedData = new TreeMap<>();
     long totalDays = ChronoUnit.DAYS.between(start, end);
