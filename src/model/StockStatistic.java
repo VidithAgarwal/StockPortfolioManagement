@@ -1,6 +1,8 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TreeMap;
 
 public interface StockStatistic {
@@ -13,7 +15,6 @@ public interface StockStatistic {
 
   public TreeMap<String, String> crossoverOverPeriod (String tickerSymbol,TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate);
 
-  public TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol, TreeMap<String,
-          ArrayList<Double>> priceData, String startDate, String endDate, int x, int y);
+  public TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol, TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate, int x, int y);
 
-}
+  }
