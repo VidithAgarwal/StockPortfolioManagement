@@ -79,6 +79,8 @@ public class IViewImpl implements IView {
     out.println("3. Get x-day moving average on a date for a stock");
     out.println("4. Over a specific time-period get crossover days for a stock");
     out.println("5. Over a specific time-period get moving crossover for a stock");
+    out.println("6. View stock performance for a stock");
+    out.println("7. Exit");
 
   }
   @Override
@@ -133,7 +135,7 @@ public class IViewImpl implements IView {
 
   @Override
   public void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
-    out.println("Performance of portfolio" + stockOrPortfolio + "from" + startDate + "to " + endDate + "\n");
+    out.println("Performance of portfolio " + stockOrPortfolio + " from " + startDate + " to " + endDate + "\n");
     for (Map.Entry<String, Integer> entry : data.entrySet()) {
       String timestamp = entry.getKey();
       int quantity = entry.getValue();
@@ -143,7 +145,7 @@ public class IViewImpl implements IView {
       }
       out.println(timestamp + ": " + asterisks);
     }
-    out.print("\nScale: * = "+ scale);
+    out.print("\nScale: * = \n"+ scale);
   }
 
   @Override
