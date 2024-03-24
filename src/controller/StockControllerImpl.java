@@ -719,6 +719,9 @@ public class StockControllerImpl implements StockController {
         movingCrossoversOverPeriod();
         break;
       case 6:
+        stockPerformance();
+        break;
+      case 7:
         //exit
         return false;
       default:
@@ -726,5 +729,22 @@ public class StockControllerImpl implements StockController {
         return true;
     }
     return true;
+  }
+
+  private void stockPerformance() {
+    StockData api = new StockData();
+    view.print("Enter the name of the share or ticker symbol: ");
+    String ticker = scan.nextLine();
+    int[] startDateArray = inputDate("Enter the start date");
+    int[] endDateArray = inputDate("Enter the end date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
+    TreeMap<String, Integer> result;
+    try {
+      result = model.stockPerformance(ticker, api,startDate,endDate);
+      view.barGraph(10,result, ticker, startDate+"", endDate+"");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 }
