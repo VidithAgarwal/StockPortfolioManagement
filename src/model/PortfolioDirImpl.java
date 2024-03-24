@@ -169,6 +169,13 @@ public class PortfolioDirImpl implements PortfolioDir {
     if (tickerSymbol == null) {
       throw new IllegalArgumentException("Invalid ticker symbol");
     }
+    LocalDate currentDate = LocalDate.now();
+    if(date2.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(date1.isAfter(date2)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
+    }
     return stats.gainOrLoseOverPeriod(tickerSymbol, date1 + "", date2 + "",
             api.fetchHistoricalData(tickerSymbol));
   }
@@ -179,16 +186,27 @@ public class PortfolioDirImpl implements PortfolioDir {
     if (tickerSymbol == null) {
       throw new IllegalArgumentException("Invalid ticker symbol");
     }
+    if(x < 0){
+      throw new IllegalArgumentException("Enter positive number of days");
+    }
+
     return stats.xDayMovingAvg(tickerSymbol, date + "", x, api.fetchHistoricalData(tickerSymbol));
   }
 
   @Override
   public TreeMap<String, String> crossoverOverPeriod(String stock, StockData api,
-                                                  LocalDate startDate,
-                                                 LocalDate endDate) {
+                                                     LocalDate startDate,
+                                                     LocalDate endDate) {
     String tickerSymbol = AbstractPortfolio.validateStockName(stock);
     if (tickerSymbol == null) {
       throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    LocalDate currentDate = LocalDate.now();
+    if(endDate.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(startDate.isAfter(endDate)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
     }
     return stats.crossoverOverPeriod(tickerSymbol, api.fetchHistoricalData(tickerSymbol),
             startDate + "",
@@ -197,14 +215,47 @@ public class PortfolioDirImpl implements PortfolioDir {
 
   @Override
   public TreeMap<String, String> movingCrossOver(String stock, StockData api, LocalDate startDate,
-                                LocalDate endDate, int x, int y) {
+                                                 LocalDate endDate, int x, int y) {
     String tickerSymbol = AbstractPortfolio.validateStockName(stock);
     if (tickerSymbol == null) {
       throw new IllegalArgumentException("Invalid ticker symbol");
     }
+    LocalDate currentDate = LocalDate.now();
+    if(endDate.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(startDate.isAfter(endDate)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
+    }
+    if(x < 0 || y<0 || x>y){
+      throw new IllegalArgumentException("Enter positive number of days, & shorter moving avg days should be less than larger moving avg days.");
+    }
     return stats.movingCrossoversOverPeriod(tickerSymbol, api.fetchHistoricalData(tickerSymbol),
-            startDate + "", endDate + "", x,
-     y);
+            startDate + "", endDate + "", x, y);
+  }
+
+  public TreeMap<String, Integer> stockPerformance (String stock, StockData api,
+                                                    LocalDate start, LocalDate end) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    Performance p = new Performance();
+    TreeMap<String, Double> selectedData = p.stockPerformance(api.fetchHistoricalData(tickerSymbol),start,end);
+    int scale = p.determineScale(selectedData);
+    TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
+    return stockPerfom;
+  }
+
+  public TreeMap<String, Integer> portfolioPerformance (int input, LocalDate start,  LocalDate end) {
+    if (!portfolioDirectory.get(input).isFlexible()) {
+      throw new IllegalArgumentException();
+    }
+    Performance p = new Performance();
+    TreeMap<String, Double> selectedData = p.portfolioPerformance(portfolioDirectory.get(input),start,end);
+    int scale = p.determineScale(selectedData);
+    TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
+    return stockPerfom;
   }
 
 
