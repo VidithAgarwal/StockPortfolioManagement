@@ -82,4 +82,11 @@ public interface PortfolioDir {
   TreeMap<String, String> movingCrossOver (String tickerSymbol, StockData api, LocalDate startDate,
                                            LocalDate endDate
           , int x, int y);
+
+  TreeMap<String, Integer> stockPerformance (String stock, StockData api,
+                                             LocalDate start, LocalDate end) ;
+
+  TreeMap<String, Integer> portfolioPerformance ( int input,
+                                                         LocalDate start,  LocalDate end);
+
 }
