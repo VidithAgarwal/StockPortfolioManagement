@@ -20,7 +20,7 @@ public class StockStatisticsImpl implements StockStatistic {
       } else if (closingPrice < openingPrice) {
         return tickerSymbol + " lost on " + dateString;
       } else {
-        return tickerSymbol + "remained unchanged on " + dateString;
+        return tickerSymbol + " remained unchanged on " + dateString;
       }
     } catch (NullPointerException e) {
       throw new IllegalArgumentException("No price data available for " + dateString);
@@ -33,11 +33,15 @@ public class StockStatisticsImpl implements StockStatistic {
     ArrayList<Double> prices2 = priceData.get(date2);
     String currentDate1 = date1;
     String currentDate2 = date2;
-    if (prices1 == null)  {
+    if (prices1 == null && prices2 == null)  {
       currentDate1 = getNextDate(date1,priceData,date2);
+      currentDate2 = getPreviousDate(date2,priceData);
     }
     else if(prices2 == null) {
-      currentDate2 = getPreviousDate(date1,priceData);
+      currentDate2 = getPreviousDate(date2,priceData);
+    }
+    else if(prices1 == null) {
+      currentDate1 = getNextDate(date1,priceData,date2);
     }
     else {
       currentDate1 = date1;
@@ -54,11 +58,11 @@ public class StockStatisticsImpl implements StockStatistic {
     double priceDifference = closingPrice2 - closingPrice1;
 
     if (priceDifference > 0) {
-      return tickerSymbol + "gained over the period from " + currentDate1 + " to " + currentDate2;
+      return tickerSymbol + " gained over the period from " + date1 + " to " + date2;
     } else if (priceDifference < 0) {
-      return tickerSymbol + "lost over the period from " + currentDate1 + " to " + currentDate2;
+      return tickerSymbol + " lost over the period from " + date1 + " to " + date2;
     } else {
-      return tickerSymbol + "remained unchanged over the period from " + currentDate1 + " to " + currentDate2;
+      return tickerSymbol + " remained unchanged over the period from " + date1 + " to " + date2;
     }
   }
 
@@ -185,9 +189,12 @@ public class StockStatisticsImpl implements StockStatistic {
       for (String currentDate = startDate; !currentDate.equals(endDate); currentDate = getNextDate(currentDate, priceData, endDate)) {
         double xMovingAverage = xDayMovingAvg(tickerSymbol, currentDate, x, priceData);
         double yMovingAverage = xDayMovingAvg(tickerSymbol, currentDate, y, priceData);
-        if (xMovingAverage > yMovingAverage) { // CHANGED , is this correct  ?
+        String prevDay = getPreviousDate(currentDate,priceData);
+        double xMovingAveragePrev = xDayMovingAvg(tickerSymbol, prevDay, x, priceData);
+        double yMovingAveragePrev = xDayMovingAvg(tickerSymbol, prevDay, y, priceData);
+        if (xMovingAverage > yMovingAverage && xMovingAveragePrev < yMovingAveragePrev) { // CHANGED , is this correct  ?
           crossoverInfo.put(currentDate, "buy");
-        } else if (xMovingAverage < yMovingAverage) {
+        } else if (xMovingAverage < yMovingAverage && xMovingAveragePrev > yMovingAveragePrev) {
           crossoverInfo.put(currentDate, "sell");
         }
       }
