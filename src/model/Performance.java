@@ -129,9 +129,7 @@ public class Performance {
   }
 
 
-  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value,
-                                           long totalDays, Portfolio portfolioName, TreeMap <String,
-          Double> selectedData ) {
+  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value, long totalDays, Portfolio portfolioName, TreeMap <String, Double> selectedData ) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusDays(interval * i);
@@ -150,8 +148,10 @@ public class Performance {
     }
   }
 
-  public TreeMap<String, Double> portfolioPerformance ( Portfolio portfolioName, LocalDate start,
-                                                        LocalDate end) {
+  public TreeMap<String, Double> portfolioPerformance ( Portfolio portfolioName, LocalDate start,  LocalDate end) {
+    if (!portfolioName.isFlexible()) {
+      throw new IllegalArgumentException();
+    }
     double value = 0;
     TreeMap<String, Double> selectedData = new TreeMap<>();
     long totalDays = ChronoUnit.DAYS.between(start, end);
@@ -251,7 +251,7 @@ public class Performance {
   }
 
   //finding scale
-  public int determineScale (Map<String, Double> selectedData) {
+  public int determineScale (TreeMap<String, Double> selectedData) {
     double maxValue = Double.MIN_VALUE;
     for (double value : selectedData.values()) {
       if (value > maxValue) {
@@ -262,9 +262,9 @@ public class Performance {
     return scale;
   }
 
-  //for printing performance in view
-  public Map<String, Integer> determineValueBasedOnScale (Map<String, Double> prices, int scale) {
-    Map<String, Integer> scaledPrices = new HashMap<>();
+  //for printing performance in view.
+  public TreeMap<String, Integer> determineValueBasedOnScale (TreeMap<String, Double> prices, int scale) {
+    TreeMap<String, Integer> scaledPrices = new TreeMap<>();
     for (Map.Entry<String, Double> entry : prices.entrySet()) {
       String date = entry.getKey();
       double price = entry.getValue();
