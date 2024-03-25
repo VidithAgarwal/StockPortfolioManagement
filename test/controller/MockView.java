@@ -56,19 +56,21 @@ public class MockView implements IView {
     printedOutput.append(value).append("\n");
   }
 
+  @Override
+  public void showListOfPortfolios(Map<String, String> listOfPortfolios) {
+
+  }
+
   /**
    * Displays the list of portfolios.
    * @param listOfPortfolios The list of portfolios.
    */
-  @Override
-  public void showListOfPortfolios(Map<String , String> listOfPortfolios) {
-    for (int i = 0; i < listOfPortfolios.size(); i++) {
-      printedOutput.append(listOfPortfolios.get(0)).append("\n");
-    }
-  }
-
-
-
+//  @Override
+//  public void showListOfPortfolios(ArrayList<String> listOfPortfolios) {
+//    for (int i = 0; i < listOfPortfolios.size(); i++) {
+//      printedOutput.append(listOfPortfolios.get(0)).append("\n");
+//    }
+//  }
 
   /**
    * Displays an error message.
@@ -90,7 +92,7 @@ public class MockView implements IView {
   }
 
   @Override
-  public void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
+  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
 
   }
 
