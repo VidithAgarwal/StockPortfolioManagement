@@ -52,7 +52,8 @@ public class IViewImpl implements IView {
     out.println("7. Sell stock");
     out.println("8. Get cost basis");
     out.println("9. Get Stock Statistics");
-    out.println("10. Exit");
+    out.println("10. Checkout Portfolio Performance");
+    out.println("11. Exit");
   }
 
   @Override

@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -211,5 +212,9 @@ public interface PortfolioDir {
    * @return appropriate scale factor for displaying the performance.
    */
   int scaleForPortfolioPerformance(int input, LocalDate start,  LocalDate end);
+
+  StringBuilder save(int input);
+
+  void loadPortfolio(String portfolioName, List<String[]> lines, StockData api);
 
 }

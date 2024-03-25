@@ -19,9 +19,9 @@ class Persistence {
   /**
    * Exports the given composition data to a CSV file at the specified path.
    * @param path The path to the CSV file where data will be exported.
-   * @param composition A map representing data, with stock names as keys, quantities as values.
+   * @param data A map representing data, with stock names as keys, quantities as values.
    */
-  void exportAsCSV(String path, Map<String, Integer> composition) {
+  void exportAsCSV(String path, StringBuilder data) {
     File file = new File(path);
     if (!file.getName().endsWith(".csv")) {
       throw new IllegalArgumentException("File provided must be CSV!");
@@ -38,11 +38,8 @@ class Persistence {
     }
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-      writer.write("Stock,Quantity" + "\n");
-      for (Map.Entry<String, Integer> entry : composition.entrySet()) {
-        writer.write(entry.getKey() + "," + entry.getValue());
-        writer.newLine();
-      }
+      writer.write(data.toString());
+      System.out.println("Data exported successfully to " + file);
     } catch (IOException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
@@ -97,11 +94,16 @@ class Persistence {
     List<String[]> lines = new ArrayList<>();
     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
       String line;
+      boolean firstLineSkipped = false;
       while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(",");
-        if (!parts[0].equalsIgnoreCase("Stock")) {
-          lines.add(parts);
+        if (!firstLineSkipped) {
+          firstLineSkipped = true;
+          continue;
         }
+        String[] parts = line.split(",");
+
+          lines.add(parts);
+
       }
     } catch (IOException e) {
       System.err.println("Error reading file: " + e.getMessage());

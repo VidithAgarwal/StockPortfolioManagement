@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import controller.StockData;
 
@@ -24,6 +25,8 @@ public interface Portfolio {
    * @return the name of the portfolio.
    */
   String getName();
+
+  StringBuilder save();
 
   /**
    * this method buys stock for portfolio and is implemented in flexible portfolio.
@@ -68,4 +71,5 @@ public interface Portfolio {
    * @return always returns false, as this is an inflexible portfolio.
    */
   boolean isFlexible();
+  void load(List<String[]> lines, StockData api);
 }

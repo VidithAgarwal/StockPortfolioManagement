@@ -114,6 +114,17 @@ public class StockControllerImpl implements StockController {
     view.print("File loaded successfully");
   }
 
+  private void loadFlexiblePortfolio() {
+    String name = inputPortfolioName();
+    try {
+      model.loadPortfolio(name, inputPath(), new StockData());
+    } catch (IllegalArgumentException e) {
+      view.displayError("The values provided in the file is invalid");
+      return;
+    }
+    view.print("File loaded successfully");
+  }
+
   /**
    * this method displays the composition of a portfolio selected by the user through the view.
    * The values in portfolio its composition is got from the model.
@@ -141,7 +152,7 @@ public class StockControllerImpl implements StockController {
     String path = scan.nextLine();
     Persistence persistence = new Persistence();
     try {
-      persistence.exportAsCSV(path, model.portfolioComposition(input, LocalDate.now()));
+      persistence.exportAsCSV(path, model.save(input));
       view.print("Portfolio exported to " + path + " successfully.");
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
@@ -528,7 +539,10 @@ public class StockControllerImpl implements StockController {
         }
         break;
       case 2:
-        loadPortfolio();
+        boolean showLoadMenu = true;
+        while (showLoadMenu) {
+          showLoadMenu = showLoadMenu();
+        }
         break;
       case 3:
         if (!model.isEmpty()) {
@@ -620,6 +634,8 @@ public class StockControllerImpl implements StockController {
       view.print(quantity + " " + shareName + " sold successfully");
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
     }
   }
 
@@ -636,6 +652,8 @@ public class StockControllerImpl implements StockController {
       model.buyStock(choice, shareName, quantity, buyDate, new StockData());
       view.print(quantity + " " + shareName + " bought successfully");
     } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    } catch (RuntimeException e) {
       view.displayError(e.getMessage());
     }
   }
@@ -661,7 +679,10 @@ public class StockControllerImpl implements StockController {
         }
         break;
       case 2:
-        loadPortfolio();
+        boolean showLoadMenu = true;
+        while (showLoadMenu) {
+          showLoadMenu = showLoadMenu();
+        }
         break;
       case 3:
         boolean showStockMenu = true;
@@ -677,6 +698,26 @@ public class StockControllerImpl implements StockController {
         return false;
     }
     return false;
+  }
+
+  private boolean showLoadMenu() {
+    int subChoice = 0;
+    view.choosePortfolioType();
+    subChoice = inputPositiveInteger("Enter your choice: ");
+    switch (subChoice) {
+      case 1:
+        loadPortfolio();
+        return false;
+      case 2:
+        loadFlexiblePortfolio();
+        return false;
+      case 3:
+        //exit
+        return false;
+      default:
+        this.view.displayError("Enter a valid choice, this option doesn't exists.");
+        return true;
+    }
   }
 
   private boolean showCreateMenu() {

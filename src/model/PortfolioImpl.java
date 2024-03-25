@@ -50,6 +50,17 @@ public class PortfolioImpl extends AbstractPortfolio {
     return portfolioComposition();
   }
 
+  @Override
+  public StringBuilder save() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Symbol,Quantity").append(System.lineSeparator());
+    for (Map.Entry<String, Integer> entry : sharesList.entrySet()) {
+      sb.append(entry.getKey()).append(",").append(entry.getValue());
+      sb.append(System.lineSeparator());
+    }
+    return sb;
+  }
+
   /**
    * this method calculates the cost basis of the portfolio, for flexible portfolio.
    * @param date date for which the cost basis is calculated.
@@ -107,6 +118,11 @@ public class PortfolioImpl extends AbstractPortfolio {
   @Override
   public boolean isFlexible() {
     return false;
+  }
+
+  @Override
+  public void load(List<String[]> lines, StockData api) {
+    throw new IllegalArgumentException();
   }
 
   /**

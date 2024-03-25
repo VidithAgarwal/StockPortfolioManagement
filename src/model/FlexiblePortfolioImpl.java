@@ -1,8 +1,10 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -236,6 +238,20 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     return computeValue(date, composition, api);
   }
 
+  @Override
+  public StringBuilder save() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Transaction Type,Symbol,Quantity,Date").append(System.lineSeparator());
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    for (Transaction transaction : transactions) {
+      sb.append(transaction.getType()).append(",");
+      sb.append(transaction.getStock()).append(",");
+      sb.append(transaction.getQuantity()).append(",");
+      sb.append(transaction.getDate().format(formatter)).append(System.lineSeparator());
+    }
+    return sb;
+  }
+
   /**
    * this method indicates whether portfolio is flexible or not.
    * @return true, indicating the portfolio is flexible.
@@ -243,6 +259,35 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
   @Override
   public boolean isFlexible() {
     return true;
+  }
+
+  @Override
+  public void load(List<String[]> line, StockData api) {
+    for (String[] parts : line) {
+      if (validateLine(parts)) {
+        if (parts[0].equalsIgnoreCase("buy")) {
+          buyStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
+        } else {
+          sellStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
+        }
+      } else {
+        throw new IllegalArgumentException("Invalid data in given file!");
+      }
+    }
+  }
+
+  private boolean validateLine(String[] parts) {
+    return parts.length == 4 && isInteger(parts[2].trim()) && (parts[0].equalsIgnoreCase("buy")
+            || parts[0].equalsIgnoreCase("sell"));
+  }
+
+  private boolean isInteger(String str) {
+    try {
+      Integer.parseInt(str);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
+    }
   }
 
 

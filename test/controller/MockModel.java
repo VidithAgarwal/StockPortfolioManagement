@@ -3,6 +3,7 @@ package controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -209,5 +210,15 @@ public class MockModel implements PortfolioDir {
   @Override
   public int scaleForPortfolioPerformance(int input, LocalDate start, LocalDate end) {
     return 0;
+  }
+
+  @Override
+  public StringBuilder save(int input) {
+    return null;
+  }
+
+  @Override
+  public void loadPortfolio(String portfolioName, List<String[]> lines, StockData api) {
+
   }
 }

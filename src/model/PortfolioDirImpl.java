@@ -3,6 +3,8 @@ package model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -49,14 +51,16 @@ public class PortfolioDirImpl implements PortfolioDir {
 
   @Override
   public Map<String, String> getListOfPortfoliosName() {
-    Map<String, String> listOfPortfolio = new HashMap<>();
+    LinkedHashMap<String, String> listOfPortfolio = new LinkedHashMap<>();
     for (Portfolio obj : portfolioDirectory) {
+      System.out.println(obj.getName());
       if(obj.isFlexible()) {
         listOfPortfolio.put(obj.getName(), "Flexible");
       } else {
         listOfPortfolio.put(obj.getName(), "Inflexible");
       }
     }
+    System.out.println(listOfPortfolio);
     return listOfPortfolio;
   }
 
@@ -297,6 +301,23 @@ public class PortfolioDirImpl implements PortfolioDir {
     TreeMap<String, Double> selectedData = p.portfolioPerformance(portfolioDirectory.get(input),start,end);
     int scale = p.determineScale(selectedData);
     return scale;
+  }
+
+  @Override
+  public StringBuilder save(int input) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
+    return portfolioDirectory.get(input).save();
+  }
+
+  @Override
+  public void loadPortfolio(String portfolioName, List<String[]> lines, StockData api) {
+    if (portfolioNameExists(portfolioName)) {
+      throw new IllegalArgumentException();
+    }
+    createFlexiblePortfolio(portfolioName);
+    portfolioDirectory.get(getSize() - 1).load(lines, api);
   }
 
   @Override
