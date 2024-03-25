@@ -58,7 +58,9 @@ public class MockView implements IView {
 
   @Override
   public void showListOfPortfolios(Map<String, String> listOfPortfolios) {
-
+    for (Map.Entry<String, String> entry : listOfPortfolios.entrySet()) {
+      printedOutput.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+    }
   }
 
   /**
@@ -92,27 +94,36 @@ public class MockView implements IView {
   }
 
   @Override
-  public void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
+  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
+    printedOutput.append("Bar Graph for ").append(stockOrPortfolio).append(" from ").append(startDate).append(" to ").append(endDate).append(":\n");
 
+    for (Map.Entry<String, Integer> entry : data.entrySet()) {
+      printedOutput.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+    }
+
+    printedOutput.append("scale: ").append(scale).append("\n");
   }
 
   @Override
   public void printTreeMapEntries(TreeMap<String, String> treeMap) {
+    for (Map.Entry<String, String> entry : treeMap.entrySet()) {
+      printedOutput.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+    }
 
   }
 
   @Override
   public void choosePortfolioType() {
-
+    // has no input and no output.
   }
 
   @Override
   public void showStockStat() {
-
+    // has no input and no output.
   }
 
   @Override
   public void showXDayMovingAvg(double value) {
-
+    printedOutput.append(value).append("\n");
   }
 }
