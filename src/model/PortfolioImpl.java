@@ -1,19 +1,17 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import controller.StockData;
 
 /**
- * Implementation of the Portfolio interface representing methods for a single portfolio.
+ * Implementation of the Portfolio interface representing methods for a single inflexible portfolio.
  * The interface has various methods such as portfolio composition, portfolio value, getting name.
- * for a single portfolio.
+ * for a single portfolio, inflexible type.
  * The static portfolio builder class in also present in the PortfolioImpl class.
+ * It also extends abstract portfolio class that has abstract methods.
  */
 public class PortfolioImpl extends AbstractPortfolio {
 
@@ -23,50 +21,90 @@ public class PortfolioImpl extends AbstractPortfolio {
    */
   private final Map<String, Integer> sharesList;
 
-
   /**
-   * Private constructor for PortfolioImpl, the portfolio name is initialised here.
-   * the shareList map is also created that contains the stock data and its quantity.
+   * Constructs a PortfolioImpl object with the given portfolio name and share list.
    * @param portfolioName The name of the portfolio.
-   * @param list Map containing stock data and their quantities.
+   * @param list The map containing ticker symbols and quantities of shares.
    */
   private PortfolioImpl(String portfolioName, Map<String , Integer> list) {
     super(portfolioName);
     this.sharesList = deepCopy(list);
   }
 
-
+  /**
+   * Returns a deep copy of the portfolio composition.
+   * @return A map containing ticker symbols and quantities of shares.
+   */
   private Map<String, Integer> portfolioComposition() {
     return deepCopy(this.sharesList);
   }
 
+  /**
+   * Returns the composition of the portfolio.
+   * @param date The date for which the composition is required (not used in this implementation).
+   *             As for inflexible portfolio, composition is same on any date.
+   * @return map containing ticker symbols and quantities of shares.
+   */
   @Override
   public Map<String, Integer> portfolioComposition(LocalDate date) {
     return portfolioComposition();
   }
 
+  /**
+   * this method calculates the cost basis of the portfolio, for flexible portfolio.
+   * @param date date for which the cost basis is calculated.
+   * @param api StockData object used for fetching stock data.
+   * @return cost basis of the portfolio.
+   * @throws IllegalArgumentException if the method is called by inflexible portfolio.
+   */
   @Override
   public double costBasis(LocalDate date, StockData api) {
     throw new IllegalArgumentException();
   }
 
-
+  /**
+   * this method calculates value of the portfolio on a given date.
+   * @param date for which the portfolio value is calculated.
+   * @param api StockData object used for fetching stock data.
+   * @return value of the inflexible portfolio.
+   */
   @Override
   public double portfolioValue(String date, StockData api) {
     Map<String , Integer> composition = portfolioComposition();
     return computeValue(date, composition, api);
   }
 
+  /**
+   * this method buys stock for portfolio (not implemented here), used in flexible portfolio.
+   * @param ticker ticker symbol of the stock to be bought.
+   * @param quantity  quantity of stock to be bought.
+   * @param date date on which the stock is bought.
+   * @param api StockData object used for fetching stock data.
+   * @throws IllegalArgumentException if the method is called by inflexible portfolio.
+   */
   @Override
   public void buyStock(String ticker, int quantity, LocalDate date, StockData api) {
     throw new IllegalArgumentException();
   }
 
+  /**
+   * this method sells stock from the portfolio is implemented in flexible portfolio.
+   * @param ticker ticker symbol of the stock to be sold.
+   * @param quantity quantity of stock to be sold.
+   * @param date date on which the stock is sold.
+   * @param api StockData object used for fetching stock data.
+   * @throws IllegalArgumentException if the method is called by inflexible portfolio.
+   */
   @Override
   public void sellStock(String ticker, int quantity, LocalDate date, StockData api) {
     throw new IllegalArgumentException();
   }
 
+  /**
+   * Checks if the portfolio is flexible.
+   * @return always returns false, as this is an inflexible portfolio.
+   */
+  @Override
   public boolean isFlexible() {
     return false;
   }
@@ -126,13 +164,6 @@ public class PortfolioImpl extends AbstractPortfolio {
         this.shareList.put(tickerSymbol, quantity);
       }
     }
-
-    /**
-     * Validates if the share name exists in the stocks.csv file.
-     * @param shareName The name of the share to be validated.
-     * @return The ticker symbol of the share if found, otherwise null.
-     */
-
 
     /**
      * the method gets the lines for the file that is read in controller, and stores the stock name.
