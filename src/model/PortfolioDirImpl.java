@@ -262,7 +262,8 @@ public class PortfolioDirImpl implements PortfolioDir {
     System.out.println(scale);
     System.out.println(selectedData);
     TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
-    return stockPerfom;
+    TreeMap<String,Integer> ans = p.sortTreeMapByMonthAndYear(stockPerfom);
+    return ans;
   }
 
   @Override
@@ -335,10 +336,10 @@ public class PortfolioDirImpl implements PortfolioDir {
     Performance p = new Performance();
     TreeMap<String, Double> selectedData = p.portfolioPerformance(portfolioDirectory.get(input),start,end);
     int scale = p.determineScale(selectedData);
-    TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
-    //TreeMap<String,Integer> ans = p.sortTreeMapByMonthAndYear(stockPerfom);
-    //System.out.println(ans);
-    return stockPerfom;
+    TreeMap<String, Integer> portfolioPerfom = p.determineValueBasedOnScale(selectedData,scale);
+    TreeMap<String,Integer> ans = p.sortTreeMapByMonthAndYear(portfolioPerfom);
+    //System.out.println("hii"+ans);
+    return ans;
   }
 
 

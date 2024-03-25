@@ -1,6 +1,5 @@
 package view;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,9 +21,8 @@ public interface IView {
   void showSecondaryMenu();
 
   /**
-   * this method displays the composition of a portfolio.
-   * @param composition Map that has composition of portfolio with stock names as keys .
-   *                    & quantities as values.
+   * Displays the composition of a portfolio.
+   * @param composition Map containing stock names and quantities.
    */
   void showComposition(Map<String, Integer> composition);
 
@@ -35,8 +33,8 @@ public interface IView {
   void showTotalValue(double value);
 
   /**
-   * this method displays a list of portfolios that have been created.
-   * @param listOfPortfolios ArrayList containing names of portfolios.
+   * Displays the list of existing portfolios.
+   * @param listOfPortfolios Map containing portfolio names and their types.
    */
   //void showListOfPortfolios(ArrayList<String> listOfPortfolios);
 
@@ -54,14 +52,37 @@ public interface IView {
    */
   void print(String message);
 
-  void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate);
+  /**
+   * Displays a bar graph using *.
+   *
+   * @param scale           Scaling factor for the bar graph.
+   * @param data Data for the bar graph that has represents the date and number of * to be printed.
+   * @param stockOrPortfolio Name of the stock or portfolio.
+   * @param startDate       Start date from which graph is represented.
+   * @param endDate         End date which is the end date until which graph is represented.
+   */
+  void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate);
 
+  /**
+   * Prints entries of a TreeMap in proper format.
+   * @param treeMap TreeMap whose entries which are to be printed.
+   */
   void printTreeMapEntries(TreeMap<String, String> treeMap);
 
+  /**
+   * Displays the option to choose the type of portfolio, flexible or inflexible.
+   */
   void choosePortfolioType();
 
+  /**
+   * Displays the options for stock statistics for stock trend statistics.
+   */
   void showStockStat();
 
+  /**
+   * Displays the X-day moving average value.
+   * @param value The X-day moving average value that is to be printed.
+   */
   void showXDayMovingAvg(double value);
 
 }

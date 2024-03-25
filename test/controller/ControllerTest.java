@@ -46,6 +46,8 @@ public class ControllerTest {
    */
   private double mockValue;
 
+  private int intMockValue;
+
   /**
    * Sets up the test environment before each test method execution.
    * It initializes mock objects and sets up initial data for testing.
@@ -57,7 +59,8 @@ public class ControllerTest {
     mockComposition.put("Goog", 10);
     mockName = "Test Portfolio";
     mockValue = 17.5;
-    this.mockModel = new MockModel(mockComposition, mockName, mockValue);
+    intMockValue = 10;
+    this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue);
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(mockName);
     newBuilder.addShare("AAPL", 20);
     mockModel.addPortfolio(newBuilder);
@@ -67,9 +70,9 @@ public class ControllerTest {
 
   @Test
   public void testGetComposition()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the Portfolio "
-            + "number you want to select.", "Goog 10", "AAPL 20", "Enter your choice: "};
-    Reader in = new StringReader("3\n0\n6\n");
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the Portfolio "
+            + "number you want to select.","Enter the date you want to see the composition for: " ,"The date should be in this format yyyy-mm-dd: " ,"Goog 10", "AAPL 20", "Enter your choice: "};
+    Reader in = new StringReader("3\n0\n2024-03-03\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -77,7 +80,7 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Retrieving composition for portfolio at index: 0",
+    assertEquals("Retrieving composition for portfolio at index: 0on date: 2024-03-03",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -89,7 +92,7 @@ public class ControllerTest {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
             + "Portfolio " + "number you want to select.", "Error", "Enter the Portfolio "
             + "number you want to "
-                    + "select.", "Goog 10", "AAPL 20", "Enter your choice: "};
+            + "select.", "Goog 10", "AAPL 20", "Enter your choice: "};
     Reader in = new StringReader("3\n-1\n0\n6\n");
 
 
