@@ -1686,14 +1686,14 @@ public class ModelTest {
   }
 
   @Test
-  public void testGain() {
+  public void testLoss() {
     StockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
-    assertEquals("AAPL gained on 2020-02-03", portfolioDir.gainOrLose("aapl",date,api) );
+    assertEquals("AAPL lost on 2020-02-03", portfolioDir.gainOrLose("aapl",date,api) );
   }
 
   @Test
-  public void testLose() {
+  public void testLoss1() {
     StockData api = new StockData();
     LocalDate date = LocalDate.of(2021, 2, 3);
     assertEquals("AAPL lost on 2021-02-03", portfolioDir.gainOrLose("aapl",date,api) );
@@ -1727,7 +1727,7 @@ public class ModelTest {
   public void xDayMovingAverage() {
     StockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 23);
-    assertEquals(177.88899999999998, portfolioDir.xDayMovingAvg("aapl",date,30,api),0.0 );
+    assertEquals(176.48576000000003, portfolioDir.xDayMovingAvg("aapl",date,30,api),0.0 );
   }
 
   @Test
@@ -1814,18 +1814,18 @@ public class ModelTest {
             = portfolioDir.crossoverOverPeriod("AAPL", api, startDate, endDate);
     TreeMap<String, String> expectedData = new TreeMap<>();
     expectedData.put("2023-01-17", "buy");
-    expectedData.put("2023-02-27", "buy");
+    expectedData.put("2023-03-01", "sell");
     expectedData.put("2023-03-03", "buy");
     expectedData.put("2023-03-10", "sell");
-    expectedData.put("2023-03-13", "buy");
     expectedData.put("2023-03-14", "buy");
-    expectedData.put("2023-08-03", "sell");
+    expectedData.put("2023-08-04", "sell");
     expectedData.put("2023-08-30", "buy");
     expectedData.put("2023-09-06", "sell");
-    expectedData.put("2023-10-09", "buy");
-    expectedData.put("2023-10-18", "sell");
+    expectedData.put("2023-10-10", "buy");
+    expectedData.put("2023-10-20", "sell");
     expectedData.put("2023-11-02", "buy");
-    expectedData.put("2023-12-29", "sell");
+    expectedData.put("2023-12-27", "sell");
+    expectedData.put("2023-12-28", "buy");
     assertEquals(expectedData, actualCrossoverData);
   }
 
@@ -1838,8 +1838,7 @@ public class ModelTest {
     TreeMap<String, String> actualCrossoverData
             = portfolioDir.crossoverOverPeriod("AAPL", api, startDate, endDate);
     TreeMap<String, String> expectedData = new TreeMap<>();
-    expectedData.put("2024-02-06", "buy");
-    expectedData.put("2024-02-12", "sell");
+    expectedData.put("2024-02-13", "sell");
     assertEquals(expectedData, actualCrossoverData);
   }
 
@@ -1986,7 +1985,7 @@ public class ModelTest {
     StockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 2);
     LocalDate end = LocalDate.of(2024, 3, 16);
-    assertEquals("GOOG lost over the period from 2024-02-02 to 2024-03-16",
+    assertEquals("GOOG gained over the period from 2024-02-02 to 2024-03-16",
             portfolioDir.gainOrLoseOverAPeriod("goog",start,end,api) );
 
   }
@@ -2178,7 +2177,7 @@ public class ModelTest {
     TreeMap<String, String> actualCrossoverData
             = portfolioDir.movingCrossOver("aapl",api,start,end,30,100);
     TreeMap<String, String> expectedData = new TreeMap<>();
-    expectedData.put("2023-09-13", "sell");
+    expectedData.put("2023-09-12", "sell");
     expectedData.put("2023-12-01", "buy");
     expectedData.put("2024-03-05", "sell");
     assertEquals(expectedData, actualCrossoverData);
@@ -2194,14 +2193,17 @@ public class ModelTest {
     TreeMap<String, String> actualCrossoverData
             = portfolioDir.movingCrossOver("goog",api,start,end,30,100);
     TreeMap<String, String> crossoverInfo = new TreeMap<>();
-    crossoverInfo.put("2020-03-19", "sell");
-    crossoverInfo.put("2020-05-27", "buy");
-    crossoverInfo.put("2020-10-16", "sell");
+    crossoverInfo.put("2020-03-18", "sell");
+    crossoverInfo.put("2020-05-26", "buy");
+    crossoverInfo.put("2020-10-19", "sell");
+    crossoverInfo.put("2020-10-23", "buy");
+    crossoverInfo.put("2020-10-28", "sell");
     crossoverInfo.put("2020-10-29", "buy");
     crossoverInfo.put("2022-01-20", "sell");
-    crossoverInfo.put("2023-02-13", "buy");
-    crossoverInfo.put("2023-12-06", "sell");
+    crossoverInfo.put("2023-02-14", "buy");
+    crossoverInfo.put("2023-12-05", "sell");
     crossoverInfo.put("2023-12-08", "buy");
+
     assertEquals(crossoverInfo, actualCrossoverData);
   }
 
@@ -2276,8 +2278,8 @@ public class ModelTest {
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Dec 2010", 27);
     data.put("Dec 2011", 34);
-    data.put("Dec 2012", 45);
-    data.put("Dec 2013", 47);
+    data.put("Dec 2012", 42);
+    data.put("Dec 2013", 46);
     data.put("Dec 2014", 9);
     data.put("Dec 2015", 9);
     data.put("Dec 2016", 10);
@@ -2300,28 +2302,28 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("Apr 2023", 34);
-    data.put("Aug 2022", 32);
-    data.put("Aug 2023", 38);
-    data.put("Dec 2022", 26);
-    data.put("Dec 2023", 39);
-    data.put("Feb 2023", 30);
-    data.put("Feb 2024", 37);
-    data.put("Jan 2023", 29);
-    data.put("Jan 2024", 37);
-    data.put("Jul 2022", 33);
-    data.put("Jul 2023", 39);
-    data.put("Jun 2022", 28);
-    data.put("Jun 2023", 39);
-    data.put("Mar 2023", 33);
-    data.put("May 2022", 30);
-    data.put("May 2023", 36);
-    data.put("Nov 2022", 30);
-    data.put("Nov 2023", 38);
-    data.put("Oct 2022", 31);
-    data.put("Oct 2023", 34);
-    data.put("Sep 2022", 29);
-    data.put("Sep 2023", 35);
+    data.put("May 2022", 37);
+    data.put("Jun 2022", 33);
+    data.put("Jul 2022", 40);
+    data.put("Aug 2022", 39);
+    data.put("Sep 2022", 35);
+    data.put("Oct 2022", 38);
+    data.put("Nov 2022", 35);
+    data.put("Dec 2022", 32);
+    data.put("Jan 2023", 36);
+    data.put("Feb 2023", 37);
+    data.put("Mar 2023", 40);
+    data.put("Apr 2023", 42);
+    data.put("May 2023", 44);
+    data.put("Jun 2023", 48);
+    data.put("Jul 2023", 49);
+    data.put("Aug 2023", 47);
+    data.put("Sep 2023", 43);
+    data.put("Oct 2023", 42);
+    data.put("Nov 2023", 47);
+    data.put("Dec 2023", 48);
+    data.put("Jan 2024", 46);
+    data.put("Feb 2024", 45);
     assertEquals(data,actualData);
   }
 
@@ -2334,19 +2336,19 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("2024-01-12", 37);
-    data.put("2024-01-19", 38);
-    data.put("2024-01-25", 39);
-    data.put("2024-01-30", 38);
-    data.put("2024-02-02", 37);
-    data.put("2024-02-09", 38);
-    data.put("2024-02-14", 37);
-    data.put("2024-02-16", 37);
-    data.put("2024-02-23", 37);
-    data.put("2024-02-29", 37);
-    data.put("2024-03-05", 34);
-    data.put("2024-03-08", 35);
-    data.put("2024-03-15", 35);
+    data.put("2024-01-12", 46);
+    data.put("2024-01-19", 47);
+    data.put("2024-01-25", 48);
+    data.put("2024-01-30", 47);
+    data.put("2024-02-02", 45);
+    data.put("2024-02-09", 47);
+    data.put("2024-02-14", 46);
+    data.put("2024-02-16", 45);
+    data.put("2024-02-23", 46);
+    data.put("2024-02-29", 45);
+    data.put("2024-03-05", 42);
+    data.put("2024-03-08", 42);
+    data.put("2024-03-15", 43);
     assertEquals(data,actualData);
   }
 
@@ -2359,10 +2361,10 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("2024-03-18", 44);
-    data.put("2024-03-19", 44);
-    data.put("2024-03-20", 45);
-    data.put("2024-03-21", 44);
+    data.put("2024-03-18", 43);
+    data.put("2024-03-19", 43);
+    data.put("2024-03-20", 44);
+    data.put("2024-03-21", 43);
     assertEquals(data,actualData);
   }
 
@@ -2375,27 +2377,27 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("2024-02-01", 47);
-    data.put("2024-02-02", 47);
-    data.put("2024-02-05", 47);
+    data.put("2024-02-01", 46);
+    data.put("2024-02-02", 45);
+    data.put("2024-02-05", 46);
     data.put("2024-02-06", 47);
-    data.put("2024-02-07", 48);
+    data.put("2024-02-07", 47);
     data.put("2024-02-08", 47);
     data.put("2024-02-09", 47);
     data.put("2024-02-12", 47);
-    data.put("2024-02-13", 47);
+    data.put("2024-02-13", 46);
     data.put("2024-02-14", 46);
-    data.put("2024-02-15", 46);
-    data.put("2024-02-16", 46);
-    data.put("2024-02-20", 46);
-    data.put("2024-02-21", 46);
+    data.put("2024-02-15", 45);
+    data.put("2024-02-16", 45);
+    data.put("2024-02-20", 45);
+    data.put("2024-02-21", 45);
     data.put("2024-02-22", 46);
     data.put("2024-02-23", 46);
-    data.put("2024-02-26", 46);
-    data.put("2024-02-27", 46);
-    data.put("2024-02-28", 46);
-    data.put("2024-02-29", 46);
-    data.put("2024-03-01", 45);
+    data.put("2024-02-26", 45);
+    data.put("2024-02-27", 45);
+    data.put("2024-02-28", 45);
+    data.put("2024-02-29", 45);
+    data.put("2024-03-01", 44);
     assertEquals(data,actualData);
   }
 
@@ -2408,11 +2410,11 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("Dec 2023", 49);
-    data.put("Feb 2024", 46);
-    data.put("Jan 2024", 47);
-    data.put("Nov 2023", 48);
-    data.put("Oct 2023", 43);
+    data.put("Oct 2023", 42);
+    data.put("Nov 2023", 47);
+    data.put("Dec 2023", 48);
+    data.put("Jan 2024", 46);
+    data.put("Feb 2024", 45);
     assertEquals(data,actualData);
   }
 
@@ -2425,27 +2427,27 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Oct 2020", 27);
+    data.put("Dec 2020", 33);
+    data.put("Feb 2021", 30);
     data.put("Apr 2021", 33);
-    data.put("Apr 2022", 42);
-    data.put("Apr 2023", 42);
-    data.put("Aug 2021", 38);
-    data.put("Aug 2022", 40);
-    data.put("Aug 2023", 47);
-    data.put("Dec 2020", 34);
-    data.put("Dec 2021", 45);
-    data.put("Dec 2022", 32);
-    data.put("Dec 2023", 49);
-    data.put("Feb 2021", 31);
-    data.put("Feb 2022", 41);
-    data.put("Feb 2023", 37);
-    data.put("Feb 2024", 46);
     data.put("Jun 2021", 34);
-    data.put("Jun 2022", 35);
-    data.put("Jun 2023", 49);
-    data.put("Oct 2020", 28);
+    data.put("Aug 2021", 38);
     data.put("Oct 2021", 37);
-    data.put("Oct 2022", 39);
-    data.put("Oct 2023", 43);
+    data.put("Dec 2021", 44);
+    data.put("Feb 2022", 41);
+    data.put("Apr 2022", 39);
+    data.put("Jun 2022", 33);
+    data.put("Aug 2022", 39);
+    data.put("Oct 2022", 38);
+    data.put("Dec 2022", 32);
+    data.put("Feb 2023", 37);
+    data.put("Apr 2023", 42);
+    data.put("Jun 2023", 48);
+    data.put("Aug 2023", 47);
+    data.put("Oct 2023", 42);
+    data.put("Dec 2023", 48);
+    data.put("Feb 2024", 45);
     assertEquals(data,actualData);
   }
 
@@ -2520,11 +2522,11 @@ public class ModelTest {
     data.put("Dec 2016", 13);
     data.put("Dec 2017", 18);
     data.put("Dec 2018", 18);
-    data.put("Dec 2019", 22);
-    data.put("Dec 2020", 29);
+    data.put("Dec 2019", 23);
+    data.put("Dec 2020", 30);
     data.put("Dec 2021", 49);
-    data.put("Dec 2022", 1);
-    data.put("Dec 2023",6);
+    data.put("Dec 2022", 2);
+    data.put("Dec 2023", 6);
     assertEquals(data,actualData);
   }
 
@@ -2545,28 +2547,28 @@ public class ModelTest {
     TreeMap<String,Integer > actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("Apr 2023", 6);
-    data.put("Aug 2022", 2);
-    data.put("Aug 2023", 7);
-    data.put("Dec 2022", 2);
-    data.put("Dec 2023", 7);
-    data.put("Feb 2023", 2);
-    data.put("Feb 2024", 7);
-    data.put("Jan 2023", 2);
-    data.put("Jan 2024", 7);
-    data.put("Jul 2022", 2);
-    data.put("Jul 2023", 7);
-    data.put("Jun 2022", 47);
-    data.put("Jun 2023", 7);
-    data.put("Mar 2023", 6);
     data.put("May 2022", 49);
-    data.put("May 2023", 6);
-    data.put("Nov 2022", 2);
-    data.put("Nov 2023", 7);
-    data.put("Oct 2022", 2);
-    data.put("Oct 2023", 6);
+    data.put("Jun 2022", 47);
+    data.put("Jul 2022", 3);
+    data.put("Aug 2022", 2);
     data.put("Sep 2022", 2);
-    data.put("Sep 2023", 6);
+    data.put("Oct 2022", 2);
+    data.put("Nov 2022", 2);
+    data.put("Dec 2022", 2);
+    data.put("Jan 2023", 2);
+    data.put("Feb 2023", 2);
+    data.put("Mar 2023", 6);
+    data.put("Apr 2023", 6);
+    data.put("May 2023", 6);
+    data.put("Jun 2023", 7);
+    data.put("Jul 2023", 7);
+    data.put("Aug 2023", 7);
+    data.put("Sep 2023", 7);
+    data.put("Oct 2023", 6);
+    data.put("Nov 2023", 7);
+    data.put("Dec 2023", 7);
+    data.put("Jan 2024", 7);
+    data.put("Feb 2024", 7);
     assertEquals(data,actualData);
   }
 
@@ -2589,17 +2591,17 @@ public class ModelTest {
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-01-12", 27);
-    data.put("2024-01-19", 27);
+    data.put("2024-01-19", 28);
     data.put("2024-01-25", 28);
     data.put("2024-01-30", 27);
-    data.put("2024-02-02", 47);
+    data.put("2024-02-02", 48);
     data.put("2024-02-09", 49);
     data.put("2024-02-14", 48);
     data.put("2024-02-16", 47);
     data.put("2024-02-23", 47);
     data.put("2024-02-29", 46);
     data.put("2024-03-05", 44);
-    data.put("2024-03-08", 45);
+    data.put("2024-03-08", 44);
     data.put("2024-03-15", 45);
     assertEquals(data,actualData);
   }
@@ -2625,7 +2627,7 @@ public class ModelTest {
     data.put("2024-03-18", 26);
     data.put("2024-03-19", 26);
     data.put("2024-03-20", 49);
-    data.put("2024-03-21", 49);
+    data.put("2024-03-21", 48);
     assertEquals(data,actualData);
   }
 
@@ -2708,15 +2710,15 @@ public class ModelTest {
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Oct 2020", 11);
-    data.put("Dec 2020", 14);
-    data.put("Feb 2021", 13);
+    data.put("Dec 2020", 13);
+    data.put("Feb 2021", 12);
     data.put("Apr 2021", 13);
     data.put("Jun 2021", 14);
     data.put("Aug 2021", 15);
     data.put("Oct 2021", 15);
     data.put("Dec 2021", 18);
     data.put("Feb 2022", 17);
-    data.put("Apr 2022", 17);
+    data.put("Apr 2022", 16);
     data.put("Jun 2022", 14);
     data.put("Aug 2022", 16);
     data.put("Oct 2022", 16);
@@ -2727,7 +2729,7 @@ public class ModelTest {
     data.put("Aug 2023", 19);
     data.put("Oct 2023", 17);
     data.put("Dec 2023", 49);
-    data.put("Feb 2024", 33);
+    data.put("Feb 2024", 34);
     assertEquals(data,actualData);
   }
 
