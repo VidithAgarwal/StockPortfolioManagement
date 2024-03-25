@@ -121,7 +121,7 @@ public class StockControllerImpl implements StockController {
   private void examineComposition() {
     int input = inputPortfolioChoice();
     int[] date = inputDate("Enter the date you want to see the composition for: ");
-    LocalDate compositionDate = LocalDate.of(date[2], date[1], date[1]);
+    LocalDate compositionDate = LocalDate.of(date[2], date[1], date[0]);
     try {
       view.showComposition(model.portfolioComposition(input, compositionDate));
     } catch (IllegalArgumentException e) {
@@ -572,6 +572,12 @@ public class StockControllerImpl implements StockController {
         }
         break;
       case 10:
+        if (!model.isEmpty()) {
+          //view.print("Get total value of a portfolio for certain date");
+          portfolioPerformance();
+        }
+        break;
+      case 11:
         exit = true;
         break;
       default:
@@ -742,9 +748,29 @@ public class StockControllerImpl implements StockController {
     TreeMap<String, Integer> result;
     try {
       result = model.stockPerformance(ticker, api,startDate,endDate);
-      view.barGraph(10,result, ticker, startDate+"", endDate+"");
+      int scale = model.scaleForStockPerformance(ticker, api,startDate,endDate);
+      view.barGraph(scale,result, ticker, startDate+"", endDate+"");
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
     }
   }
+
+  private void portfolioPerformance() {
+    int choice = inputPortfolioChoice();
+    //String portfolioName =
+    //String ticker = scan.nextLine();
+    int[] startDateArray = inputDate("Enter the start date");
+    int[] endDateArray = inputDate("Enter the end date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1],endDateArray[0]);
+    TreeMap<String, Integer> result;
+    try {
+      result = model.portfolioPerformance(choice,startDate,endDate);
+      int scale = model.scaleForPortfolioPerformance(choice,startDate,endDate);
+      view.barGraph(scale,result, "s", startDate+"", endDate+"");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
 }
