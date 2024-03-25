@@ -48,6 +48,13 @@ class Persistence {
     }
   }
 
+  /**
+   * this method saves historical data to a CSV file at the specified path.
+   * @param path  path to the CSV file where data will be saved.
+   * @param historicalData map representing historical data, with dates as keys.
+   *                      and price lists as values.
+   * @throws IllegalArgumentException if an error occurs while saving the data.
+   */
   void save(String path, Map<String, ArrayList<Double>> historicalData) {
     File file = new File(path);
     File parentDir = file.getParentFile();
