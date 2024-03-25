@@ -65,14 +65,13 @@ class Persistence {
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
       for (Map.Entry<String, ArrayList<Double>> entry : historicalData.entrySet()) {
-        StringBuilder priceList = new StringBuilder();
-        for (int i = 0; i < entry.getValue().size(); i++) {
-          priceList.append(entry.getValue().get(i));
-          if (i < entry.getValue().size() - 1) {
-            priceList.append(",");
-          }
+        StringBuilder rowBuilder = new StringBuilder();
+        rowBuilder.append(entry.getKey()).append(",");
+        for (Double value : entry.getValue()) {
+          rowBuilder.append(value).append(",");
         }
-        writer.write(entry.getKey() + "," + priceList);
+        rowBuilder.deleteCharAt(rowBuilder.length() - 1); // Remove trailing comma
+        writer.write(rowBuilder.toString());
         writer.newLine();
       }
     } catch (IOException e) {

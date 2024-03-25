@@ -37,7 +37,7 @@ public class Performance {
         currentDateString = currentDate.toString();
       }
       ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(1);
+      Double closingValue = values.get(3);
       selectedData.put(currentDateString, closingValue);
     }
   }
@@ -101,7 +101,7 @@ public class Performance {
           currentDateString = currentDate.toString();
         }
         ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(1);
+        Double closingValue = values.get(3);
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, closingValue);
       }
@@ -120,7 +120,7 @@ public class Performance {
           currentDateString = currentDate.toString();
         }
         ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(1);
+        Double closingValue = values.get(3);
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, closingValue);
       }
@@ -136,7 +136,7 @@ public class Performance {
           currentDateString = currentDate.toString();
         }
         ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(1);
+        Double closingValue = values.get(3);
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, closingValue);
       }

@@ -114,14 +114,15 @@ public class StockData {
     if (line.length >= 2) {
       String date = line[0].trim();
       String openingPriceStr = line[1].trim();
-      String closingPriceStr = line[3].trim();
-      String lowPriceStr = line[4].trim();
+      String closingPriceStr = line[4].trim();
+      String lowPriceStr = line[3].trim();
       String highPriceStr = line[2].trim();
       Double openingPrice = Double.parseDouble(openingPriceStr);
       Double closingPrice = Double.parseDouble(closingPriceStr);
       Double lowPrice = Double.parseDouble(lowPriceStr);
       Double highPrice = Double.parseDouble(highPriceStr);
-      this.priceData.put(date, new ArrayList<>(Arrays.asList(openingPrice, closingPrice, highPrice, lowPrice)));
+      this.priceData.put(date, new ArrayList<>(Arrays.asList(openingPrice, highPrice, lowPrice,
+              closingPrice)));
 
     }
   }

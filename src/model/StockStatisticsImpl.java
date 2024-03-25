@@ -15,7 +15,7 @@ public class StockStatisticsImpl implements StockStatistic {
     try {
       ArrayList<Double> prices = priceData.get(dateString);
       double openingPrice = prices.get(0);
-      double closingPrice = prices.get(1);
+      double closingPrice = prices.get(3);
 
       if (closingPrice > openingPrice) {
         return tickerSymbol  + " gained on " + dateString;
@@ -51,8 +51,10 @@ public class StockStatisticsImpl implements StockStatistic {
     if (prices1 == null || prices2 == null) {
       throw new IllegalArgumentException("No price data available for one or both of the specified dates");
     }
-    double closingPrice1 = prices1.get(1);
-    double closingPrice2 = prices2.get(1);
+
+    double closingPrice1 = prices1.get(3);
+    double closingPrice2 = prices2.get(3);
+
     double priceDifference = closingPrice2 - closingPrice1;
     if (priceDifference > 0) {
       return tickerSymbol + " gained over the period from " + date1 + " to " + date2;
@@ -72,14 +74,14 @@ public class StockStatisticsImpl implements StockStatistic {
     for (int i = 0; i < x && currentDate.isAfter(lastDay); i++) {
       ArrayList<Double> prices = priceData.get(currentDate.toString());
       if (prices != null && prices.size() >= 2) {
-        closingPrices.add(prices.get(1));
+        closingPrices.add(prices.get(3));
       } else {
         boolean foundValidDate = false;
         while (!foundValidDate && (currentDate.isAfter(lastDay))) {
           currentDate = currentDate.minusDays(1);
           ArrayList<Double> prevDayPrices = priceData.get(currentDate.toString());
           if (prevDayPrices != null && prevDayPrices.size() >= 2) {
-            closingPrices.add(prevDayPrices.get(1));
+            closingPrices.add(prevDayPrices.get(3));
             foundValidDate = true;
           }
         }
@@ -104,7 +106,7 @@ public class StockStatisticsImpl implements StockStatistic {
    * @throws IllegalArgumentException if TreeMap is empty.
    */
   private LocalDate returnLastEntry (TreeMap<String, ArrayList<Double>> priceData) {
-    String lastDate = null;
+    String lastDate;
     Map.Entry<String, ArrayList<Double>> lastEntry = priceData.lastEntry();
     if (lastEntry != null) {
       lastDate = lastEntry.getKey();
@@ -133,8 +135,8 @@ public class StockStatisticsImpl implements StockStatistic {
       ArrayList<Double> prevDayPrices = priceData.get(getPreviousDate(currentDate, priceData));
 
       if (currentPrices != null && prevDayPrices != null && currentPrices.size() >= 2 && prevDayPrices.size() >= 2) {
-        double currentClosingPrice = currentPrices.get(1);
-        double prevDayClosingPrice = prevDayPrices.get(1);
+        double currentClosingPrice = currentPrices.get(3);
+        double prevDayClosingPrice = prevDayPrices.get(3);
         if (prevDayClosingPrice < movingAverage && currentClosingPrice > movingAverage) {
           crossoverInfo.put(currentDate, "buy");
         } else if (prevDayClosingPrice > movingAverage && currentClosingPrice < movingAverage) {

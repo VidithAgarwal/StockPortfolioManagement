@@ -43,7 +43,7 @@ abstract class AbstractPortfolio implements Portfolio {
    */
   protected double getClosingPriceOnDate(String ticker, StockData api, String date) {
     Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
-    return priceData.get(date).get(1);
+    return priceData.get(date).get(3);
   }
 
   /**
