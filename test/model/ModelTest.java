@@ -2229,6 +2229,506 @@ public class ModelTest {
       }
   }
 
+  @Test
+  public void testStockPerformanceInFuture() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2014, 5, 15);
+    LocalDate end = LocalDate.of(2025, 3, 22);
+    try {
+      portfolioDir.stockPerformance("aapl",api,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("End Date should be less than current date", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testStockPerformanceStartDateLessThanEndDate() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2015, 5, 15);
+    LocalDate end = LocalDate.of(2014, 3, 22);
+    try {
+      portfolioDir.stockPerformance("aapl",api,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Start Date should be less than End date", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testStockPerformanceWrongStock() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2015, 5, 15);
+    LocalDate end = LocalDate.of(2016, 3, 22);
+    try {
+      portfolioDir.stockPerformance("hello",api,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Invalid ticker symbol", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testStockPerformanceDurationYears() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2010, 5, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Dec 2010", 27);
+    data.put("Dec 2011", 34);
+    data.put("Dec 2012", 45);
+    data.put("Dec 2013", 47);
+    data.put("Dec 2014", 9);
+    data.put("Dec 2015", 9);
+    data.put("Dec 2016", 10);
+    data.put("Dec 2017", 14);
+    data.put("Dec 2018", 13);
+    data.put("Dec 2019", 24);
+    data.put("Dec 2020", 11);
+    data.put("Dec 2021", 15);
+    data.put("Dec 2022", 11);
+    data.put("Dec 2023", 16);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testStockPerformanceDurationMonths() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2022, 5, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Apr 2023", 34);
+    data.put("Aug 2022", 32);
+    data.put("Aug 2023", 38);
+    data.put("Dec 2022", 26);
+    data.put("Dec 2023", 39);
+    data.put("Feb 2023", 30);
+    data.put("Feb 2024", 37);
+    data.put("Jan 2023", 29);
+    data.put("Jan 2024", 37);
+    data.put("Jul 2022", 33);
+    data.put("Jul 2023", 39);
+    data.put("Jun 2022", 28);
+    data.put("Jun 2023", 39);
+    data.put("Mar 2023", 33);
+    data.put("May 2022", 30);
+    data.put("May 2023", 36);
+    data.put("Nov 2022", 30);
+    data.put("Nov 2023", 38);
+    data.put("Oct 2022", 31);
+    data.put("Oct 2023", 34);
+    data.put("Sep 2022", 29);
+    data.put("Sep 2023", 35);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testStockPerformanceDurationDays() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 1, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("2024-01-12", 37);
+    data.put("2024-01-19", 38);
+    data.put("2024-01-25", 39);
+    data.put("2024-01-30", 38);
+    data.put("2024-02-02", 37);
+    data.put("2024-02-09", 38);
+    data.put("2024-02-14", 37);
+    data.put("2024-02-16", 37);
+    data.put("2024-02-23", 37);
+    data.put("2024-02-29", 37);
+    data.put("2024-03-05", 34);
+    data.put("2024-03-08", 35);
+    data.put("2024-03-15", 35);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testStockPerformanceDurationDaysWhenDurationLessThan5Days() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 3, 18);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("2024-03-18", 44);
+    data.put("2024-03-19", 44);
+    data.put("2024-03-20", 45);
+    data.put("2024-03-21", 44);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testStockPerformanceDurationDays31() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 2, 1);
+    LocalDate end = LocalDate.of(2024, 3, 2);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("2024-02-01", 47);
+    data.put("2024-02-02", 47);
+    data.put("2024-02-05", 47);
+    data.put("2024-02-06", 47);
+    data.put("2024-02-07", 48);
+    data.put("2024-02-08", 47);
+    data.put("2024-02-09", 47);
+    data.put("2024-02-12", 47);
+    data.put("2024-02-13", 47);
+    data.put("2024-02-14", 46);
+    data.put("2024-02-15", 46);
+    data.put("2024-02-16", 46);
+    data.put("2024-02-20", 46);
+    data.put("2024-02-21", 46);
+    data.put("2024-02-22", 46);
+    data.put("2024-02-23", 46);
+    data.put("2024-02-26", 46);
+    data.put("2024-02-27", 46);
+    data.put("2024-02-28", 46);
+    data.put("2024-02-29", 46);
+    data.put("2024-03-01", 45);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testStockPerformanceDurationMonthLessThan30() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2023, 10, 1);
+    LocalDate end = LocalDate.of(2024, 3, 2);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Dec 2023", 49);
+    data.put("Feb 2024", 46);
+    data.put("Jan 2024", 47);
+    data.put("Nov 2023", 48);
+    data.put("Oct 2023", 43);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testStockPerformanceDurationYearDiff4Years() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2020, 10, 1);
+    LocalDate end = LocalDate.of(2024, 3, 2);
+
+    TreeMap<String,Integer > actualData
+            = portfolioDir.stockPerformance("aapl",api,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Apr 2021", 33);
+    data.put("Apr 2022", 42);
+    data.put("Apr 2023", 42);
+    data.put("Aug 2021", 38);
+    data.put("Aug 2022", 40);
+    data.put("Aug 2023", 47);
+    data.put("Dec 2020", 34);
+    data.put("Dec 2021", 45);
+    data.put("Dec 2022", 32);
+    data.put("Dec 2023", 49);
+    data.put("Feb 2021", 31);
+    data.put("Feb 2022", 41);
+    data.put("Feb 2023", 37);
+    data.put("Feb 2024", 46);
+    data.put("Jun 2021", 34);
+    data.put("Jun 2022", 35);
+    data.put("Jun 2023", 49);
+    data.put("Oct 2020", 28);
+    data.put("Oct 2021", 37);
+    data.put("Oct 2022", 39);
+    data.put("Oct 2023", 43);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testPortfolioPerformanceInFuture() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2024, 3, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate start = LocalDate.of(2014, 5, 15);
+    LocalDate end = LocalDate.of(2025, 3, 22);
+    try {
+      portfolioDir.portfolioPerformance(0,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("End Date should be less than current date", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testPortfolioPerformanceStartDateLessThanEndDate() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2024, 3, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate start = LocalDate.of(2015, 5, 15);
+    LocalDate end = LocalDate.of(2014, 3, 22);
+    try {
+      portfolioDir.portfolioPerformance(0,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Start Date should be less than End date", e.getMessage());
+    }
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void testPortfolioPerformanceByInflexiblePortfolio() {
+    PortfolioImpl.PortfolioBuilder firstBuilder
+            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    firstBuilder.addShare("Apple Inc", 10);
+    firstBuilder.addShare("GOOG", 10);
+    firstBuilder.addShare("Avis Budget Group Inc", 10);
+    portfolioDir.addPortfolio(firstBuilder);
+
+    LocalDate start = LocalDate.of(2015, 5, 15);
+    LocalDate end = LocalDate.of(2014, 3, 22);
+    portfolioDir.portfolioPerformance(0,start,end);
+  }
+
+  @Test
+  public void testPortfolioPerformanceDurationYears() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2010, 5, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date2 = LocalDate.of(2015, 3, 16);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2023, 3, 15);
+    portfolioDir.sellStock(0, "aapl", 15, date1, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Dec 2010", 0);
+    data.put("Dec 2011", 0);
+    data.put("Dec 2012", 0);
+    data.put("Dec 2013", 0);
+    data.put("Dec 2014", 0);
+    data.put("Dec 2015", 13);
+    data.put("Dec 2016", 13);
+    data.put("Dec 2017", 18);
+    data.put("Dec 2018", 18);
+    data.put("Dec 2019", 22);
+    data.put("Dec 2020", 29);
+    data.put("Dec 2021", 49);
+    data.put("Dec 2022", 1);
+    data.put("Dec 2023",6);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testPortfolioPerformanceDurationMonths() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2022, 5, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date2 = LocalDate.of(2015, 3, 16);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2023, 3, 15);
+    portfolioDir.sellStock(0, "aapl", 15, date1, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Apr 2023", 6);
+    data.put("Aug 2022", 2);
+    data.put("Aug 2023", 7);
+    data.put("Dec 2022", 2);
+    data.put("Dec 2023", 7);
+    data.put("Feb 2023", 2);
+    data.put("Feb 2024", 7);
+    data.put("Jan 2023", 2);
+    data.put("Jan 2024", 7);
+    data.put("Jul 2022", 2);
+    data.put("Jul 2023", 7);
+    data.put("Jun 2022", 47);
+    data.put("Jun 2023", 7);
+    data.put("Mar 2023", 6);
+    data.put("May 2022", 49);
+    data.put("May 2023", 6);
+    data.put("Nov 2022", 2);
+    data.put("Nov 2023", 7);
+    data.put("Oct 2022", 2);
+    data.put("Oct 2023", 6);
+    data.put("Sep 2022", 2);
+    data.put("Sep 2023", 6);
+    assertEquals(data,actualData);
+  }
 
 
+  @Test
+  public void testPerformancePerformanceDurationDays() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 1, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
 
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2023, 3, 15);
+    portfolioDir.sellStock(0, "aapl", 15, date1, api);
+    LocalDate date2 = LocalDate.of(2024, 2, 1);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("2024-01-12", 27);
+    data.put("2024-01-19", 27);
+    data.put("2024-01-25", 28);
+    data.put("2024-01-30", 27);
+    data.put("2024-02-02", 47);
+    data.put("2024-02-09", 49);
+    data.put("2024-02-14", 48);
+    data.put("2024-02-16", 47);
+    data.put("2024-02-23", 47);
+    data.put("2024-02-29", 46);
+    data.put("2024-03-05", 44);
+    data.put("2024-03-08", 45);
+    data.put("2024-03-15", 45);
+    assertEquals(data,actualData);
+  }
+
+
+  @Test
+  public void testPortfolioPerformanceDurationDaysWhenDurationLessThan5Days() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 3, 18);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2023, 3, 15);
+    portfolioDir.sellStock(0, "aapl", 15, date1, api);
+    LocalDate date2 = LocalDate.of(2024, 3, 20);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("2024-03-18", 26);
+    data.put("2024-03-19", 26);
+    data.put("2024-03-20", 49);
+    data.put("2024-03-21", 49);
+    assertEquals(data,actualData);
+  }
+
+
+  @Test
+  public void testPerformancePerformanceDurationDays31() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 2, 1);
+    LocalDate end = LocalDate.of(2024, 3, 3);
+
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2024, 2, 15);
+    portfolioDir.sellStock(0, "aapl", 25, date1, api);
+    LocalDate date2 = LocalDate.of(2024, 2, 23);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("2024-02-01", 48);
+    data.put("2024-02-02", 48);
+    data.put("2024-02-05", 49);
+    data.put("2024-02-07", 49);
+    data.put("2024-02-09", 49);
+    data.put("2024-02-13", 48);
+    data.put("2024-02-15", 8);
+    data.put("2024-02-16", 8);
+    data.put("2024-02-21", 8);
+    data.put("2024-02-23", 27);
+    data.put("2024-02-27", 26);
+    data.put("2024-02-29", 26);
+    data.put("2024-03-01", 26);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testPortfolioPerformanceDurationMonthLessThan30() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2023, 10, 1);
+    LocalDate end = LocalDate.of(2024, 3, 2);
+
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date = LocalDate.of(2023, 11, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2024, 2, 15);
+    portfolioDir.sellStock(0, "aapl", 25, date1, api);
+    LocalDate date2 = LocalDate.of(2024, 2, 23);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Dec 2023", 49);
+    data.put("Feb 2024", 25);
+    data.put("Jan 2024", 47);
+    data.put("Nov 2023", 48);
+    data.put("Oct 2023", 0);
+    assertEquals(data,actualData);
+  }
+
+  @Test
+  public void testPortfolioPerformanceDurationYearDiff4Years() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2020, 10, 1);
+    LocalDate end = LocalDate.of(2024, 3, 2);
+
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date3 = LocalDate.of(2019, 11, 13);
+    portfolioDir.buyStock(0, "aapl", 20, date3, api);
+    LocalDate date = LocalDate.of(2023, 11, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2024, 2, 15);
+    portfolioDir.sellStock(0, "aapl", 25, date1, api);
+    LocalDate date2 = LocalDate.of(2024, 2, 23);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    TreeMap<String,Integer > actualData
+            = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String, Integer> data = new TreeMap<>();
+    data.put("Oct 2020", 11);
+    data.put("Dec 2020", 14);
+    data.put("Feb 2021", 13);
+    data.put("Apr 2021", 13);
+    data.put("Jun 2021", 14);
+    data.put("Aug 2021", 15);
+    data.put("Oct 2021", 15);
+    data.put("Dec 2021", 18);
+    data.put("Feb 2022", 17);
+    data.put("Apr 2022", 17);
+    data.put("Jun 2022", 14);
+    data.put("Aug 2022", 16);
+    data.put("Oct 2022", 16);
+    data.put("Dec 2022", 13);
+    data.put("Feb 2023", 15);
+    data.put("Apr 2023", 17);
+    data.put("Jun 2023", 20);
+    data.put("Aug 2023", 19);
+    data.put("Oct 2023", 17);
+    data.put("Dec 2023", 49);
+    data.put("Feb 2024", 33);
+    assertEquals(data,actualData);
+  }
+
+}
