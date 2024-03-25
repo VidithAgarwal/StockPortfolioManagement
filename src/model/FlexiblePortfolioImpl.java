@@ -8,19 +8,40 @@ import java.util.TreeMap;
 
 import controller.StockData;
 
+/**
+ * Implementation of the Portfolio interface representing methods for a flexible portfolio.
+ * It allows buying and selling stocks, computing portfolio composition, cost basis,
+ * and portfolio value for a flexible portfolio.
+ */
 class FlexiblePortfolioImpl extends AbstractPortfolio {
 
+  /**
+   * TreeMap to store composition of the portfolio on different dates.
+   */
   private final TreeMap<LocalDate, Map<String, Integer>> compositionOnDate;
+
+  /**
+   * ArrayList to store transaction history of the portfolio.
+   */
   private final ArrayList<Transaction> transactions;
 
+  /**
+   * Constructor to initialize a flexible portfolio with a given name.
+   * @param portfolioName The name of the portfolio.
+   */
   FlexiblePortfolioImpl(String portfolioName) {
     super(portfolioName);
     this.compositionOnDate = new TreeMap<>();
     this.transactions = new ArrayList<>();
   }
 
-
-
+  /**
+   * this method buys a specified quantity of a stock on a given date.
+   * @param tickerSymbol ticker symbol of the stock to buy.
+   * @param quantity quantity of the stock to buy.
+   * @param buyDate date of the purchase.
+   * @param api StockData object used to fetch historical data.
+   */
   @Override
   public void buyStock(String tickerSymbol, int quantity, LocalDate buyDate, StockData api) {
     String ticker = validateStockName(tickerSymbol);
@@ -33,8 +54,6 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
     Transaction buyTransaction = new Transaction("buy", ticker, quantity, buyDate);
     transactions.add(buyTransaction);
-
-
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(buyDate);
     Map<String, Integer> composition = new HashMap<>();
@@ -50,16 +69,18 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
         composition.put(ticker, quantity);
       }
     }
-
     updateCompositionOnBuy(closestEntry, ticker, quantity);
-
-
     compositionOnDate.put(buyDate, composition);
-
   }
 
+  /**
+   * this method updates composition of the portfolio on a buy transaction.
+   * @param closestEntry closest entry in composition map to the buy date.
+   * @param ticker ticker symbol of the stock bought.
+   * @param quantity quantity of the stock bought.
+   */
   private void updateCompositionOnBuy(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
-                                  String ticker, int quantity) {
+                                      String ticker, int quantity) {
     for (Map.Entry<LocalDate, Map<String, Integer>> entry : (closestEntry != null ?
             this.compositionOnDate.tailMap(closestEntry.getKey(), false) : this.compositionOnDate).entrySet()) {
       Map<String, Integer> futureComposition = deepCopy(entry.getValue());
@@ -73,13 +94,19 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
   }
 
+  /**
+   * this method sells a specified quantity of a stock on a given date.
+   * @param tickerSymbol ticker symbol of stock to sell.
+   * @param quantity quantity of the stock to sell.
+   * @param sellDate date of the sale.
+   * @param api StockData object used to fetch historical data.
+   */
   @Override
   public void sellStock(String tickerSymbol, int quantity, LocalDate sellDate, StockData api) {
     String ticker = validateStockName(tickerSymbol);
     if (ticker == null) {
       throw new IllegalArgumentException("Ticker symbol doesn't exist");
     }
-
     Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
     if (!priceData.containsKey("" + sellDate)) {
       throw new IllegalArgumentException("Wrong date");
@@ -108,16 +135,19 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
         throw new IllegalArgumentException("You don't have the stock you want to sell");
       }
     }
-
     updateCompositionOnSell(closestEntry, ticker, quantity);
-
     compositionOnDate.put(sellDate, composition);
   }
 
+  /**
+   * this method updates composition of the portfolio on a sell transaction.
+   * @param closestEntry closest entry in the composition map to the sell date.
+   * @param ticker ticker symbol of the stock sold.
+   * @param quantity of the stock sold.
+   */
   private void updateCompositionOnSell(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
-                                      String ticker, int quantity) {
+                                       String ticker, int quantity) {
     boolean isQuantityValid = true;
-
     for (Map.Entry<LocalDate, Map<String, Integer>> entry : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
       Map<String, Integer> futureComposition = deepCopy(entry.getValue());
       if (futureComposition.containsKey(ticker)) {
@@ -131,11 +161,9 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
         break;
       }
     }
-
     if (!isQuantityValid) {
       throw new IllegalArgumentException("Invalid sell!");
     }
-
     // Proceed with updating the futureComposition
     for (Map.Entry<LocalDate, Map<String, Integer>> entry : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
       Map<String, Integer> futureComposition = deepCopy(entry.getValue());
@@ -152,18 +180,27 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
   }
 
-
+  /**
+   * this method retrieves composition of the portfolio on a specified date.
+   * @param date date for which the composition is to be retrieved.
+   * @return map containing composition of the portfolio, stock ticker symbols and quantities.
+   */
+  @Override
   public Map<String, Integer> portfolioComposition(LocalDate date) {
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(date);
-
     if (closestEntry == null) {
       return new HashMap<>();
     }
-
     return closestEntry.getValue();
   }
 
+  /**
+   * this method calculates cost basis of portfolio up to a specified date.
+   * @param date date up to which the cost basis is to be calculated.
+   * @param api StockData object used to fetch historical data.
+   * @return total cost basis of the portfolio.
+   */
   @Override
   public double costBasis(LocalDate date, StockData api) {
     double total = 0;
@@ -181,22 +218,29 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     return total;
   }
 
-
+  /**
+   * this method calculates total value of the portfolio on a specified date.
+   * @param date date for which the portfolio value is to be calculated.
+   * @param api StockData object used to fetch historical data.
+   * @return total value of the portfolio.
+   */
   @Override
   public double portfolioValue(String date, StockData api) {
     LocalDate valueDate = LocalDate.parse(date);
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(valueDate);
-
     if (closestEntry == null) {
       return 0;
     }
-
     Map<String, Integer> composition = closestEntry.getValue();
-
     return computeValue(date, composition, api);
   }
 
+  /**
+   * this method indicates whether portfolio is flexible or not.
+   * @return true, indicating the portfolio is flexible.
+   */
+  @Override
   public boolean isFlexible() {
     return true;
   }
