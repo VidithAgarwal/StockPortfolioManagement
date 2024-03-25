@@ -1,9 +1,7 @@
 package model;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,6 +12,8 @@ import controller.StockData;
  * Implementation of the PortfolioDir interface.
  * It provides methods for managing portfolios, such adding portfolios, get list of portfolio.
  * as well as retrieving portfolio composition and total value of portfolio in portfolio directory.
+ * It has methods for showing the stock trends, and buy, sell, cost basis option.
+ *for flexible portfolio additionally with above methods, for both inflexible & flexible portfolio.
  */
 public class PortfolioDirImpl implements PortfolioDir {
 
@@ -21,6 +21,10 @@ public class PortfolioDirImpl implements PortfolioDir {
    * Array list to store the portfolio objects.
    */
   private final ArrayList<Portfolio> portfolioDirectory;
+
+  /**
+   * Instance of StockStatistic for performing statistical calculations, stock trend.
+   */
   private final StockStatistic stats = new StockStatisticsImpl();
 
   /**
@@ -234,27 +238,85 @@ public class PortfolioDirImpl implements PortfolioDir {
             startDate + "", endDate + "", x, y);
   }
 
+  @Override
   public TreeMap<String, Integer> stockPerformance (String stock, StockData api,
                                                     LocalDate start, LocalDate end) {
     String tickerSymbol = AbstractPortfolio.validateStockName(stock);
     if (tickerSymbol == null) {
       throw new IllegalArgumentException("Invalid ticker symbol");
     }
+    LocalDate currentDate = LocalDate.now();
+    if(end.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(start.isAfter(end)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
+    }
     Performance p = new Performance();
     TreeMap<String, Double> selectedData = p.stockPerformance(api.fetchHistoricalData(tickerSymbol),start,end);
     int scale = p.determineScale(selectedData);
+    System.out.println(scale);
+    System.out.println(selectedData);
     TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
     return stockPerfom;
   }
 
+  @Override
+  public int scaleForStockPerformance(String stock, StockData api,
+                                      LocalDate start, LocalDate end) {
+    String tickerSymbol = AbstractPortfolio.validateStockName(stock);
+    if (tickerSymbol == null) {
+      throw new IllegalArgumentException("Invalid ticker symbol");
+    }
+    LocalDate currentDate = LocalDate.now();
+    if(end.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(start.isAfter(end)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
+    }
+    Performance p = new Performance();
+    TreeMap<String, Double> selectedData = p.stockPerformance(api.fetchHistoricalData(tickerSymbol),start,end);
+    int scale = p.determineScale(selectedData);
+    return scale;
+  }
+
+  @Override
+  public int scaleForPortfolioPerformance(int input, LocalDate start,  LocalDate end) {
+    if (!portfolioDirectory.get(input).isFlexible()) {
+      throw new IllegalArgumentException();
+    }
+    LocalDate currentDate = LocalDate.now();
+    if(end.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(start.isAfter(end)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
+    }
+    Performance p = new Performance();
+    TreeMap<String, Double> selectedData = p.portfolioPerformance(portfolioDirectory.get(input),start,end);
+    int scale = p.determineScale(selectedData);
+    return scale;
+  }
+
+  @Override
   public TreeMap<String, Integer> portfolioPerformance (int input, LocalDate start,  LocalDate end) {
     if (!portfolioDirectory.get(input).isFlexible()) {
       throw new IllegalArgumentException();
+    }
+    LocalDate currentDate = LocalDate.now();
+    if(end.isAfter(currentDate)) {
+      throw new IllegalArgumentException("End Date should be less than current date");
+    }
+    if(start.isAfter(end)) {
+      throw new IllegalArgumentException("Start Date should be less than End date");
     }
     Performance p = new Performance();
     TreeMap<String, Double> selectedData = p.portfolioPerformance(portfolioDirectory.get(input),start,end);
     int scale = p.determineScale(selectedData);
     TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
+    //TreeMap<String,Integer> ans = p.sortTreeMapByMonthAndYear(stockPerfom);
+    //System.out.println(ans);
     return stockPerfom;
   }
 
