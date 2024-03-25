@@ -13,11 +13,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * StockData class provides methods for fetching historical stock data and storing it in a CSV file.
+ */
 public class StockData {
+
+  /**
+   * The API key used for accessing the stock data service.
+   */
   private final String apiKey = "W0M1JOKC82EZEQA8";
+
+  /**
+   * The ticker symbol representing the stock for which data is fetched.
+   */
   private String tickerSymbol;
+
+  /**
+   * TreeMap storing historical price data for the ticker symbol.
+   * keys are dates, and the values are ArrayLists containing opening price,
+   * closing price, high price, and low price.
+   */
   private final TreeMap<String, ArrayList<Double>> priceData;
 
+  /**
+   * Constructs a new StockData object, price data.
+   * Initializes the priceData TreeMap to store historical price data.
+   */
   public StockData() {
     priceData = new TreeMap<>(Collections.reverseOrder());
   }
@@ -31,7 +52,6 @@ public class StockData {
     URL url;
 
     try {
-
       url = new URL("https://www.alphavantage"
               + ".co/query?function=TIME_SERIES_DAILY"
               + "&outputsize=full"
@@ -65,8 +85,7 @@ public class StockData {
   /**
    * storeFetchedData is used to store the data got from the api call in the csv file.
    * it does this with the help of file handler, save method.
-   * It also searches for the price on the particular date while storing the data for all dates.
-   * in the csv file.
+   * it also stores this data in a price data object.
    * @param output is the price for the stock on dates fetched when the api is called.
    */
   private void storeFetchedData(StringBuilder output) {
@@ -84,13 +103,20 @@ public class StockData {
     fileHandler.save(fileName, this.priceData);
   }
 
-  private void populateMap(String[] line) {
+  /**
+   * this method populates priceData TreeMap with historical stock data extracted from given line.
+   * line should contain comma-separated values representing date, opening price, high price,
+   * closing price, and low price.
+   * @param line An array of strings representing a line of historical stock data.
+   *
+   */
+  private void populateMap(String[] line) {  // here should be >=5 ?
     if (line.length >= 2) {
       String date = line[0].trim();
       String openingPriceStr = line[1].trim();
-      String closingPriceStr = line[2].trim();
-      String lowPriceStr = line[3].trim();
-      String highPriceStr = line[4].trim();
+      String closingPriceStr = line[3].trim();
+      String lowPriceStr = line[4].trim();
+      String highPriceStr = line[2].trim();
       Double openingPrice = Double.parseDouble(openingPriceStr);
       Double closingPrice = Double.parseDouble(closingPriceStr);
       Double lowPrice = Double.parseDouble(lowPriceStr);
@@ -116,16 +142,20 @@ public class StockData {
     }
   }
 
+
   /**
-   * returnPrice method gets the price for the tickerSymbol on a particular date.
-   * @param tickerSymbol is the date for which user wants to get the stock price.
-   * @return the price for the tickerSymbol on a particular date.
+   * this method gets the price for the tickerSymbol on a particular date.
+   * @param tickerSymbol The ticker symbol of the stock for which price is to be fetched.
+   * @return TreeMap containing historical stock data, with dates as keys.
+   * and price information as values.
+   * @throws IllegalArgumentException if no price data is found for the provided ticker symbol.
    */
   public TreeMap<String, ArrayList<Double>> fetchHistoricalData(String tickerSymbol) {
     this.tickerSymbol = tickerSymbol;
 
     try {
       if (!isCSVFileExists()) {
+        //System.out.println("Hello");
         fetchData();
       } else if (isCSVFileExists()) {
         loadDataFromFile();
@@ -140,6 +170,7 @@ public class StockData {
 
   /**
    * this method is used to check is a CSV file exists or not for a particular tickerSymbol.
+   * in the data folder.
    * @return true if the csv file exists for else returns false.
    */
   private boolean isCSVFileExists() {
