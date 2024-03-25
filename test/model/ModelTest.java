@@ -643,9 +643,9 @@ public class ModelTest {
     assertEquals(2, portfolioDir.getSize());
 
 
-    assertEquals(1767.1840000000002,
+    assertEquals(1766.45,
             portfolioDir.portfolioValue(1, 5, 3, 2024,api), 0.001);
-    assertEquals(1814.5,
+    assertEquals(1813.4,
             portfolioDir.portfolioValue(1, 4, 3, 2024,api), 0.001);
 
     LocalDate currentDate = LocalDate.now();

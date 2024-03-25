@@ -92,7 +92,7 @@ public class MockView implements IView {
   }
 
   @Override
-  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
+  public void barGraph(int scale, Map<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
 
   }
 
