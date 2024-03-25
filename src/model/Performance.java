@@ -37,7 +37,7 @@ public class Performance {
         currentDateString = currentDate.toString();
       }
       ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(3);
+      Double closingValue = values.get(1);
       selectedData.put(currentDateString, closingValue);
     }
   }
@@ -101,7 +101,7 @@ public class Performance {
           currentDateString = currentDate.toString();
         }
         ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(3);
+        Double closingValue = values.get(1);
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, closingValue);
       }
@@ -120,7 +120,7 @@ public class Performance {
           currentDateString = currentDate.toString();
         }
         ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(3);
+        Double closingValue = values.get(1);
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, closingValue);
       }
@@ -136,7 +136,7 @@ public class Performance {
           currentDateString = currentDate.toString();
         }
         ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(3);
+        Double closingValue = values.get(1);
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, closingValue);
       }
@@ -328,10 +328,10 @@ public class Performance {
   }
 
 
-  private TreeMap<String, Integer> sortTreeMapByMonthAndYear(TreeMap<String, Integer> data) {
+  public TreeMap<String, Integer> sortTreeMapByMonthAndYear(TreeMap<String, Integer> data) {
     boolean isMonthYearFormat = true;
     for (String key : data.keySet()) {
-      if (!key.matches("^\\d{4} [A-Z][a-z]{2}$")) { // Check if the key is in "year month" format
+      if (!key.matches("^[A-Za-z]{3} \\d{4}$")) { // Check if the key is in "year month" format
         isMonthYearFormat = false;
         break;
       }
@@ -339,6 +339,7 @@ public class Performance {
 
     // If keys are not in "year month" format, return the original TreeMap
     if (!isMonthYearFormat) {
+      //System.out.println("hi"+data);
       return data;
     }
 
@@ -348,13 +349,15 @@ public class Performance {
       String[] parts2 = s2.split(" ");
 
       // Compare years in descending order
-      int yearComparison = parts2[1].compareTo(parts1[1]);
+      int yearComparison = parts1[1].compareTo(parts2[1]);
+      //System.out.println(parts2[1]);
+      //System.out.println(parts1[1]);
       if (yearComparison != 0) {
         return yearComparison;
       }
 
       // For the same year, compare months in descending order
-      Map<String, Integer> months = new HashMap<>();
+      TreeMap<String, Integer> months = new TreeMap<>();
       months.put("Jan", 1);
       months.put("Feb", 2);
       months.put("Mar", 3);
@@ -367,7 +370,8 @@ public class Performance {
       months.put("Oct", 10);
       months.put("Nov", 11);
       months.put("Dec", 12);
-      int monthComparison = months.get(parts2[0]).compareTo(months.get(parts1[0]));
+      int monthComparison = months.get(parts1[0]).compareTo(months.get(parts2[0]));
+      //System.out.println(months.get(parts1[0]) + " " + months.get(parts2[0]) + " " + monthComparison);
       return monthComparison;
     };
 
@@ -375,38 +379,10 @@ public class Performance {
     TreeMap<String, Integer> orderedData = new TreeMap<>(customComparator);
     orderedData.putAll(data);
 
+    //System.out.println("hi2"+orderedData);
     return orderedData;
   }
 
-  private int monthToInt(String month) {
-    switch (month) {
-      case "Jan":
-        return 1;
-      case "Feb":
-        return 2;
-      case "Mar":
-        return 3;
-      case "Apr":
-        return 4;
-      case "May":
-        return 5;
-      case "Jun":
-        return 6;
-      case "Jul":
-        return 7;
-      case "Aug":
-        return 8;
-      case "Sep":
-        return 9;
-      case "Oct":
-        return 10;
-      case "Nov":
-        return 11;
-      case "Dec":
-        return 12;
-      default:
-        return -1;
-    }
-  }
+  
 
 }
