@@ -2,9 +2,7 @@ package controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -74,16 +72,21 @@ public class MockModel implements PortfolioDir {
 
   }
 
+  @Override
+  public Map<String, String> getListOfPortfoliosName() {
+    return null;
+  }
+
   /**
    * Retrieves the list of names of all portfolios in the mock portfolio directory.
    * @return An ArrayList containing the name of the mock portfolio.
    */
-  @Override
-  public Map<String, String > getListOfPortfoliosName() {
-    ArrayList<String> listOfPortfolios = new ArrayList<>();
-    listOfPortfolios.add(mockName);
-    return new HashMap<>();
-  }
+//  @Override
+//  public ArrayList<String> getListOfPortfoliosName() {
+//    ArrayList<String> listOfPortfolios = new ArrayList<>();
+//    listOfPortfolios.add(mockName);
+//    return listOfPortfolios;
+//  }
 
   /**
    * Retrieves the composition of the mock portfolio at the specified index.
@@ -169,8 +172,7 @@ public class MockModel implements PortfolioDir {
   }
 
   @Override
-  public String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2,
-                                      StockData api) {
+  public String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2, StockData api) {
     return null;
   }
 
@@ -180,15 +182,32 @@ public class MockModel implements PortfolioDir {
   }
 
   @Override
-  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, StockData api,
-                                                  LocalDate startDate,
-                                                 LocalDate endDate) {
+  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, StockData api, LocalDate startDate, LocalDate endDate) {
     return null;
   }
 
   @Override
-  public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api, LocalDate startDate,
-                                                 LocalDate endDate, int x, int y) {
+  public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api, LocalDate startDate, LocalDate endDate, int x, int y) {
     return null;
+  }
+
+  @Override
+  public TreeMap<String, Integer> stockPerformance(String stock, StockData api, LocalDate start, LocalDate end) {
+    return null;
+  }
+
+  @Override
+  public TreeMap<String, Integer> portfolioPerformance(int input, LocalDate start, LocalDate end) {
+    return null;
+  }
+
+  @Override
+  public int scaleForStockPerformance(String stock, StockData api, LocalDate start, LocalDate end) {
+    return 0;
+  }
+
+  @Override
+  public int scaleForPortfolioPerformance(int input, LocalDate start, LocalDate end) {
+    return 0;
   }
 }
