@@ -757,7 +757,19 @@ public class StockControllerImpl implements StockController {
 
   private void portfolioPerformance() {
     int choice = inputPortfolioChoice();
-    //String portfolioName =
+    String portfolioName = " ";
+    Map<String,String> portfolioList = model.getListOfPortfoliosName();
+    int index = 0;
+    for (Map.Entry<String, String> entry : portfolioList.entrySet()) {
+      if (index == choice) {
+        portfolioName = entry.getKey();
+        break;
+      }
+      index++;
+    }
+    if (portfolioName == " ") {
+      throw new IllegalArgumentException("No such portfolio found");
+    }
     //String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
@@ -767,7 +779,7 @@ public class StockControllerImpl implements StockController {
     try {
       result = model.portfolioPerformance(choice,startDate,endDate);
       int scale = model.scaleForPortfolioPerformance(choice,startDate,endDate);
-      view.barGraph(scale,result, "s", startDate+"", endDate+"");
+      view.barGraph(scale,result, portfolioName, startDate+"", endDate+"");
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
     }
