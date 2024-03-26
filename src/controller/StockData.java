@@ -41,6 +41,7 @@ public class StockData {
    */
   public StockData() {
     priceData = new TreeMap<>(Collections.reverseOrder());
+    tickerSymbol = null;
   }
 
   /**
