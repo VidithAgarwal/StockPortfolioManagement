@@ -104,6 +104,7 @@ public class Performance {
     if (lastEntry != null) {
       lastDate = lastEntry.getKey();
     } else {
+      System.out.println("hoiio");
       throw new IllegalArgumentException();
     }
     return LocalDate.parse(lastDate);
@@ -224,7 +225,10 @@ public class Performance {
           value = portfolioName.portfolioValue(currentDateString, new StockData());
           break;
         }
-        catch (Exception e) {
+        catch (IllegalArgumentException e) {
+          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+            throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+          }
           currentDate = currentDate.minusDays(1);
           currentDateString = currentDate.toString();
         }
@@ -242,9 +246,9 @@ public class Performance {
    * @throws IllegalArgumentException if the portfolio is not flexible.
    */
   public TreeMap<String, Double> portfolioPerformance ( Portfolio portfolioName, LocalDate start,  LocalDate end) {
-    if (!portfolioName.isFlexible()) {
-      throw new IllegalArgumentException();
-    }
+//    if (!portfolioName.isFlexible()) {
+//      throw new IllegalArgumentException();
+//    }
     double value = 0;
     TreeMap<String, Double> selectedData = new TreeMap<>();
     long totalDays = ChronoUnit.DAYS.between(start, end);
@@ -252,7 +256,7 @@ public class Performance {
     long yearDiff = ChronoUnit.YEARS.between(start, end);
     int numParts;
 
-    if ( totalDays <=30  && totalDays > 0 ) {
+    if ( totalDays <= 30  && totalDays > 0 ) {
       numParts = (int) totalDays;
       helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
     }
@@ -274,7 +278,10 @@ public class Performance {
             value = portfolioName.portfolioValue(currentDateString, new StockData());
             break;
           }
-          catch (Exception e) {
+          catch (IllegalArgumentException e) {
+            if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+              throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+            }
             currentDate = currentDate.minusDays(1);
             currentDateString = currentDate.toString();
           }
@@ -298,7 +305,10 @@ public class Performance {
             value = portfolioName.portfolioValue(currentDateString, new StockData());
             break;
           }
-          catch (Exception e) {
+          catch (IllegalArgumentException e) {
+            if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+              throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+            }
             currentDate = currentDate.minusDays(1);
             currentDateString = currentDate.toString();
           }
@@ -320,7 +330,10 @@ public class Performance {
             value = portfolioName.portfolioValue(currentDateString,new StockData() );
             break;
           }
-          catch (Exception e) {
+          catch (IllegalArgumentException e) {
+            if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+              throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+            }
             currentDate = currentDate.minusDays(1);
             currentDateString = currentDate.toString();
           }
