@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import controller.StockData;
@@ -25,9 +24,9 @@ public class Performance {
    * @param totalDays  total number of days in the time period.
    * @param priceData historical price data of the stock.
    * @param selectedData  TreeMap to store selected stock data.
-   * @param lastDay  last available date in the priceData, when stock was listed.
    */
-  private void helperYearDiff0 (int numParts, LocalDate start, long totalDays, Map<String, ArrayList<Double>> priceData, TreeMap<String, Double> selectedData, LocalDate lastDay ) {
+  private void helperYearDiff0 (int numParts, LocalDate start, long totalDays, Map<String,
+          ArrayList<Double>> priceData, TreeMap<String, Double> selectedData ) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusDays(interval * i);
@@ -37,8 +36,59 @@ public class Performance {
         currentDateString = currentDate.toString();
       }
       ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(1);
+      Double closingValue = values.get(3);
       selectedData.put(currentDateString, closingValue);
+    }
+  }
+
+  private void helperYearDiffBetween5And30 (int numParts, LocalDate start, Map<String,
+          ArrayList<Double>> priceData, TreeMap<String, Double> selectedData ) {
+    for (int i = 0; i <= numParts; i++) {
+      LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
+      String currentDateString = currentDate.toString();
+      while (!priceData.containsKey((currentDateString))) {
+        currentDate = currentDate.minusDays(1);
+        currentDateString = currentDate.toString();
+      }
+      ArrayList<Double> values = priceData.get(currentDateString);
+      Double closingValue = values.get(3);
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, closingValue);
+    }
+  }
+
+  private void helperYearDiffBetween1And5 (int numParts, LocalDate start,Map<String,
+          ArrayList<Double>> priceData, TreeMap<String, Double> selectedData  ) {
+    for (int i = 0; i < numParts; i++) {
+      LocalDate currentDate = start.plusMonths(i*2)
+              .withDayOfMonth(start.plusMonths(i*2).lengthOfMonth());
+      //LocalDate currentDate = start.plusDays(interval * i);
+      String currentDateString = currentDate.toString();
+
+      while (!priceData.containsKey((currentDateString))) {
+        currentDate = currentDate.minusDays(1);
+        currentDateString = currentDate.toString();
+      }
+      ArrayList<Double> values = priceData.get(currentDateString);
+      Double closingValue = values.get(3);
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, closingValue);
+    }
+  }
+
+  private void helperMonthDiffBetween5And30 (int numParts,LocalDate start, Map<String,
+          ArrayList<Double>> priceData, TreeMap<String, Double> selectedData) {
+    for (int i = 0; i < numParts; i++) {
+      LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
+      String currentDateString = currentDate.toString();
+      while (!priceData.containsKey((currentDateString))) {
+        currentDate = currentDate.minusDays(1);
+        currentDateString = currentDate.toString();
+      }
+      ArrayList<Double> values = priceData.get(currentDateString);
+      Double closingValue = values.get(3);
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, closingValue);
     }
   }
 
@@ -67,11 +117,12 @@ public class Performance {
    * @return TreeMap containing the selected stock data, the timestamp and price on that day.
    * @throws IllegalArgumentException if the start date is before the last available date for stock.
    */
-  public TreeMap<String, Double> stockPerformance (TreeMap<String, ArrayList <Double>> priceData, LocalDate start, LocalDate end) {
+  public TreeMap<String, Double> stockPerformance (TreeMap<String, ArrayList <Double>> priceData,
+                                                   LocalDate start, LocalDate end) {
     TreeMap<String, Double> selectedData = new TreeMap<>();
     LocalDate lastDay = returnLastEntry(priceData);
     if (start.isBefore(lastDay)) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Start Date entered is before the stock listing date");
     }
     long totalDays = ChronoUnit.DAYS.between(start, end);
     long yearDiff = ChronoUnit.YEARS.between(start, end);
@@ -80,70 +131,73 @@ public class Performance {
 
     if ( totalDays <= 30 && totalDays > 0 ) {
       numParts = (int) totalDays;
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData, lastDay);
+      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
     }
     else if(totalDays ==31) {
       numParts = 16;
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData, lastDay);
+      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
     }
     else if (monthsDifference < 5 && monthsDifference > 0 && yearDiff == 0 ) {
       numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData, lastDay);
+      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
     }
 
     else if (monthsDifference >= 5 && monthsDifference < 30) {
       numParts = (int) monthsDifference;
-      for (int i = 0; i < numParts; i++) {
-        LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
-        String currentDateString = currentDate.toString();
-        while (!priceData.containsKey((currentDateString))) {
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-        ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(1);
-        String formatDate = dateFormat(currentDateString);
-        selectedData.put(formatDate, closingValue);
-      }
+//      for (int i = 0; i < numParts; i++) {
+//        LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
+//        String currentDateString = currentDate.toString();
+//        while (!priceData.containsKey((currentDateString))) {
+//          currentDate = currentDate.minusDays(1);
+//          currentDateString = currentDate.toString();
+//        }
+//        ArrayList<Double> values = priceData.get(currentDateString);
+//        Double closingValue = values.get(3);
+//        String formatDate = dateFormat(currentDateString);
+//        selectedData.put(formatDate, closingValue);
+//      }
+      helperMonthDiffBetween5And30(numParts,start,priceData,selectedData);
     }
 
     else if (yearDiff >= 1 && yearDiff < 5 && monthsDifference >= 30) {
       numParts = (int) Math.ceil((double) monthsDifference / 2);
-      long interval = Math.round((float) totalDays / (numParts));
-      for (int i = 0; i < numParts; i++) {
-        LocalDate currentDate = start.plusMonths(i*2).withDayOfMonth(start.plusMonths(i*2).lengthOfMonth());
-        //LocalDate currentDate = start.plusDays(interval * i);
-        String currentDateString = currentDate.toString();
-
-        while (!priceData.containsKey((currentDateString))) {
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-        ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(1);
-        String formatDate = dateFormat(currentDateString);
-        selectedData.put(formatDate, closingValue);
-      }
+      //long interval = Math.round((float) totalDays / (numParts));
+//      for (int i = 0; i < numParts; i++) {
+//        LocalDate currentDate = start.plusMonths(i*2).withDayOfMonth(start.plusMonths(i*2).lengthOfMonth());
+//        //LocalDate currentDate = start.plusDays(interval * i);
+//        String currentDateString = currentDate.toString();
+//
+//        while (!priceData.containsKey((currentDateString))) {
+//          currentDate = currentDate.minusDays(1);
+//          currentDateString = currentDate.toString();
+//        }
+//        ArrayList<Double> values = priceData.get(currentDateString);
+//        Double closingValue = values.get(3);
+//        String formatDate = dateFormat(currentDateString);
+//        selectedData.put(formatDate, closingValue);
+//      }
+      helperYearDiffBetween1And5(numParts,start,priceData, selectedData);
     }
 
     else if (yearDiff >= 5 && yearDiff < 30) {
       numParts = (int) yearDiff;
-      for (int i = 0; i <= numParts; i++) {
-        LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
-        String currentDateString = currentDate.toString();
-        while (!priceData.containsKey((currentDateString))) {
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-        ArrayList<Double> values = priceData.get(currentDateString);
-        Double closingValue = values.get(1);
-        String formatDate = dateFormat(currentDateString);
-        selectedData.put(formatDate, closingValue);
-      }
+//      for (int i = 0; i <= numParts; i++) {
+//        LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
+//        String currentDateString = currentDate.toString();
+//        while (!priceData.containsKey((currentDateString))) {
+//          currentDate = currentDate.minusDays(1);
+//          currentDateString = currentDate.toString();
+//        }
+//        ArrayList<Double> values = priceData.get(currentDateString);
+//        Double closingValue = values.get(3);
+//        String formatDate = dateFormat(currentDateString);
+//        selectedData.put(formatDate, closingValue);
+//      }
+      helperYearDiffBetween5And30(numParts,start,priceData,selectedData);
     }
     else if (yearDiff >= 30 ) {
       numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData, lastDay);
+      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
     }
     return selectedData;
 
@@ -253,6 +307,7 @@ public class Performance {
         String formatDate = dateFormat(currentDateString);
         selectedData.put(formatDate, value);
       }
+
     }
 
     else if (yearDiff >= 5 && yearDiff < 30) {
@@ -278,7 +333,7 @@ public class Performance {
       numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
       helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
     }
-    System.out.println(selectedData);
+    //System.out.println(selectedData);
     return selectedData;
   }
 
@@ -331,32 +386,22 @@ public class Performance {
   public TreeMap<String, Integer> sortTreeMapByMonthAndYear(TreeMap<String, Integer> data) {
     boolean isMonthYearFormat = true;
     for (String key : data.keySet()) {
-      if (!key.matches("^[A-Za-z]{3} \\d{4}$")) { // Check if the key is in "year month" format
+      if (!key.matches("^[A-Za-z]{3} \\d{4}$")) {
         isMonthYearFormat = false;
         break;
       }
     }
-
-    // If keys are not in "year month" format, return the original TreeMap
     if (!isMonthYearFormat) {
-      //System.out.println("hi"+data);
       return data;
     }
-
     Comparator<String> customComparator = (s1, s2) -> {
-      // Extract year and month from keys
       String[] parts1 = s1.split(" ");
       String[] parts2 = s2.split(" ");
 
-      // Compare years in descending order
       int yearComparison = parts1[1].compareTo(parts2[1]);
-      //System.out.println(parts2[1]);
-      //System.out.println(parts1[1]);
       if (yearComparison != 0) {
         return yearComparison;
       }
-
-      // For the same year, compare months in descending order
       TreeMap<String, Integer> months = new TreeMap<>();
       months.put("Jan", 1);
       months.put("Feb", 2);
@@ -370,19 +415,13 @@ public class Performance {
       months.put("Oct", 10);
       months.put("Nov", 11);
       months.put("Dec", 12);
-      int monthComparison = months.get(parts1[0]).compareTo(months.get(parts2[0]));
-      //System.out.println(months.get(parts1[0]) + " " + months.get(parts2[0]) + " " + monthComparison);
-      return monthComparison;
+      return months.get(parts1[0]).compareTo(months.get(parts2[0]));
     };
-
-    // Create TreeMap with custom comparator
     TreeMap<String, Integer> orderedData = new TreeMap<>(customComparator);
     orderedData.putAll(data);
-
-    //System.out.println("hi2"+orderedData);
     return orderedData;
   }
 
-  
+
 
 }
