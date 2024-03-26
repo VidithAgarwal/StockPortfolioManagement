@@ -985,4 +985,92 @@ public class ControllerTest {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
+
+  @Test
+  public void testStockGainLoss() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the date to know if the above stock gained "
+            + "or lost on that date: ","The date should be in this format yyyy-mm-dd: ","Test"
+            + " Portfolio","Enter your choice: ","Enter your choice: " ,"Error", "Enter"
+            + " your choice: "};
+    Reader in = new StringReader("3\n1\naapl\n2024-03-20\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Test Portfolio",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockGainLossStockWrong() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the date to know if the above stock gained "
+            + "or lost on that date: ","The date should be in this format yyyy-mm-dd: ","Test"
+            + " Portfolio","Enter your choice: ","Enter your choice: " ,"Error", "Enter"
+            + " your choice: "};
+    Reader in = new StringReader("3\n1\nhello\n2024-03-20\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Test Portfolio",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockGainLossDateWrong() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the date to know if the above stock gained "
+            + "or lost on that date: ","The date should be in this format"
+            + " yyyy-mm-dd: ","Error","Enter the date to know if the above stock gained"
+            + " or lost on that date: ","The date should be in this "
+            + "format yyyy-mm-dd: ","Error","Enter the date to know if the above stock gained or "
+            + "lost on that date: ","The date should be in this format yyyy-mm-dd: ","Test"
+            + " Portfolio","Enter your choice: ","Enter your choice: " ,"Error", "Enter"
+            + " your choice: "};
+    Reader in = new StringReader("3\n1\naapl\n20245-03-20\n2024-13-12\n2024-03-20\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Test Portfolio",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockGainLossOverPeriod() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n2\naapl\n2024-03-01\n2024-03-21\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Test Portfolio",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
 }
