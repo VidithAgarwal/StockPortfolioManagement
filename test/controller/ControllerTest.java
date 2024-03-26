@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import model.PortfolioImpl;
 
@@ -55,12 +56,16 @@ public class ControllerTest {
   @Before
   public void setUp() {
     Map<String, Integer> mockComposition = new HashMap<>();
+    TreeMap<String,String> mockTreeMap = new TreeMap<>();
+    TreeMap<String,Integer> mockStringInt = new TreeMap<>();
     mockComposition.put("AAPL", 20);
     mockComposition.put("Goog", 10);
     mockName = "Test Portfolio";
     mockValue = 17.5;
     intMockValue = 10;
-    this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue);
+
+    this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue,
+            mockTreeMap, mockStringInt);
     PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(mockName);
     newBuilder.addShare("AAPL", 20);
     mockModel.addPortfolio(newBuilder);
@@ -70,8 +75,11 @@ public class ControllerTest {
 
   @Test
   public void testGetComposition()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the Portfolio "
-            + "number you want to select.","Enter the date you want to see the composition for: " ,"The date should be in this format yyyy-mm-dd: " ,"Goog 10", "AAPL 20", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the"
+            + " Portfolio "
+            + "number you want to select.","Enter the date you want to see the composition "
+            + "for: " ,"The date should be in this format yyyy-mm-dd: " ,"Goog 10", "AAPL "
+            + "20", "Enter your choice: "};
     Reader in = new StringReader("3\n0\n2024-03-03\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -80,7 +88,7 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Retrieving composition for portfolio at index: 0on date: 2024-03-03",
+    assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-03",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -89,11 +97,13 @@ public class ControllerTest {
 
   @Test
   public void testGetCompositionWithNegativeChoice()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
             + "Portfolio " + "number you want to select.", "Error", "Enter the Portfolio "
             + "number you want to "
-            + "select.", "Goog 10", "AAPL 20", "Enter your choice: "};
-    Reader in = new StringReader("3\n-1\n0\n6\n");
+            + "select.","Enter the date you want to see the composition"
+            + " for: ", "The date should be in this format yyyy-mm-dd: " ,"Goog 10", "AAPL "
+            + "20", "Enter your choice: "};
+    Reader in = new StringReader("3\n-1\n0\n2024-03-03\n11\n");
 
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -102,7 +112,7 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Retrieving composition for portfolio at index: 0",
+    assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-03",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -111,11 +121,13 @@ public class ControllerTest {
 
   @Test
   public void testGetCompositionWithInvalidChoice()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
             + "Portfolio "
             + "number you want to select.", "Error",  "Enter the Portfolio number you want to "
-            + "select.", "Goog 10", "AAPL 20", "Enter your choice: "};
-    Reader in = new StringReader("3\n3\n0\n6\n");
+            + "select.", "Enter the date you want to see the composition for: ","The date"
+            + " should be in this format yyyy-mm-dd: ","Goog 10", "AAPL "
+            + "20", "Enter your choice: "};
+    Reader in = new StringReader("3\n3\n0\n2024-03-20\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -123,7 +135,7 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Retrieving composition for portfolio at index: 0",
+    assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-20",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -132,11 +144,12 @@ public class ControllerTest {
 
   @Test
   public void testGetCompositionWithChoiceAsString()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
             + "Portfolio "
             + "number you want to select.", "Error",  "Enter the Portfolio number you want to "
-            + "select.", "Goog 10", "AAPL 20", "Enter your choice: "};
-    Reader in = new StringReader("3\nstring\n0\n6\n");
+            + "select.","Enter the date you want to see the composition for: " ,"The date should"
+            + " be in this format yyyy-mm-dd: ","Goog 10", "AAPL 20", "Enter your choice: "};
+    Reader in = new StringReader("3\nstring\n0\n2024-03-20\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -144,7 +157,7 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Retrieving composition for portfolio at index: 0",
+    assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-20",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -153,11 +166,13 @@ public class ControllerTest {
 
   @Test
   public void testGetCompositionWithChoiceAsDecimal()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
             + "Portfolio "
             + "number you want to select.", "Error",  "Enter the Portfolio number you want to "
-            + "select.", "Goog 10", "AAPL 20", "Enter your choice: "};
-    Reader in = new StringReader("3\n3.5\n0\n6\n");
+            + "select.","Enter the date you want to see the composition for: ","The date "
+            + "should be in this format yyyy-mm-dd: ", "Goog 10", "AAPL 20", "Enter "
+            + "your choice: "};
+    Reader in = new StringReader("3\n3.5\n0\n2024-03-20\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -165,7 +180,7 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Retrieving composition for portfolio at index: 0",
+    assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-20",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -174,12 +189,12 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolio()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the name of "
             + "the portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Enter the name of the share or ticker symbol: ", "Enter the quantity"
             + " of AAPL you "
             + "have: ", "Enter your choice: "};
-    Reader in = new StringReader("1\nTest\n1\nAAPL\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n1\nAAPL\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -197,7 +212,8 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithInvalidShareName()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter "
+            + "the name of the "
             + "portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Enter the name "
             + "of the share or ticker symbol: ", "Enter the quantity of AAPLL you "
@@ -205,7 +221,7 @@ public class ControllerTest {
             + "quantity of AAPL you "
             + "have: ", "Enter your "
             + "choice: "};
-    Reader in = new StringReader("1\nTest\n1\nAAPLL\n10\nAAPL\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n1\nAAPLL\n10\nAAPL\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -223,7 +239,8 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithNegativeTotalNumberOfStocks()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Enter your choice: ","Enter "
+            + "the name of the "
             + "portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Error", "Enter "
             + "the number of stocks you want to have in this portfolio: ", "Enter the name of "
@@ -232,7 +249,7 @@ public class ControllerTest {
             + "quantity of AAPL you "
             + "have: ", "Enter your "
             + "choice: "};
-    Reader in = new StringReader("1\nTest\n-1\n1\nAAPLL\n10\nAAPL\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n-1\n1\nAAPLL\n10\nAAPL\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -250,7 +267,8 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithDecimalTotalNumberOfStocks()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Enter your choice: ","Enter "
+            + "the name of the "
             + "portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Error", "Enter "
             + "the number of stocks you want to have in this portfolio: ", "Enter the name of "
@@ -259,7 +277,7 @@ public class ControllerTest {
             + "the quantity of AAPL you "
             + "have: ", "Enter your "
             + "choice: "};
-    Reader in = new StringReader("1\nTest\n1.5\n1\nAAPLL\n10\nAAPL\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n1.5\n1\nAAPLL\n10\nAAPL\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -277,7 +295,7 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithStringTotalNumberOfStocks()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the name of "
             + "the portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Error", "Enter "
             + "the number of stocks you want to have in this portfolio: ", "Enter the name of the "
@@ -286,7 +304,7 @@ public class ControllerTest {
             + "quantity of AAPL you "
             + "have: ", "Enter your "
             + "choice: "};
-    Reader in = new StringReader("1\nTest\nhell\n1\nAAPLL\n10\nAAPL\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\nhell\n1\nAAPLL\n10\nAAPL\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -304,14 +322,15 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithNegativeQuantityOfShares()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the "
+            + "name of the "
             + "portfolio: ", "Enter "
             + "the number of stocks you want to have in this portfolio: ", "Enter the"
             + " name of the share or ticker symbol: ", "Enter the"
             + " quantity of AAPL you "
             + "have: ", "Error", "Enter the quantity of AAPL you "
             + "have: ",  "Enter your choice: "};
-    Reader in = new StringReader("1\nTest\n1\nAAPL\n-10\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n1\nAAPL\n-10\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -329,13 +348,14 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithFractionalQuantityOfShares()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter "
+            + "the name of the "
             + "portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Enter the name of the share or ticker symbol: ", "Enter "
             + "the quantity of AAPL you "
             + "have: ", "Error", "Enter the quantity of AAPL you "
             + "have: ",  "Enter your choice: "};
-    Reader in = new StringReader("1\nTest\n1\nAAPL\n10.5\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n1\nAAPL\n10.5\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -353,13 +373,14 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithStringQuantityOfShares()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the "
+            + "name of the "
             + "portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Enter the name of the share or ticker symbol: ", "Enter "
             + "the quantity of AAPL you "
             + "have: ", "Error", "Enter the quantity of AAPL you "
             + "have: ",  "Enter your choice: "};
-    Reader in = new StringReader("1\nTest\n1\nAAPL\nten\n10\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n1\nAAPL\nten\n10\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -377,13 +398,14 @@ public class ControllerTest {
 
   @Test
   public void testCreatePortfolioWithTwoStocks()  {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the"
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter "
+            + "the name of the"
             + " portfolio: ", "Enter the number of stocks you want to have in this "
             + "portfolio: ", "Enter the name of the share or ticker symbol: ", "Enter "
             + "the quantity of AAPL you "
             + "have: ", "Enter the name of the share or ticker symbol: ", "Enter the "
             + "quantity of GOOG you have: ",  "Enter your choice: "};
-    Reader in = new StringReader("1\nTest\n2\nAAPL\n10\nGOOG\n20\n6\n");
+    Reader in = new StringReader("1\n1\nTest\n2\nAAPL\n10\nGOOG\n20\n11\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -402,12 +424,12 @@ public class ControllerTest {
   @Test
   public void testTotalValue()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a "
-            + "portfolio for certain date", "Test Portfolio", "Enter the Portfolio "
+            + "portfolio for certain date", "Test Portfolio inflexible", "Enter the Portfolio "
             + "number you want to select.", "Enter the date for which you want to "
             + "get the total price " + "of the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n2024-03-05\n6\n");
+    Reader in = new StringReader("4\n0\n2024-03-05\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -426,12 +448,13 @@ public class ControllerTest {
   @Test
   public void testTotalValueForInvalidPortfolioChoice()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio"
-            + " for certain date", "Test Portfolio", "Enter the Portfolio number you want "
+            + " for certain date", "Test Portfolio inflexible", "Enter "
+            + "the Portfolio number you want "
             + "to select.", "Error", "Enter the Portfolio number you want to select.", "Enter"
             + " the date for which you want to get the total price of the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n3\n0\n2024-03-05\n6\n");
+    Reader in = new StringReader("4\n3\n0\n2024-03-05\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -450,12 +473,13 @@ public class ControllerTest {
   @Test
   public void testTotalValueForNegativePortfolioChoice()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "certain date", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to "
             + "select.", "Error", "Enter the Portfolio number you want to select.", "Enter the "
             + "date for which you want to get the total price of the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n-3\n0\n2024-03-05\n6\n");
+    Reader in = new StringReader("4\n-3\n0\n2024-03-05\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -474,12 +498,13 @@ public class ControllerTest {
   @Test
   public void testTotalValueForStringPortfolioChoice()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "certain date", "Test Portfolio inflexible", "Enter the Portfolio "
+            + "number you want to "
             + "select.", "Error", "Enter the Portfolio number you want to select.", "Enter the"
             + " date for which you want to get the total price of the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\nzero\n0\n2024-03-05\n6\n");
+    Reader in = new StringReader("4\nzero\n0\n2024-03-05\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -498,14 +523,15 @@ public class ControllerTest {
   @Test
   public void testTotalValueForInvalidDateFormat()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "certain date", "Test Portfolio inflexible", "Enter the Portfolio number "
+            + "you want to "
             + "select.", "Enter the date for which you want to get the total price of the "
             + "portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date "
             + "for which you want to get the total price of the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is " + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n05-03-2024\n2024-03-05\n6\n");
+    Reader in = new StringReader("4\n0\n05-03-2024\n2024-03-05\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -524,14 +550,15 @@ public class ControllerTest {
   @Test
   public void testTotalValueForInvalidDay()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "certain date", "Test Portfolio inflexible", "Enter the Portfolio number "
+            + "you want to "
             + "select.", "Enter the date for which you want to get the total price of the "
             + "portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date for which "
             + "you want to get the total price of the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is " + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n2024-03-35\n2024-02-25\n6\n");
+    Reader in = new StringReader("4\n0\n2024-03-35\n2024-02-25\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -550,7 +577,8 @@ public class ControllerTest {
   @Test
   public void testTotalValueForInvalidMonth()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "certain date", "Test Portfolio inflexible", "Enter the Portfolio number "
+            + "you want to "
             + "select.", "Enter the date for which you want to get the total price of the "
             + "portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date for "
@@ -558,7 +586,7 @@ public class ControllerTest {
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n2024-13-35\n2024-02-25\n6\n");
+    Reader in = new StringReader("4\n0\n2024-13-35\n2024-02-25\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -577,7 +605,7 @@ public class ControllerTest {
   @Test
   public void testTotalValueForInvalidMonthDayCombination()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you "
+            + "certain date", "Test Portfolio inflexible", "Enter the Portfolio number you "
             + "want to select.", "Enter the date for which you want to get the total price of "
             + "the portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date for "
@@ -585,7 +613,7 @@ public class ControllerTest {
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n2024-11-31\n2024-02-25\n6\n");
+    Reader in = new StringReader("4\n0\n2024-11-31\n2024-02-25\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -604,7 +632,8 @@ public class ControllerTest {
   @Test
   public void testTotalValueForZeroDay()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for "
-            + "certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "certain date", "Test Portfolio inflexible", "Enter the Portfolio number"
+            + " you want to "
             + "select.", "Enter the date for which you want to get the total price of the "
             + "portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date for which "
@@ -612,7 +641,7 @@ public class ControllerTest {
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n2024-11-0\n2024-02-25\n6\n");
+    Reader in = new StringReader("4\n0\n2024-11-0\n2024-02-25\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -631,7 +660,8 @@ public class ControllerTest {
   @Test
   public void testTotalValueForZeroMonth()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio "
-            + "for certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + "for certain date", "Test Portfolio inflexible", "Enter the Portfolio number "
+            + "you want to "
             + "select.", "Enter the date for which you want to get the total price of the "
             + "portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date for "
@@ -639,7 +669,7 @@ public class ControllerTest {
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n2024-0-11\n2024-02-25\n6\n");
+    Reader in = new StringReader("4\n0\n2024-0-11\n2024-02-25\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -660,7 +690,8 @@ public class ControllerTest {
   @Test
   public void testTotalValueForNegativeValues()  {
     String[] expectedOutputLog = {"Enter your choice: ", "Get total value of a portfolio for"
-            + " certain date", "Test Portfolio", "Enter the Portfolio number you want to "
+            + " certain date", "Test Portfolio inflexible", "Enter the Portfolio"
+            + " number you want to "
             + "select.", "Enter the date for which you want to get the total price of the "
             + "portfolio. ", "The "
             + "date should be in this format yyyy-mm-dd: ", "Error",  "Enter the date for which "
@@ -668,7 +699,7 @@ public class ControllerTest {
             + "date should be in this format yyyy-mm-dd: ", "Wait until the total value"
             + " is "
             + "calculated", mockValue + "", "Enter your choice: "};
-    Reader in = new StringReader("4\n0\n-2024-11-11\n2024-02-25\n6\n");
+    Reader in = new StringReader("4\n0\n-2024-11-11\n2024-02-25\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -687,11 +718,11 @@ public class ControllerTest {
   @Test
   public void testSavePortfolio()  {
     String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
             + "Portfolio number you want to select.", "Enter the proper path with file name in "
             + "which you would like to save portfolio.", "Portfolio exported to "
             + path + " successfully.", "Enter your choice: "};
-    Reader in = new StringReader("5\n1\n" + path + "\n6\n");
+    Reader in = new StringReader("5\n1\n" + path + "\n11\n");
     PortfolioImpl.PortfolioBuilder newBuilder
             = new PortfolioImpl.PortfolioBuilder("Vidith");
     newBuilder.addShare("AAPL", 20);
@@ -710,14 +741,15 @@ public class ControllerTest {
   @Test
   public void testSaveAndThenLoadPortfolio()  {
     String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the Portfolio "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter "
+            + "the Portfolio "
             + "number you want to select.", "Enter the proper path with file name in which you "
             + "would like to save portfolio.", "Portfolio exported to "
             + path + " successfully.", "Enter your choice: ", "Enter the name of the "
             + "portfolio: ", "Enter the full path of "
             + "the file you want to load data from: ", "File loaded successfully", "Enter your "
             + "choice: "};
-    Reader in = new StringReader("5\n1\n" + path + "\n2\nTest2\n" + path + "\n6\n");
+    Reader in = new StringReader("5\n1\n" + path + "\n2\nTest2\n" + path + "\n11\n");
     PortfolioImpl.PortfolioBuilder newBuilder
             = new PortfolioImpl.PortfolioBuilder("Vidith");
     newBuilder.addShare("AAPL", 20);
@@ -736,13 +768,13 @@ public class ControllerTest {
   @Test
   public void testSavePortfolioForInvalidPortfolioChoice()  {
     String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
             + "Portfolio number you want to select.", "Error", "Enter "
             + "the Portfolio number you want to select.", "Enter the proper path with file "
             + "name in which you would like to save portfolio.", "Portfolio exported to "
             + path + " successfully.", "Enter your choice: "};
 
-    Reader in = new StringReader("5\n3\n0\n" + path + "\n6\n");
+    Reader in = new StringReader("5\n3\n0\n" + path + "\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -757,12 +789,13 @@ public class ControllerTest {
   @Test
   public void testSavePortfolioForNegativePortfolioChoice()  {
     String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.csv";
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the Portfolio "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter "
+            + "the Portfolio "
             + "number you want to select.", "Error", "Enter "
             + "the Portfolio number you want to select.", "Enter the proper path with file name in "
             + "which you would like to save portfolio.", "Portfolio exported to "
             + path + " successfully.", "Enter your choice: "};
-    Reader in = new StringReader("5\n-3\n0\n" + path + "\n6\n");
+    Reader in = new StringReader("5\n-3\n0\n" + path + "\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -777,12 +810,13 @@ public class ControllerTest {
   @Test
   public void testSavePortfolioForInvalidFileType()  {
     String path = System.getProperty("user.dir") + "/testFiles/saveAndLoad.txt";
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the Portfolio "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter "
+            + "the Portfolio "
             + "number you want to select.", "Error", "Enter "
             + "the Portfolio number you want to select.", "Enter the proper path with "
             + "file name in which you would like to save portfolio.", "Error", "Enter your"
             + " choice: "};
-    Reader in = new StringReader("5\n-3\n0\n" + path + "\n6\n");
+    Reader in = new StringReader("5\n-3\n0\n" + path + "\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -797,12 +831,13 @@ public class ControllerTest {
   @Test
   public void testSavePortfolioForEmptyFileName()  {
     String path = System.getProperty("user.dir") + "/testFiles/.csv";
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio", "Enter the Portfolio "
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter"
+            + " the Portfolio "
             + "number you want to select.", "Error", "Enter "
             + "the Portfolio number you want to select.", "Enter the proper path with "
             + "file name in which you would like to save portfolio.", "Error", "Enter "
             + "your choice: "};
-    Reader in = new StringReader("5\n-3\n0\n" + path + "\n6\n");
+    Reader in = new StringReader("5\n-3\n0\n" + path + "\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -821,7 +856,7 @@ public class ControllerTest {
             + "portfolio: ", "Enter the full path of the file you want to load data "
             + "from: ", "File loaded "
             + "successfully", "Enter your choice: "};
-    Reader in = new StringReader("2\nTest\n" + path + "\n6\n");
+    Reader in = new StringReader("2\n1\nTest\n" + path + "\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -842,7 +877,7 @@ public class ControllerTest {
             + "full path of the file you want to load data from: ", "File "
             + "loaded"
             + " successfully", "Enter your choice: "};
-    Reader in = new StringReader("2\nTest\n" + incorrectPath + "\n" + correctPath + "\n6\n");
+    Reader in = new StringReader("2\nTest\n" + incorrectPath + "\n" + correctPath + "\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -862,7 +897,7 @@ public class ControllerTest {
             + "from: ", "Error", "Enter the "
             + "full path of the file you want to load data from: ", "File "
             + "loaded" + " successfully", "Enter your choice: "};
-    Reader in = new StringReader("2\nTest\n" + incorrectPath + "\n" + correctPath + "\n6\n");
+    Reader in = new StringReader("2\n1\nTest\n" + incorrectPath + "\n" + correctPath + "\n6\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -876,7 +911,7 @@ public class ControllerTest {
   @Test
   public void testingGoWithInvalidChoice() {
     String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
-    Reader in = new StringReader("7\n6\n");
+    Reader in = new StringReader("12\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -892,7 +927,7 @@ public class ControllerTest {
   @Test
   public void testingGoWithNegativeChoice() {
     String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
-    Reader in = new StringReader("-7\n6\n");
+    Reader in = new StringReader("-7\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -908,7 +943,7 @@ public class ControllerTest {
   @Test
   public void testingGoWithNegativeStringType() {
     String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
-    Reader in = new StringReader("seven\n6\n");
+    Reader in = new StringReader("seven\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -924,7 +959,7 @@ public class ControllerTest {
   @Test
   public void testingGoWithForPrimaryMenu() {
     String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
-    Reader in = new StringReader("3\n");
+    Reader in = new StringReader("4\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -939,7 +974,7 @@ public class ControllerTest {
   @Test
   public void testingGoWithForPrimaryMenuForInvalidChoice() {
     String[] expectedOutputLog = {"Enter your choice: ", "Error", "Enter your choice: "};
-    Reader in = new StringReader("7\n3\n");
+    Reader in = new StringReader("12\n4\n");
 
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
