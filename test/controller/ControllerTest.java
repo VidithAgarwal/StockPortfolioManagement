@@ -852,7 +852,7 @@ public class ControllerTest {
   @Test
   public void testLoadPortfolio()  {
     String path = System.getProperty("user.dir") + "/test/testFiles/loadTest.csv";
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the name of the "
             + "portfolio: ", "Enter the full path of the file you want to load data "
             + "from: ", "File loaded "
             + "successfully", "Enter your choice: "};
