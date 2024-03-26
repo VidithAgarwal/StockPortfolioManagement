@@ -52,7 +52,7 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
     Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
     if (!priceData.containsKey("" + buyDate)) {
-      throw new IllegalArgumentException("Wrong date");
+      throw new IllegalArgumentException("Cannot buy on this date.");
     }
     Transaction buyTransaction = new Transaction("buy", ticker, quantity, buyDate);
     transactions.add(buyTransaction);
@@ -111,7 +111,7 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
     Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
     if (!priceData.containsKey("" + sellDate)) {
-      throw new IllegalArgumentException("Wrong date");
+      throw new IllegalArgumentException("Cannot sell on this date.");
     }
     Transaction sellTransaction = new Transaction("sell", ticker, quantity, sellDate);
     transactions.add(sellTransaction);
@@ -192,7 +192,7 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(date);
     if (closestEntry == null) {
-      return new HashMap<>();
+      throw new IllegalArgumentException("Portfolio is empty");
     }
     return closestEntry.getValue();
   }
