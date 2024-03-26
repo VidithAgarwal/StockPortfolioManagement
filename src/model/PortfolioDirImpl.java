@@ -263,6 +263,7 @@ public class PortfolioDirImpl implements PortfolioDir {
     System.out.println(selectedData);
     TreeMap<String, Integer> stockPerfom = p.determineValueBasedOnScale(selectedData,scale);
     TreeMap<String,Integer> ans = p.sortTreeMapByMonthAndYear(stockPerfom);
+    System.out.println("hii"+ans);
     return ans;
   }
 
@@ -282,15 +283,16 @@ public class PortfolioDirImpl implements PortfolioDir {
     }
     Performance p = new Performance();
     TreeMap<String, Double> selectedData = p.stockPerformance(api.fetchHistoricalData(tickerSymbol),start,end);
+    //System.out.println(selectedData);
     int scale = p.determineScale(selectedData);
     return scale;
   }
 
   @Override
   public int scaleForPortfolioPerformance(int input, LocalDate start,  LocalDate end) {
-    if (!portfolioDirectory.get(input).isFlexible()) {
-      throw new IllegalArgumentException();
-    }
+//    if (!portfolioDirectory.get(input).isFlexible()) {
+//      throw new IllegalArgumentException();
+//    }
     LocalDate currentDate = LocalDate.now();
     if(end.isAfter(currentDate)) {
       throw new IllegalArgumentException("End Date should be less than current date");
@@ -323,9 +325,9 @@ public class PortfolioDirImpl implements PortfolioDir {
 
   @Override
   public TreeMap<String, Integer> portfolioPerformance (int input, LocalDate start,  LocalDate end) {
-    if (!portfolioDirectory.get(input).isFlexible()) {
-      throw new IllegalArgumentException();
-    }
+//    if (!portfolioDirectory.get(input).isFlexible()) {
+//      throw new IllegalArgumentException();
+//    }
     LocalDate currentDate = LocalDate.now();
     if(end.isAfter(currentDate)) {
       throw new IllegalArgumentException("End Date should be less than current date");
