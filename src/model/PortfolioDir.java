@@ -50,15 +50,7 @@ public interface PortfolioDir {
    */
   int getSize();
 
-  /**
-   * portfolio value method gets the total value of portfolio present in portfolio directory at.
-   * specified index for a given date
-   * @param input the index of the portfolio in portfolio directory.
-   * @param day the day of date for which total value is to be found.
-   * @param month the month of date for which total value is to be found.
-   * @param year the year of date for which total value is to be found.
-   * @return the total value of portfolio.
-   */
+
   /**
    * portfolio value method gets the total value of portfolio present in portfolio directory at.
    * specified index for a given date
@@ -201,7 +193,7 @@ public interface PortfolioDir {
    * @return appropriate scale factor for displaying the performance.
    */
   int scaleForStockPerformance(String stock, StockData api,
-                                      LocalDate start, LocalDate end);
+                               LocalDate start, LocalDate end);
 
   /**
    * this method determines appropriate scale for displaying the performance of a portfolio.
