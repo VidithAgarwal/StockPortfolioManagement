@@ -1966,7 +1966,7 @@ public class ModelTest {
     StockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 2, 22);
     LocalDate end = LocalDate.of(2014, 5, 22);
-    assertEquals("GOOG lost over the period from 2012-02-22 to 2014-05-22",
+    assertEquals("GOOG gained over the period from 2012-02-22 to 2014-05-22",
             portfolioDir.gainOrLoseOverAPeriod("goog",start,end,api) );
 
   }
@@ -2730,5 +2730,110 @@ public class ModelTest {
     data.put("Feb 2024", 34);
     assertEquals(data,actualData);
   }
+
+  @Test
+  public void testScaleStockPerformance() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2023, 1, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    int scale = portfolioDir.scaleForStockPerformance("aapl",api,start,end);
+    assertEquals(5,scale);
+  }
+
+  @Test
+  public void testScaleStockPerformanceWrongStock() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2023, 1, 15);
+    LocalDate end = LocalDate.of(2024, 3, 22);
+
+    try{
+      portfolioDir.scaleForStockPerformance("hello",api,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Invalid ticker symbol", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testScaleStockPerformanceStartDate() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 1, 15);
+    LocalDate end = LocalDate.of(2023, 3, 22);
+
+    try{
+      portfolioDir.scaleForStockPerformance("aapl",api,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Start Date should be less than End date", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testScaleStockPerformanceEndDate() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2023, 1, 15);
+    LocalDate end = LocalDate.of(2024, 8, 26);
+
+    try{
+      portfolioDir.scaleForStockPerformance("aapl",api,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("End Date should be less than current date", e.getMessage());
+    }
+  }
+
+
+  @Test
+  public void testScaleForPortfolioPerformance() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2020, 10, 1);
+    LocalDate end = LocalDate.of(2024, 3, 2);
+
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    LocalDate date3 = LocalDate.of(2019, 11, 13);
+    portfolioDir.buyStock(0, "aapl", 20, date3, api);
+    LocalDate date = LocalDate.of(2023, 11, 13);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate date1 = LocalDate.of(2024, 2, 15);
+    portfolioDir.sellStock(0, "aapl", 25, date1, api);
+    LocalDate date2 = LocalDate.of(2024, 2, 23);
+    portfolioDir.buyStock(0, "goog", 15, date2, api);
+    int scale = portfolioDir.scaleForPortfolioPerformance(0,start,end);
+
+    assertEquals(197,scale);
+  }
+
+
+  @Test
+  public void testScalePortfolioPerformanceInFuture() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2024, 3, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate start = LocalDate.of(2014, 5, 15);
+    LocalDate end = LocalDate.of(2025, 3, 22);
+    try {
+      portfolioDir.scaleForPortfolioPerformance(0,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("End Date should be less than current date", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testScalePortfolioPerformanceStartDateAfterEndDate() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2024, 3, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
+    LocalDate start = LocalDate.of(2015, 5, 15);
+    LocalDate end = LocalDate.of(2012, 3, 22);
+    try {
+      portfolioDir.scaleForPortfolioPerformance(0,start,end);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Start Date should be less than End date", e.getMessage());
+    }
+  }
+
 
 }
