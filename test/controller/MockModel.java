@@ -25,17 +25,22 @@ public class MockModel implements PortfolioDir {
   private int intMockValue;
   private final StringBuilder logger = new StringBuilder();
 
-  private TreeMap<String, String> mockTreeMap = new TreeMap<>();
+  private TreeMap<String, String> mockMap = new TreeMap<>();
+
+  private TreeMap<String,Integer> mockStringIntMap = new TreeMap<>();
 
   /**
    * Constructs a MockModel with the specified composition map.
    * @param map The map representing the mock composition.
    */
-  public MockModel(Map<String, Integer> map, String mockName, double mockValue, int intMockValue) {
+  public MockModel(Map<String, Integer> map, String mockName, double mockValue, int intMockValue,
+                   TreeMap<String,String> mockTreeMap, TreeMap<String,Integer> mockIntMap) {
     mockComposition = map;
     this.mockName = mockName;
     this.mockValue = mockValue;
     this.intMockValue = intMockValue;
+    mockMap = mockTreeMap;
+    mockStringIntMap = mockIntMap;
   }
 
   /**
@@ -112,7 +117,7 @@ public class MockModel implements PortfolioDir {
   @Override
   public Map<String, Integer> portfolioComposition(int input, LocalDate date) {
     logger.append("Retrieving composition for portfolio at index: ").append(input)
-            .append("on date: ").append(date.toString()).append('\n');
+            .append(" on date: ").append(date.toString()).append('\n');
     return mockComposition;
   }
 
@@ -211,7 +216,7 @@ public class MockModel implements PortfolioDir {
     logger.append("Calculating crossover over period for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
             .append(endDate.toString()).append("\n");
-    return null;
+    return mockMap;
   }
 
   @Override
@@ -219,7 +224,7 @@ public class MockModel implements PortfolioDir {
     logger.append("Calculating moving crossover for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
             .append(endDate.toString()).append("\n");
-    return null;
+    return mockMap;
   }
 
   @Override
@@ -227,7 +232,7 @@ public class MockModel implements PortfolioDir {
     logger.append("Calculating stock performance for ").append(stock)
             .append(" from ").append(start.toString()).append(" to ")
             .append(end.toString()).append("\n");
-    return null;
+    return mockStringIntMap;
   }
 
   @Override
@@ -235,7 +240,7 @@ public class MockModel implements PortfolioDir {
     logger.append("Calculating portfolio performance for portfolio at index: ").append(input)
             .append(" from ").append(start.toString()).append(" to ")
             .append(end.toString()).append("\n");
-    return null;
+    return mockStringIntMap;
   }
 
   @Override
@@ -256,11 +261,14 @@ public class MockModel implements PortfolioDir {
 
   @Override
   public StringBuilder save(int input) {
+    logger.append("Portfolio to be saved is at index: ").append(input).append("\n");
     return null;
   }
 
   @Override
   public void loadPortfolio(String portfolioName, List<String[]> lines, StockData api) {
+    logger.append("Name of portfolio to be saved: ").append(portfolioName).append(" and "
+            + "lines to be appended are: ").append(lines).append("\n");
 
   }
 }
