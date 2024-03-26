@@ -103,8 +103,10 @@ public class MockView implements IView {
    * @param endDate end date for the bar graph.
    */
   @Override
-  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
-    printedOutput.append("Bar Graph for ").append(stockOrPortfolio).append(" from ").append(startDate).append(" to ").append(endDate).append(":\n");
+  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio,
+                       String startDate, String endDate) {
+    printedOutput.append("Bar Graph for ").append(stockOrPortfolio).append(" from ")
+            .append(startDate).append(" to ").append(endDate).append(":\n");
 
     for (Map.Entry<String, Integer> entry : data.entrySet()) {
       printedOutput.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
