@@ -1,9 +1,11 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import controller.StockData;
 
@@ -42,7 +44,12 @@ abstract class AbstractPortfolio implements Portfolio {
    * @return closing price of the stock on the specified date.
    */
   protected double getClosingPriceOnDate(String ticker, StockData api, String date) {
-    Map<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+    TreeMap<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+    LocalDate ipoDate = LocalDate.parse(priceData.lastEntry().getKey());
+    LocalDate thisDate = LocalDate.parse(date);
+    if (thisDate.isBefore(ipoDate)) {
+      throw new IllegalArgumentException("The share was not listed");
+    }
     return priceData.get(date).get(3);
   }
 
@@ -61,7 +68,7 @@ abstract class AbstractPortfolio implements Portfolio {
       try {
         Double closingPrice = getClosingPriceOnDate(ticker, api, date);
         totalValue += closingPrice * quantity;
-      } catch (RuntimeException e) {
+      } catch (NullPointerException e) {
         throw new IllegalArgumentException(ticker);
       }
     }
