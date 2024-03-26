@@ -25,11 +25,17 @@ public class MockView implements IView {
     return printedOutput;
   }
 
+  /**
+   * Displays the primary menu.
+   */
   @Override
   public void showPrimaryMenu() {
     // has no input and no output.
   }
 
+  /**
+   * Displays the secondary menu.
+   */
   @Override
   public void showSecondaryMenu() {
     // has no input and no output.
@@ -56,6 +62,10 @@ public class MockView implements IView {
     printedOutput.append(value).append("\n");
   }
 
+  /**
+   * Displays the list of portfolios.
+   * @param listOfPortfolios The list of portfolios.
+   */
   @Override
   public void showListOfPortfolios(Map<String, String> listOfPortfolios) {
     for (Map.Entry<String, String> entry : listOfPortfolios.entrySet()) {
@@ -63,16 +73,6 @@ public class MockView implements IView {
     }
   }
 
-  /**
-   * Displays the list of portfolios.
-   * @param listOfPortfolios The list of portfolios.
-   */
-//  @Override
-//  public void showListOfPortfolios(ArrayList<String> listOfPortfolios) {
-//    for (int i = 0; i < listOfPortfolios.size(); i++) {
-//      printedOutput.append(listOfPortfolios.get(0)).append("\n");
-//    }
-//  }
 
   /**
    * Displays an error message.
@@ -93,6 +93,15 @@ public class MockView implements IView {
     printedOutput.append(message).append("\n");
   }
 
+
+  /**
+   * this method of mock view displays a bar graph for the given data.
+   * @param scale scale of the bar graph.
+   * @param data data to be displayed in the bar graph.
+   * @param stockOrPortfolio name of the stock or portfolio.
+   * @param startDate start date for the bar graph.
+   * @param endDate end date for the bar graph.
+   */
   @Override
   public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
     printedOutput.append("Bar Graph for ").append(stockOrPortfolio).append(" from ").append(startDate).append(" to ").append(endDate).append(":\n");
@@ -104,6 +113,10 @@ public class MockView implements IView {
     printedOutput.append("scale: ").append(scale).append("\n");
   }
 
+  /**
+   * Prints entries from a TreeMap.
+   * @param treeMap TreeMap containing entries to print.
+   */
   @Override
   public void printTreeMapEntries(TreeMap<String, String> treeMap) {
     for (Map.Entry<String, String> entry : treeMap.entrySet()) {
@@ -112,16 +125,26 @@ public class MockView implements IView {
 
   }
 
+  /**
+   * this method displays a message to choose portfolio type.
+   */
   @Override
   public void choosePortfolioType() {
     // has no input and no output.
   }
 
+  /**
+   * this method displays stock statistics.
+   */
   @Override
   public void showStockStat() {
     // has no input and no output.
   }
 
+  /**
+   * this method displays X-Day Moving Average value.
+   * @param value value of X-Day Moving Average.
+   */
   @Override
   public void showXDayMovingAvg(double value) {
     printedOutput.append(value).append("\n");
