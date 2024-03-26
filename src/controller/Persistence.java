@@ -102,7 +102,7 @@ class Persistence {
         }
         String[] parts = line.split(",");
 
-          lines.add(parts);
+        lines.add(parts);
 
       }
     } catch (IOException e) {
