@@ -335,7 +335,7 @@ public class ModelTest {
       assertEquals(1000.749,
               portfolioDir.portfolioValue(0, 1, 12, 2, api), 0.001);
     } catch (IllegalArgumentException e) {
-      assertEquals("AAPL", e.getMessage());
+      assertEquals("The share was not listed", e.getMessage());
     }
 
     LocalDate currentDate = LocalDate.now();
@@ -355,7 +355,7 @@ public class ModelTest {
       assertEquals(1000.749,
               portfolioDir.portfolioValue(0, 1, 12, 200, api), 0.001);
     } catch (IllegalArgumentException e) {
-      assertEquals("AAPL", e.getMessage());
+      assertEquals("The share was not listed", e.getMessage());
     }
 
     LocalDate currentDate = LocalDate.now();
@@ -527,7 +527,7 @@ public class ModelTest {
       assertEquals(1717.749,
               portfolioDir.portfolioValue(0, 3, 3, 1890,api), 0.001);
     } catch (IllegalArgumentException e) {
-      assertEquals("AAPL", e.getMessage());
+      assertEquals("The share was not listed", e.getMessage());
     }
   }
 
@@ -1023,7 +1023,13 @@ public class ModelTest {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
     LocalDate date = LocalDate.of(2024, 3, 20);
-    portfolioDir.portfolioComposition(0,date);
+    try {
+      portfolioDir.portfolioComposition(0,date);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Portfolio is empty", e.getMessage());
+    }
+
+
     //composition is empty
   }
 
@@ -1194,7 +1200,7 @@ public class ModelTest {
     try {
       portfolioDir.sellStock(0, "aapl", 10, date, api);
     } catch (IllegalArgumentException e) {
-      assertEquals("Wrong date", e.getMessage());
+      assertEquals("Cannot sell on this date.", e.getMessage());
     }
   }
 
@@ -1261,7 +1267,7 @@ public class ModelTest {
     try {
       portfolioDir.buyStock(0, "aapl", 10, date, api);
     } catch (IllegalArgumentException e) {
-      assertEquals("Wrong date", e.getMessage());
+      assertEquals("Cannot buy on this date.", e.getMessage());
     }
   }
 
@@ -1274,7 +1280,7 @@ public class ModelTest {
     try {
       portfolioDir.buyStock(0, "aapl", 10, date, api);
     } catch (IllegalArgumentException e) {
-      assertEquals("Wrong date", e.getMessage());
+      assertEquals("Cannot buy on this date.", e.getMessage());
     }
   }
 
@@ -1289,7 +1295,7 @@ public class ModelTest {
     try {
       portfolioDir.sellStock(0, "aapl", 10, date, api);
     } catch (IllegalArgumentException e) {
-      assertEquals("Wrong date", e.getMessage());
+      assertEquals("Cannot sell on this date.", e.getMessage());
     }
   }
 
@@ -1754,6 +1760,7 @@ public class ModelTest {
     }
   }
 
+
   @Test
   public void testXDayAvgWhenXZero() {
     StockData api = new StockData();
@@ -1965,8 +1972,18 @@ public class ModelTest {
   public void testGainLoseOverPeriodBeforeListingStartDate() {
     StockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 2, 22);
-    LocalDate end = LocalDate.of(2014, 5, 22);
-    assertEquals("GOOG gained over the period from 2012-02-22 to 2014-05-22",
+    LocalDate end = LocalDate.of(2024, 3, 22);
+    assertEquals("GOOG lost over the period from 2012-02-22 to 2024-03-22",
+            portfolioDir.gainOrLoseOverAPeriod("goog",start,end,api) );
+
+  }
+
+  @Test
+  public void testGainLoseOverPeriod() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 3, 19);
+    LocalDate end = LocalDate.of(2024, 3, 26);
+    assertEquals("GOOG gained over the period from 2024-03-19 to 2024-03-26",
             portfolioDir.gainOrLoseOverAPeriod("goog",start,end,api) );
 
   }
@@ -2227,6 +2244,19 @@ public class ModelTest {
       } catch (IllegalArgumentException e) {
         assertEquals("Insufficient data available for the specified period", e.getMessage());
       }
+  }
+
+  @Test
+  public void testMovingCrossOverWhenStockUnlisted() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2024, 3, 19);
+    LocalDate end = LocalDate.of(2024, 3, 26);
+    try {
+    portfolioDir.movingCrossOver("bkcc",api,start,end,30,100);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("No data found between this period for finding moving crossover.", e.getMessage());
+    }
   }
 
   @Test
