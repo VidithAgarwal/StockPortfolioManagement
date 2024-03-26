@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -808,8 +809,9 @@ public class StockControllerImpl implements StockController {
       }
       index++;
     }
-    if (portfolioName == " ") {
-      throw new IllegalArgumentException("No such portfolio found");
+    if (Objects.equals(portfolioName, " ")) {
+      view.displayError("No such portfolio found");
+      return;
     }
     //String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
@@ -822,6 +824,8 @@ public class StockControllerImpl implements StockController {
       int scale = model.scaleForPortfolioPerformance(choice,startDate,endDate);
       view.barGraph(scale,result, portfolioName, startDate+"", endDate+"");
     } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    } catch (RuntimeException e) {
       view.displayError(e.getMessage());
     }
   }
