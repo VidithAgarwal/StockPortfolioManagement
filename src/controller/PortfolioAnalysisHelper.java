@@ -9,13 +9,25 @@ import java.util.TreeMap;
 import model.PortfolioDir;
 import view.IView;
 
-class PortfolioAnalysisHelper extends AbsHelperController{
+/**
+ * PortfolioAnalysisHelper class provides helper methods for analyzing portfolios.
+ * It extends AbsHelperController class, and uses view and model methods.
+ */
+class PortfolioAnalysisHelper extends AbsHelperController {
+
+  /**
+   * constructs a PortfolioAnalysisHelper object with specified view, model, & scanner.
+   * @param view view component for user interaction.
+   * @param model model component for managing portfolios.
+   * @param scan scanner object for user input.
+   */
   PortfolioAnalysisHelper(IView view, PortfolioDir model, Scanner scan) {
     super(view, model, scan);
   }
 
   /**
    * this method displays the composition of a portfolio selected by the user through the view.
+   * The date is also given to the model method and view is used to prompt to user to enter date.
    * The values in portfolio its composition is got from the model.
    */
   void examineComposition() {
@@ -37,7 +49,8 @@ class PortfolioAnalysisHelper extends AbsHelperController{
   void getTotalValue() {
     int choice = inputPortfolioChoice();
 
-    int[] date = inputDate("Enter the date for which you want to get the total price of the portfolio. ");
+    int[] date = inputDate("Enter the date for which you want to get the total"
+            + " price of the portfolio. ");
 
     view.print("Wait until the total value is calculated");
 
@@ -57,6 +70,10 @@ class PortfolioAnalysisHelper extends AbsHelperController{
     }
   }
 
+  /**
+   * this method calculates and displays the cost basis of a selected portfolio till a given date.
+   * using the view and model methods.
+   */
   void getCostBasis() {
     int choice = inputPortfolioChoice();
 
@@ -65,12 +82,16 @@ class PortfolioAnalysisHelper extends AbsHelperController{
 
     try {
       double costBasis = model.costBasis(choice, costBasisDate, new StockData());
-      view.print(costBasis + "");
+      view.print("The cost basis is: $" + costBasis);
     } catch (IllegalArgumentException e) {
       view.displayError(e.getMessage());
     }
   }
 
+  /**
+   * this method generates and displays performance of a selected portfolio over a given period.
+   * using the view, to prompt the user to enter data and model methods.
+   */
   void portfolioPerformance() {
     int choice = inputPortfolioChoice();
     String portfolioName = "";
@@ -87,7 +108,6 @@ class PortfolioAnalysisHelper extends AbsHelperController{
       view.displayError("No such portfolio found");
       return;
     }
-    //String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
     LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1],startDateArray[0]);
@@ -96,7 +116,7 @@ class PortfolioAnalysisHelper extends AbsHelperController{
     try {
       result = model.portfolioPerformance(choice,startDate,endDate);
       int scale = model.scaleForPortfolioPerformance(choice,startDate,endDate);
-      view.barGraph(scale,result, portfolioName, startDate+"", endDate+"");
+      view.barGraph(scale,result, portfolioName, startDate + "", endDate + "");
     } catch (RuntimeException e) {
       view.displayError(e.getMessage());
     }
