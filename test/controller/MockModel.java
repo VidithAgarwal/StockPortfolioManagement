@@ -6,28 +6,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import model.FlexiblePortfolioImpl;
 import model.Portfolio;
 import model.PortfolioDir;
 import model.PortfolioImpl;
 
 /**
- * The MockModel class is a mock implementation of the PortfolioDir interface.
- * It is used for testing purposes.
+ * MockModel class is a mock implementation of the PortfolioDir interface.
+ * is used for testing purposes.
  */
 public class MockModel implements PortfolioDir {
 
+  /**
+   * Represents a mock name used for testing purposes.
+   */
   private String mockName;
+
+  /**
+   * Represents a list of portfolios in the directory.
+   */
   private ArrayList<Portfolio> portfolioDirectory = new ArrayList<>();
+
+  /**
+   * Represents a mock composition map for testing purposes.
+   * map stores stock names as keys and their quantities as values.
+   */
   private Map<String, Integer> mockComposition = new HashMap<>();
+
+  /**
+   * Represents a mock total value for testing purposes.
+   */
   private double mockValue;
 
+  /**
+   * Represents a mock integer value for testing purposes.
+   */
   private int intMockValue;
+
+  /**
+   * Represents a logger for recording events and messages.
+   */
   private final StringBuilder logger = new StringBuilder();
 
+  /**
+   * Represents a mock map for testing purposes.
+   */
   private TreeMap<String, String> mockMap = new TreeMap<>();
 
+  /**
+   * Represents a mock map with string keys and integer values for testing purposes.
+   */
   private TreeMap<String,Integer> mockStringIntMap = new TreeMap<>();
 
   /**
@@ -69,7 +96,9 @@ public class MockModel implements PortfolioDir {
    * Constructs a MockModel with the specified integer mock value.
    * @param intMockValue The integer mock value.
    */
-  public MockModel(int intMockValue) {this.intMockValue = intMockValue;}
+  public MockModel(int intMockValue) {
+    this.intMockValue = intMockValue;
+  }
 
   /**
    * Retrieves the logger.
@@ -241,7 +270,8 @@ public class MockModel implements PortfolioDir {
    * @return The gain or loss for the specified stock over the period.
    */
   @Override
-  public String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2, StockData api) {
+  public String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2,
+                                      StockData api) {
     logger.append("Calculating gain or loss for ").append(tickerSymbol)
             .append(" from ").append(date1.toString()).append(" to ")
             .append(date2.toString()).append("\n");
@@ -273,7 +303,8 @@ public class MockModel implements PortfolioDir {
    * @return  TreeMap containing the crossover information over the period.
    */
   @Override
-  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, StockData api, LocalDate startDate, LocalDate endDate) {
+  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, StockData api,
+                                                     LocalDate startDate, LocalDate endDate) {
     logger.append("Calculating crossover over period for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
             .append(endDate.toString()).append("\n");
@@ -291,10 +322,12 @@ public class MockModel implements PortfolioDir {
    * @return  TreeMap containing the moving crossover information.
    */
   @Override
-  public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api, LocalDate startDate, LocalDate endDate, int x, int y) {
+  public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api,
+                              LocalDate startDate, LocalDate endDate, int x, int y) {
     logger.append("Calculating moving crossover for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
-            .append(endDate.toString()).append(" for x = ").append(x).append(" and y = ").append(y).append(
+            .append(endDate.toString()).append(" for x = ").append(x).append(" and y = ")
+            .append(y).append(
                     "\n");
     return mockMap;
   }
@@ -308,7 +341,8 @@ public class MockModel implements PortfolioDir {
    * @return TreeMap containing the performance data for the stock over the period.
    */
   @Override
-  public TreeMap<String, Integer> stockPerformance(String stock, StockData api, LocalDate start, LocalDate end) {
+  public TreeMap<String, Integer> stockPerformance(String stock, StockData api,
+                                                   LocalDate start, LocalDate end) {
     logger.append("Calculating stock performance for ").append(stock)
             .append(" from ").append(start.toString()).append(" to ")
             .append(end.toString()).append("\n");
