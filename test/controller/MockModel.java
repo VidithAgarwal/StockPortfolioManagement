@@ -21,6 +21,8 @@ public class MockModel implements PortfolioDir {
   private String mockName;
   private ArrayList<Portfolio> portfolioDirectory = new ArrayList<>();
   private Map<String, Integer> mockComposition = new HashMap<>();
+
+  private StringBuilder mockOutputFormat = new StringBuilder();
   private double mockValue;
 
   private int intMockValue;
@@ -40,13 +42,15 @@ public class MockModel implements PortfolioDir {
    * @param mockIntMap The integer TreeMap for the mock, treemap of string,integer.
    */
   public MockModel(Map<String, Integer> map, String mockName, double mockValue, int intMockValue,
-                   TreeMap<String,String> mockTreeMap, TreeMap<String,Integer> mockIntMap) {
+                   TreeMap<String,String> mockTreeMap, TreeMap<String,Integer> mockIntMap,
+                   StringBuilder mockSave) {
     mockComposition = map;
     this.mockName = mockName;
     this.mockValue = mockValue;
     this.intMockValue = intMockValue;
     mockMap = mockTreeMap;
     mockStringIntMap = mockIntMap;
+    mockOutputFormat = mockSave;
   }
 
   /**
@@ -370,7 +374,7 @@ public class MockModel implements PortfolioDir {
   @Override
   public StringBuilder save(int input) {
     logger.append("Portfolio to be saved is at index: ").append(input).append("\n");
-    return null;
+    return mockOutputFormat;
   }
 
   /**
