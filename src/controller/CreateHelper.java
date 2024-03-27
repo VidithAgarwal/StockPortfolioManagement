@@ -6,9 +6,20 @@ import model.PortfolioDir;
 import model.PortfolioImpl;
 import view.IView;
 
+/**
+ * CreateHelper class provides methods for creating portfolios,
+ * flexible and inflexible using view for display and model.
+ * It also extends AbsHelperController class.
+ */
 class CreateHelper extends AbsHelperController {
 
 
+  /**
+   * constructs CreateHelper object with specified view, model, & scanner.
+   * @param view view component for user interaction.
+   * @param model model component for managing portfolios.
+   * @param scan scanner object for user input.
+   */
   CreateHelper(IView view, PortfolioDir model, Scanner scan) {
     super(view, model, scan);
   }
@@ -44,6 +55,10 @@ class CreateHelper extends AbsHelperController {
     }
   }
 
+  /**
+   * This method get the input for creating a new portfolio by prompting user for portfolio name.
+   * and delegates to model that creates flexible portfolio of entered name.
+   */
   void createFlexiblePortfolio() {
     String name = inputPortfolioName();
 
