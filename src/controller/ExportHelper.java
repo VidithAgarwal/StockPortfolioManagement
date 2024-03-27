@@ -5,8 +5,18 @@ import java.util.Scanner;
 import model.PortfolioDir;
 import view.IView;
 
+/**
+ * exportHelper class provides methods for exporting portfolio data to a CSV file.
+ * it also extends AbsHelperController class, it uses view and model methods.
+ */
 class ExportHelper extends AbsHelperController {
 
+  /**
+   * this method constructs exportHelper object with specified view, model, & scanner.
+   * @param view view component for user interaction.
+   * @param model model component for managing portfolios.
+   * @param scan scanner object for user input.
+   */
   ExportHelper(IView view, PortfolioDir model, Scanner scan) {
     super(view, model, scan);
   }
