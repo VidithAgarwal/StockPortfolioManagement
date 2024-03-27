@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Persistence class provides methods for exporting data to CSV file and loading data
+ * Persistence class provides methods for exporting data to CSV file and loading data.
  * from CSV files.
  */
 class Persistence {
 
   /**
-   * Exports the given composition data to a CSV file at the specified path.
-   * @param path The path to the CSV file where data will be exported.
-   * @param data A map representing data, with stock names as keys, quantities as values.
+   * this method exports the given composition data to a CSV file at the specified path.
+   * @param path path to the CSV file where data will be exported.
+   * @param data  map representing data, with stock names as keys, quantities as values.
    */
   void exportAsCSV(String path, StringBuilder data) {
     File file = new File(path);
@@ -39,7 +39,7 @@ class Persistence {
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
       writer.write(data.toString());
-      System.out.println("Data exported successfully to " + file);
+      //System.out.println("Data exported successfully to " + file);
     } catch (IOException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
@@ -78,9 +78,9 @@ class Persistence {
 
 
   /**
-   * Loads data from a CSV file located at the specified file path.
-   * @param filePath The path to the CSV file to be loaded.
-   * @return A list of string arrays representing the lines of data read from the CSV file.
+   * this method loads data from a CSV file located at the specified file path.
+   * @param filePath  path to the CSV file to be loaded.
+   * @return list of string arrays representing the lines of data read from the CSV file.
    */
   List<String[]> loadFromCSV(String filePath) {
     File file = new File(filePath);
