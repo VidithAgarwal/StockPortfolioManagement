@@ -10,8 +10,10 @@ import java.util.TreeMap;
  * to calculate various statistics related to stocks, for stock trend.
  */
 public class StockStatisticsImpl implements StockStatistic {
+
   @Override
-  public String gainOrLoseOnDate(String tickerSymbol, String dateString, TreeMap<String, ArrayList<Double>> priceData ) {
+  public String gainOrLoseOnDate(String tickerSymbol, String dateString,
+                                 TreeMap<String, ArrayList<Double>> priceData ) {
     try {
       ArrayList<Double> prices = priceData.get(dateString);
       double openingPrice = prices.get(0);
@@ -30,7 +32,8 @@ public class StockStatisticsImpl implements StockStatistic {
   }
 
   @Override
-  public String gainOrLoseOverPeriod(String tickerSymbol, String date1, String date2, TreeMap<String, ArrayList<Double>> priceData) {
+  public String gainOrLoseOverPeriod(String tickerSymbol, String date1,
+                                     String date2, TreeMap<String, ArrayList<Double>> priceData) {
     ArrayList<Double> prices1 = priceData.get(date1);
     ArrayList<Double> prices2 = priceData.get(date2);
     String currentDate1 = date1;
@@ -38,9 +41,9 @@ public class StockStatisticsImpl implements StockStatistic {
     if (prices1 == null && prices2 == null)  {
       currentDate1 = getNextDate(date1,priceData,date2);
       currentDate2 = getPreviousDate(date2,priceData);
-    } else if(prices2 == null) {
+    } else if (prices2 == null) {
       currentDate2 = getPreviousDate(date2,priceData);
-    } else if(prices1 == null) {
+    } else if (prices1 == null) {
       currentDate1 = getNextDate(date1,priceData,date2);
     } else {
       currentDate1 = date1;
@@ -49,7 +52,8 @@ public class StockStatisticsImpl implements StockStatistic {
     prices1 = priceData.get(currentDate1);
     prices2 = priceData.get(currentDate2);
     if (prices1 == null || prices2 == null) {
-      throw new IllegalArgumentException("No price data available for one or both of the specified dates");
+      throw new IllegalArgumentException("No price data available for one or "
+              + "both of the specified dates");
     }
     double closingPrice1 = prices1.get(3);
     double closingPrice2 = prices2.get(3);
@@ -64,7 +68,8 @@ public class StockStatisticsImpl implements StockStatistic {
   }
 
   @Override
-  public double xDayMovingAvg(String tickerSymbol, String date, int x, TreeMap<String, ArrayList<Double>> priceData) {
+  public double xDayMovingAvg(String tickerSymbol, String date, int x,
+                              TreeMap<String, ArrayList<Double>> priceData) {
     LocalDate currentDate = LocalDate.parse(date);
     ArrayList<Double> closingPrices = new ArrayList<>();
     LocalDate lastDay = returnLastEntry(priceData);
@@ -103,7 +108,7 @@ public class StockStatisticsImpl implements StockStatistic {
    * @return last date entry as a LocalDate.
    * @throws IllegalArgumentException if TreeMap is empty.
    */
-  private LocalDate returnLastEntry (TreeMap<String, ArrayList<Double>> priceData) {
+  private LocalDate returnLastEntry(TreeMap<String, ArrayList<Double>> priceData) {
     String lastDate = null;
     Map.Entry<String, ArrayList<Double>> lastEntry = priceData.lastEntry();
     if (lastEntry != null) {
@@ -116,7 +121,8 @@ public class StockStatisticsImpl implements StockStatistic {
 
 
   @Override
-  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate) {
+  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol,
+                 TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate) {
     TreeMap<String, String> crossoverInfo = new TreeMap<>();
     String currentDate;
     ArrayList<Double> checkStartDate = priceData.get(startDate);
@@ -127,12 +133,14 @@ public class StockStatisticsImpl implements StockStatistic {
       currentDate = startDate;
     }
 
-    for (; currentDate.compareTo(endDate) <= 0; currentDate = getNextDate(currentDate, priceData, endDate)) {
+    for (; currentDate.compareTo(endDate) <= 0; currentDate
+            = getNextDate(currentDate, priceData, endDate)) {
       double movingAverage = xDayMovingAvg(tickerSymbol, currentDate, 30, priceData);
       ArrayList<Double> currentPrices = priceData.get(currentDate);
       ArrayList<Double> prevDayPrices = priceData.get(getPreviousDate(currentDate, priceData));
 
-      if (currentPrices != null && prevDayPrices != null && currentPrices.size() >= 2 && prevDayPrices.size() >= 2) {
+      if (currentPrices != null && prevDayPrices != null
+              && currentPrices.size() >= 2 && prevDayPrices.size() >= 2) {
         double currentClosingPrice = currentPrices.get(3);
         double prevDayClosingPrice = prevDayPrices.get(3);
         if (prevDayClosingPrice < movingAverage && currentClosingPrice > movingAverage) {
@@ -141,14 +149,13 @@ public class StockStatisticsImpl implements StockStatistic {
           crossoverInfo.put(currentDate, "sell");
         }
       }
-//      else if (currentPrices == null && currentDate.equals(endDate) &&  ) {
-//        // do nothing
-//      }
       else if (currentPrices == null && currentDate.equals(endDate) ) {
         // do nothing
       }
       else {
-        throw new IllegalArgumentException("Price data not available for one or both of the dates: " + currentDate + ", " + getPreviousDate(currentDate, priceData));
+        throw new IllegalArgumentException("Price data not available for one or"
+                + " both of the dates: " + currentDate + ", "
+                + getPreviousDate(currentDate, priceData));
       }
     }
     return crossoverInfo;
@@ -163,16 +170,7 @@ public class StockStatisticsImpl implements StockStatistic {
    * @throws IllegalArgumentException if date is before listing date of that stock.
    */
   private String getPreviousDate(String currentDate, TreeMap<String, ArrayList<Double>> priceData) {
-//    String lastDate = null;
-//    Map.Entry<String, ArrayList<Double>> lastEntry = null;
-//    for (Map.Entry<String, ArrayList<Double>> entry : priceData.entrySet()) {
-//      lastEntry = entry;
-//    }
-//    if (lastEntry != null) {
-//      lastDate = lastEntry.getKey();
-//    } else {
-//      throw new IllegalArgumentException();
-//    }
+
     LocalDate lastDay = returnLastEntry(priceData);
     LocalDate date = LocalDate.parse(currentDate).minusDays(1);
     while (!priceData.containsKey(date.toString()) && date.isAfter(lastDay)) {
@@ -193,9 +191,11 @@ public class StockStatisticsImpl implements StockStatistic {
    * @param endDate    end date entered by user, next day should be less than end date.
    * @return next date as string.
    */
-  private String getNextDate(String currentDate, TreeMap<String, ArrayList<Double>> priceData, String endDate) {
+  private String getNextDate(String currentDate, TreeMap<String,
+          ArrayList<Double>> priceData, String endDate) {
     LocalDate nextDate = LocalDate.parse(currentDate).plusDays(1);
-    while (!priceData.containsKey(nextDate.toString()) && nextDate.isBefore(LocalDate.parse(endDate))) {
+    while (!priceData.containsKey(nextDate.toString())
+            && nextDate.isBefore(LocalDate.parse(endDate))) {
       nextDate = nextDate.plusDays(1);
     }
     return nextDate.toString();
@@ -203,7 +203,8 @@ public class StockStatisticsImpl implements StockStatistic {
 
 
   @Override
-  public TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol, TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate, int x, int y) {
+  public TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol, TreeMap<String,
+          ArrayList<Double>> priceData, String startDate, String endDate, int x, int y) {
     if (x < y) {
       String currentDate;
       ArrayList<Double> checkStartDate = priceData.get(startDate);
@@ -214,16 +215,18 @@ public class StockStatisticsImpl implements StockStatistic {
         currentDate = startDate;
       }
       if (currentDate.equals(endDate) ) {
-        throw new IllegalArgumentException("No data found between this period for finding moving crossover.");
+        throw new IllegalArgumentException("No data found between this period for finding "
+                + "moving crossover.");
       }
       TreeMap<String, String> crossoverInfo = new TreeMap<>();
-      for (; !currentDate.equals(endDate); currentDate = getNextDate(currentDate, priceData, endDate)) { //String currentDate = startDate
+      for (; !currentDate.equals(endDate); currentDate
+              = getNextDate(currentDate, priceData, endDate)) {
         double xMovingAverage = xDayMovingAvg(tickerSymbol, currentDate, x, priceData);
         double yMovingAverage = xDayMovingAvg(tickerSymbol, currentDate, y, priceData);
         String prevDay = getPreviousDate(currentDate,priceData);
         double xMovingAveragePrev = xDayMovingAvg(tickerSymbol, prevDay, x, priceData);
         double yMovingAveragePrev = xDayMovingAvg(tickerSymbol, prevDay, y, priceData);
-        if (xMovingAverage > yMovingAverage && xMovingAveragePrev < yMovingAveragePrev) { // CHANGED , is this correct  ?
+        if (xMovingAverage > yMovingAverage && xMovingAveragePrev < yMovingAveragePrev) {
           crossoverInfo.put(currentDate, "buy");
         } else if (xMovingAverage < yMovingAverage && xMovingAveragePrev > yMovingAveragePrev) {
           crossoverInfo.put(currentDate, "sell");
@@ -232,7 +235,8 @@ public class StockStatisticsImpl implements StockStatistic {
       return crossoverInfo;
     }
     else {
-      throw new IllegalArgumentException("X days that is shorter moving average days should be less than Y days");
+      throw new IllegalArgumentException("X days that is shorter moving average days should be "
+              + "less than Y days");
     }
 
   }
