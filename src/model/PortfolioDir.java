@@ -1,9 +1,7 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -122,7 +120,8 @@ public interface PortfolioDir {
    * @param api The StockData object for fetching stock prices.
    * @return A string indicating whether the stock gained or lost over the period.
    */
-  String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2, StockData api);
+  String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2,
+                               StockData api);
 
   /**
    * this method calculates X-day moving average for a given stock on a specific date.
@@ -143,7 +142,7 @@ public interface PortfolioDir {
    * @param endDate  end date of the period.
    * @return TreeMap containing dates of crossover events and whether it is buy/ sell opportunity.
    */
-  TreeMap<String, String> crossoverOverPeriod (String tickerSymbol,
+  TreeMap<String, String> crossoverOverPeriod(String tickerSymbol,
                                                StockData api,
                                                LocalDate startDate, LocalDate endDate);
 
@@ -158,9 +157,8 @@ public interface PortfolioDir {
    * @param y number of days for the second moving average.
    * @return TreeMap containing dates of moving crossovers and whether it is buy/ sell opportunity.
    */
-  TreeMap<String, String> movingCrossOver (String tickerSymbol, StockData api, LocalDate startDate,
-                                           LocalDate endDate
-          , int x, int y);
+  TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api, LocalDate startDate,
+                                           LocalDate endDate, int x, int y);
 
   /**
    * this method calculates performance of a specific stock over a given period.
@@ -170,7 +168,7 @@ public interface PortfolioDir {
    * @param end end date of the period.
    * @return TreeMap containing dates & values determined by scale for bar chart representation.
    */
-  TreeMap<String, Integer> stockPerformance (String stock, StockData api,
+  TreeMap<String, Integer> stockPerformance(String stock, StockData api,
                                              LocalDate start, LocalDate end) ;
 
   /**
@@ -180,7 +178,7 @@ public interface PortfolioDir {
    * @param end end date of the period.
    * @return TreeMap containing dates & values determined by scale for bar chart representation.
    */
-  TreeMap<String, Integer> portfolioPerformance ( int input,
+  TreeMap<String, Integer> portfolioPerformance( int input,
                                                   LocalDate start,  LocalDate end);
 
   /**
@@ -205,8 +203,23 @@ public interface PortfolioDir {
    */
   int scaleForPortfolioPerformance(int input, LocalDate start,  LocalDate end);
 
+  /**
+   * this method saves portfolio data associated with specified index to a StringBuilder object.
+   * saved data includes symbol and quantity of shares in the portfolio.
+   * and additionally save transaction data and date for flexible portfolio.
+   * @param input The index of the portfolio for which data is to be saved.
+   * @return StringBuilder object containing the saved portfolio data in CSV format.
+   */
   StringBuilder save(int input);
 
+  /**
+   * this method loads portfolio data from a list of string arrays representing lines of data,
+   * using the provided portfolio name, StockData object for fetching stock data,
+   * and associates it with the specified portfolio.
+   * @param portfolioName name of the portfolio to load data into.
+   * @param lines  list of string arrays representing lines of portfolio data to be loaded.
+   * @param api StockData object used for fetching stock data.
+   */
   void loadPortfolio(String portfolioName, List<String[]> lines, StockData api);
 
 }
