@@ -53,7 +53,7 @@ public interface IView {
   void print(String message);
 
   /**
-   * Displays a bar graph using *.
+   * Displays a bar graph using * for representation of performance of stock/portfolio.
    *
    * @param scale           Scaling factor for the bar graph.
    * @param data Data for the bar graph that has represents the date and number of * to be printed.
@@ -61,7 +61,8 @@ public interface IView {
    * @param startDate       Start date from which graph is represented.
    * @param endDate         End date which is the end date until which graph is represented.
    */
-  void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate);
+  void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio,
+                String startDate, String endDate);
 
   /**
    * Prints entries of a TreeMap in proper format.

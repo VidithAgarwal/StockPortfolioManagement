@@ -2,7 +2,6 @@ package controller;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import model.PortfolioDir;
@@ -71,7 +70,7 @@ public class StockControllerImpl implements StockController {
   }
 
   /**
-   * This method deletes all folders in a specified directory,
+   * this method deletes all folders in a specified directory,
    * except for the folder named with the current date's name. This can be useful for
    * cleanup operations where only the most recent data should be preserved.
    *
@@ -100,24 +99,19 @@ public class StockControllerImpl implements StockController {
    */
   private void deleteCSVFiles(File directory) {
     File[] allContents = directory.listFiles();
-    System.out.println(directory);
-    System.out.println(Arrays.toString(allContents));
+    //System.out.println(directory);
+    //System.out.println(Arrays.toString(allContents));
     if (allContents != null) {
       for (File file : allContents) {
         deleteCSVFiles(file);
       }
       try {
         if (!directory.delete()) {
-          System.out.println("Deletion failed");
+          view.displayError("Deletion failed");
         }
-      } catch (SecurityException e) {
-        System.out.println("Security exception: " + e.getMessage());
-      } catch (Exception e) {
-        System.out.println("Exception occurred: " + e.getMessage());
+      }  catch (Exception e) {
+        view.displayError("Exception occurred: " + e.getMessage());
       }
-//      if (!directory.delete()) {
-//        view.displayError("Failed to delete directory: " + directory.getName());
-//      }
     }
   }
 
@@ -135,8 +129,8 @@ public class StockControllerImpl implements StockController {
     boolean showSubMenu = true;
     PortfolioAnalysisHelper portfolioAnalysisHelper = new PortfolioAnalysisHelper(view,
             model, scan);
-    FlexiblePortfolioBuySellHelper flexiblePortfolioBuySellHelper = new FlexiblePortfolioBuySellHelper(view,
-            model, scan);
+    FlexiblePortfolioBuySellHelper flexiblePortfolioBuySellHelper
+            = new FlexiblePortfolioBuySellHelper(view, model, scan);
     ExportHelper exportHelper = new ExportHelper(view, model, scan);
     choice = portfolioAnalysisHelper.inputPositiveInteger("Enter your choice: ");
     switch (choice) {
@@ -255,6 +249,11 @@ public class StockControllerImpl implements StockController {
     return false;
   }
 
+  /**
+   * this method displays menu for loading portfolios.
+   * handles user input to initiate loading operations.
+   * @return true if menu should be displayed again, or false otherwise.
+   */
   private boolean showLoadMenu() {
     int subChoice = 0;
     view.choosePortfolioType();
@@ -276,6 +275,11 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * this method displays menu for creating portfolios.
+   * & handles user input to initiate creation operations.
+   * @return true if menu should be displayed again or false otherwise.
+   */
   private boolean showCreateMenu() {
     int subChoice = 0;
     view.choosePortfolioType();
@@ -297,6 +301,11 @@ public class StockControllerImpl implements StockController {
     }
   }
 
+  /**
+   * this method displays menu for stock analysis.
+   * handles user input to initiate analysis operations.
+   * @return true if menu should be displayed again or false otherwise.
+   */
   private boolean stockMenu() {
     int subChoice = 0;
     view.showStockStat();

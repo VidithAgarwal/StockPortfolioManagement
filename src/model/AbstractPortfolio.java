@@ -88,7 +88,6 @@ abstract class AbstractPortfolio implements Portfolio {
         String tickerSymbol = line[0].trim();
         String companyName = line[1].trim().replaceAll("\\s", "");
 
-        // Check if the entered share name matches either the company name or ticker symbol
         if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))
                 || tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s",
                 ""))) {
@@ -96,7 +95,7 @@ abstract class AbstractPortfolio implements Portfolio {
         }
       }
     }
-    return null; // Return null if no matching ticker symbol or company name is found
+    return null;
   }
 
   /**

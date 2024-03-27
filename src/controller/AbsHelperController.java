@@ -7,22 +7,45 @@ import java.util.regex.Pattern;
 import model.PortfolioDir;
 import view.IView;
 
+/**
+ * AbsHelperController class is an abstract class providing helper methods.
+ * for controllers dealing with user input and validation.
+ * It has all common functionality shared among controller helper classes.
+ */
 abstract class AbsHelperController {
 
+  /**
+   * view component for user interaction. */
   protected final IView view;
+
+  /**
+   * model component for managing portfolios. */
   protected final PortfolioDir model;
+
+  /** scanner object for user input. */
   protected final Scanner scan;
 
+  /**
+   * constructs AbsHelperController object with specified view, model, and scanner.
+   * @param view view component for user interaction.
+   * @param model model component for managing portfolios.
+   * @param scan scanner object for user input.
+   */
   AbsHelperController(IView view, PortfolioDir model, Scanner scan) {
     this.view = view;
     this.model = model;
     this.scan = scan;
   }
+
+  /**
+   * this prompts user to enter name for a new portfolio and ensures it is unique.
+   * @return validated portfolio name entered by user.
+   */
   protected String inputPortfolioName() {
     view.print("Enter the name of the portfolio: ");
     String portfolioName = scan.nextLine();
     if (model.portfolioNameExists(portfolioName)) {
-      System.out.println(portfolioName);
+      //System.out.println(portfolioName);
       view.displayError("Portfolio with this name already exists!");
       return inputPortfolioName();
     }
@@ -30,10 +53,9 @@ abstract class AbsHelperController {
   }
 
   /**
-   * Validates user input to ensure it is a positive whole number.
-   *
-   * @param message The message to prompt the user for input.
-   * @return The positive integer input by the user.
+   * this method validates user input to ensure it is a positive whole number.
+   * @param message message to prompt the user for input.
+   * @return positive integer input by the user.
    */
   protected int inputPositiveInteger(String message) {
     view.print(message);
@@ -55,7 +77,6 @@ abstract class AbsHelperController {
 
   /**
    * this method checks the format of the date.
-   *
    * @param date is the date that is passed to the method.
    * @return boolean value true if the format is correct for date entered else false.
    */
@@ -65,8 +86,7 @@ abstract class AbsHelperController {
   }
 
   /**
-   * Prompts the user to input a date using view methods and validates the format of the date.
-   *
+   * this method prompts user to input a date using view methods and validates format of the date.
    * @return The date in day, month , year array format for further date validation.
    */
   protected int[] inputDate(String message) {
@@ -100,8 +120,7 @@ abstract class AbsHelperController {
   }
 
   /**
-   * Validates user input to ensure it is a valid choice among available portfolios.
-   *
+   * this method validates user input to ensure it is a valid choice among available portfolios.
    * @return validated portfolio choice input by user, if wrong choice then displays error message.
    */
   protected int validateUserChoice() {
@@ -115,7 +134,6 @@ abstract class AbsHelperController {
 
   /**
    * this method is used for validation that num of shares entered by user are not negative.
-   *
    * @param numShares number of shares entered by the user to be added in portfolio.
    * @return boolean value true if num of shares is less than 0.
    */
@@ -125,7 +143,6 @@ abstract class AbsHelperController {
 
   /**
    * this method is used to validate date, if it is a valid date or not.
-   *
    * @param day   is the day of the date entered.
    * @param month is the month of the date entered.
    * @param year  is the year of the date entered.
@@ -155,7 +172,6 @@ abstract class AbsHelperController {
   /**
    * this method is used to show the list of portfolios to the user using the view.
    * and then asks the user to enter the valid portfolio choice from the list.
-   *
    * @return the portfolio number chosen by the user.
    */
   protected int inputPortfolioChoice() {
@@ -165,10 +181,9 @@ abstract class AbsHelperController {
   }
 
   /**
-   * Prompts the user to input a file path and validates it.
+   * this method prompts user to input a file path and validates it.
    * used for validation in loading the portfolio.
    * the file is loaded using persistence class in controller.
-   *
    * @return The validated file path input by the user.
    */
   protected List<String[]> inputPath() {

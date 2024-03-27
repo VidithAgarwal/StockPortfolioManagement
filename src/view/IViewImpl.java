@@ -58,7 +58,7 @@ public class IViewImpl implements IView {
     out.println("7. Sell stock");
     out.println("8. Get cost basis");
     out.println("9. Get Stock Statistics");
-    out.println("10. Get Portfolio Performance, for Flexible Portfolio");
+    out.println("10. Get Portfolio Performance");
     out.println("11. Exit");
   }
 
@@ -121,17 +121,6 @@ public class IViewImpl implements IView {
   }
 
 
-//  @Override
-//  public void showListOfPortfolios(ArrayList<String> listOfPortfolios) {
-//    //can print this message using print that list of flexible portfolio, list of inflexible portfolio
-//    // or can have a parameter as string type that gives portfolio type, but it will be changed in existing code.
-//    out.println("The list of existing portfolios:");
-//    out.println("No. of Portfolio\tPortfolio Name");
-//    for (int i = 0; i < listOfPortfolios.size(); i++) {
-//      out.printf("%-20s %s\n", i, listOfPortfolios.get(i));
-//    }
-//  }
-
 
   /**
    * Displays the list of existing portfolios.
@@ -171,7 +160,7 @@ public class IViewImpl implements IView {
   }
 
   /**
-   * Displays a bar graph using *.
+   * Displays a bar graph using * for representation of performance of stock/portfolio.
    *
    * @param scale           Scaling factor for the bar graph.
    * @param data Data for the bar graph that has represents the date and number of * to be printed.
@@ -180,8 +169,10 @@ public class IViewImpl implements IView {
    * @param endDate         End date which is the end date until which graph is represented.
    */
   @Override
-  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio, String startDate, String endDate) {
-    out.println("Performance of portfolio " + stockOrPortfolio + " from " + startDate + " to " + endDate + "\n");
+  public void barGraph(int scale, TreeMap<String, Integer> data, String stockOrPortfolio,
+                       String startDate, String endDate) {
+    out.println("Performance of " + stockOrPortfolio + " from " + startDate
+            + " to " + endDate + "\n");
     for (Map.Entry<String, Integer> entry : data.entrySet()) {
       String timestamp = entry.getKey();
       int quantity = entry.getValue();
@@ -191,7 +182,7 @@ public class IViewImpl implements IView {
       }
       out.println(timestamp + ": " + asterisks);
     }
-    out.print("\nScale: * = "+ scale +"\n");
+    out.print("\nScale: * = " + scale + "\n");
   }
 
   /**

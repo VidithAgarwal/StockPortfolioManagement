@@ -50,6 +50,12 @@ public class PortfolioImpl extends AbstractPortfolio {
     return portfolioComposition();
   }
 
+
+  /**
+   * this method generates a StringBuilder containing symbol and quantity data for each share.
+   * in the portfolio. StringBuilder is returned for further processing or storage.
+   * @return StringBuilder containing symbol and quantity data for each share in the portfolio.
+   */
   @Override
   public StringBuilder save() {
     StringBuilder sb = new StringBuilder();
@@ -120,6 +126,14 @@ public class PortfolioImpl extends AbstractPortfolio {
     return false;
   }
 
+
+  /**
+   * the load method to load portfolio data from a list of string arrays representing lines of data.
+   * and the StockData object used for fetching stock data.
+   * @param lines A list of string arrays representing lines of portfolio data to be loaded.
+   * @param api The StockData object used for fetching stock data.
+   * @throws IllegalArgumentException throws an IllegalArgumentException as it is not implemented.
+   */
   @Override
   public void load(List<String[]> lines, StockData api) {
     throw new IllegalArgumentException();

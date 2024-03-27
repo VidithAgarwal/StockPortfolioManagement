@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class Transaction {
 
   /**
-   * The type of the transaction ("buy", "sell").
+   * The type of the transaction buy/sell.
    */
   private final String txType;
 
