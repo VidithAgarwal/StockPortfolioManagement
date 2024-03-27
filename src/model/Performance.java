@@ -17,6 +17,78 @@ public class Performance {
 
 
   /**
+   * this method computes the performance of a stock within a specified time frame.
+   * @param priceData  historical price data of the stock.
+   * @param start start date of the performance analysis.
+   * @param end end date of the performance analysis.
+   * @return TreeMap containing the selected stock data, the timestamp and price on that day.
+   * @throws IllegalArgumentException if the start date is before the last available date for stock.
+   */
+  public TreeMap<String, Double> stockPerformance (TreeMap<String, ArrayList <Double>> priceData,
+                                                   LocalDate start, LocalDate end) {
+    TreeMap<String, Double> selectedData = new TreeMap<>();
+    LocalDate lastDay = returnLastEntry(priceData);
+    if (start.isBefore(lastDay)) {
+      throw new IllegalArgumentException("Start Date entered is before the stock listing date");
+    }
+    long totalDays = ChronoUnit.DAYS.between(start, end);
+    long yearDiff = ChronoUnit.YEARS.between(start, end);
+    long monthsDifference = ChronoUnit.MONTHS.between(start.withDayOfMonth(1), end.withDayOfMonth(1));
+    int numParts;
+    if ( totalDays <= 30 && totalDays > 0 ) {
+      numParts = (int) totalDays;
+      helperStockPerformanceYearDiff0(numParts,start,totalDays,priceData,selectedData);
+    }
+    else if(totalDays == 31) {
+      numParts = 16;
+      helperStockPerformanceYearDiff0(numParts,start,totalDays,priceData,selectedData);
+    }
+    else if (monthsDifference < 5 && monthsDifference > 0 && yearDiff == 0 ) {
+      numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
+      helperStockPerformanceYearDiff0(numParts,start,totalDays,priceData,selectedData);
+    }
+    else if (monthsDifference >= 5 && monthsDifference < 30) {
+      numParts = (int) monthsDifference;
+      helperStockPerformanceMonthDiffBetween5And30(numParts,start,priceData,selectedData);
+    }
+    else if (yearDiff >= 1 && yearDiff < 5 && monthsDifference >= 30) {
+      numParts = (int) Math.ceil((double) monthsDifference / 2);
+      helperStockPerformanceYearDiffBetween1And5(numParts,start,priceData, selectedData);
+    }
+    else if (yearDiff >= 5 && yearDiff < 30) {
+      numParts = (int) yearDiff;
+      helperStockPerformanceYearDiffBetween5And30(numParts,start,priceData,selectedData);
+    }
+    else if (yearDiff >= 30 ) {
+//      numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
+//      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
+      numParts = (int) Math.ceil((double) yearDiff / 2);
+      while(numParts > 30) {
+        numParts = (int) Math.ceil((double)numParts/2);
+      }
+      helperStockPerformanceYearDiffMoreThan30(numParts,yearDiff,start,priceData,selectedData);
+    }
+    return selectedData;
+  }
+
+  private void helperStockPerformanceYearDiffMoreThan30(int numParts, long yearDiff, LocalDate start,Map<String,
+          ArrayList<Double>> priceData, TreeMap<String, Double> selectedData )  {
+    for (int i = 0; i <= numParts; i++) {
+      long interval = Math.round((float) yearDiff / (numParts));
+      LocalDate currentDate = start.plusYears(i*interval).withMonth(12).withDayOfMonth(31);
+      String currentDateString = currentDate.toString();
+      while (!priceData.containsKey((currentDateString))) {
+        currentDate = currentDate.minusDays(1);
+        currentDateString = currentDate.toString();
+      }
+      ArrayList<Double> values = priceData.get(currentDateString);
+      Double closingValue = values.get(3);
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, closingValue);
+    }
+  }
+
+  /**
    * this is helper method to populate selectedData with stock closing prices.
    * for a specified time period and put timestamp along with their price data in selectData.
    * @param numParts  number of parts to divide the time period into.
@@ -25,7 +97,7 @@ public class Performance {
    * @param priceData historical price data of the stock.
    * @param selectedData  TreeMap to store selected stock data.
    */
-  private void helperYearDiff0 (int numParts, LocalDate start, long totalDays, Map<String,
+  private void helperStockPerformanceYearDiff0 (int numParts, LocalDate start, long totalDays, Map<String,
           ArrayList<Double>> priceData, TreeMap<String, Double> selectedData ) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
@@ -41,7 +113,7 @@ public class Performance {
     }
   }
 
-  private void helperYearDiffBetween5And30 (int numParts, LocalDate start, Map<String,
+  private void helperStockPerformanceYearDiffBetween5And30 (int numParts, LocalDate start, Map<String,
           ArrayList<Double>> priceData, TreeMap<String, Double> selectedData ) {
     for (int i = 0; i <= numParts; i++) {
       LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
@@ -57,7 +129,7 @@ public class Performance {
     }
   }
 
-  private void helperYearDiffBetween1And5 (int numParts, LocalDate start,Map<String,
+  private void helperStockPerformanceYearDiffBetween1And5 (int numParts, LocalDate start,Map<String,
           ArrayList<Double>> priceData, TreeMap<String, Double> selectedData  ) {
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusMonths(i*2)
@@ -76,7 +148,7 @@ public class Performance {
     }
   }
 
-  private void helperMonthDiffBetween5And30 (int numParts,LocalDate start, Map<String,
+  private void helperStockPerformanceMonthDiffBetween5And30 (int numParts,LocalDate start, Map<String,
           ArrayList<Double>> priceData, TreeMap<String, Double> selectedData) {
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
@@ -104,104 +176,9 @@ public class Performance {
     if (lastEntry != null) {
       lastDate = lastEntry.getKey();
     } else {
-      System.out.println("hoiio");
       throw new IllegalArgumentException();
     }
     return LocalDate.parse(lastDate);
-  }
-
-  /**
-   * this method computes the performance of a stock within a specified time frame.
-   * @param priceData  historical price data of the stock.
-   * @param start start date of the performance analysis.
-   * @param end end date of the performance analysis.
-   * @return TreeMap containing the selected stock data, the timestamp and price on that day.
-   * @throws IllegalArgumentException if the start date is before the last available date for stock.
-   */
-  public TreeMap<String, Double> stockPerformance (TreeMap<String, ArrayList <Double>> priceData,
-                                                   LocalDate start, LocalDate end) {
-    TreeMap<String, Double> selectedData = new TreeMap<>();
-    LocalDate lastDay = returnLastEntry(priceData);
-    if (start.isBefore(lastDay)) {
-      throw new IllegalArgumentException("Start Date entered is before the stock listing date");
-    }
-    long totalDays = ChronoUnit.DAYS.between(start, end);
-    long yearDiff = ChronoUnit.YEARS.between(start, end);
-    long monthsDifference = ChronoUnit.MONTHS.between(start.withDayOfMonth(1), end.withDayOfMonth(1));
-    int numParts;
-
-    if ( totalDays <= 30 && totalDays > 0 ) {
-      numParts = (int) totalDays;
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
-    }
-    else if(totalDays ==31) {
-      numParts = 16;
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
-    }
-    else if (monthsDifference < 5 && monthsDifference > 0 && yearDiff == 0 ) {
-      numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
-    }
-
-    else if (monthsDifference >= 5 && monthsDifference < 30) {
-      numParts = (int) monthsDifference;
-//      for (int i = 0; i < numParts; i++) {
-//        LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
-//        String currentDateString = currentDate.toString();
-//        while (!priceData.containsKey((currentDateString))) {
-//          currentDate = currentDate.minusDays(1);
-//          currentDateString = currentDate.toString();
-//        }
-//        ArrayList<Double> values = priceData.get(currentDateString);
-//        Double closingValue = values.get(3);
-//        String formatDate = dateFormat(currentDateString);
-//        selectedData.put(formatDate, closingValue);
-//      }
-      helperMonthDiffBetween5And30(numParts,start,priceData,selectedData);
-    }
-
-    else if (yearDiff >= 1 && yearDiff < 5 && monthsDifference >= 30) {
-      numParts = (int) Math.ceil((double) monthsDifference / 2);
-      //long interval = Math.round((float) totalDays / (numParts));
-//      for (int i = 0; i < numParts; i++) {
-//        LocalDate currentDate = start.plusMonths(i*2).withDayOfMonth(start.plusMonths(i*2).lengthOfMonth());
-//        //LocalDate currentDate = start.plusDays(interval * i);
-//        String currentDateString = currentDate.toString();
-//
-//        while (!priceData.containsKey((currentDateString))) {
-//          currentDate = currentDate.minusDays(1);
-//          currentDateString = currentDate.toString();
-//        }
-//        ArrayList<Double> values = priceData.get(currentDateString);
-//        Double closingValue = values.get(3);
-//        String formatDate = dateFormat(currentDateString);
-//        selectedData.put(formatDate, closingValue);
-//      }
-      helperYearDiffBetween1And5(numParts,start,priceData, selectedData);
-    }
-
-    else if (yearDiff >= 5 && yearDiff < 30) {
-      numParts = (int) yearDiff;
-//      for (int i = 0; i <= numParts; i++) {
-//        LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
-//        String currentDateString = currentDate.toString();
-//        while (!priceData.containsKey((currentDateString))) {
-//          currentDate = currentDate.minusDays(1);
-//          currentDateString = currentDate.toString();
-//        }
-//        ArrayList<Double> values = priceData.get(currentDateString);
-//        Double closingValue = values.get(3);
-//        String formatDate = dateFormat(currentDateString);
-//        selectedData.put(formatDate, closingValue);
-//      }
-      helperYearDiffBetween5And30(numParts,start,priceData,selectedData);
-    }
-    else if (yearDiff >= 30 ) {
-      numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperYearDiff0(numParts,start,totalDays,priceData,selectedData);
-    }
-    return selectedData;
-
   }
 
 
@@ -215,7 +192,7 @@ public class Performance {
    * @param portfolioName portfolio object, for which total value is calculated to find performance.
    * @param selectedData TreeMap to store selected portfolio data, timestamp & portfolio value.
    */
-  private void helperPerformanceYearDiff0 (int numParts, LocalDate start, double value, long totalDays, Portfolio portfolioName, TreeMap <String, Double> selectedData ) {
+  private void helperPortfolioPerformanceYearDiff0 (int numParts, LocalDate start, double value, long totalDays, Portfolio portfolioName, TreeMap <String, Double> selectedData ) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusDays(interval * i);
@@ -246,109 +223,49 @@ public class Performance {
    * @throws IllegalArgumentException if the portfolio is not flexible.
    */
   public TreeMap<String, Double> portfolioPerformance ( Portfolio portfolioName, LocalDate start,  LocalDate end) {
-//    if (!portfolioName.isFlexible()) {
-//      throw new IllegalArgumentException();
-//    }
     double value = 0;
     TreeMap<String, Double> selectedData = new TreeMap<>();
     long totalDays = ChronoUnit.DAYS.between(start, end);
     long monthsDifference = ChronoUnit.MONTHS.between(start.withDayOfMonth(1), end.withDayOfMonth(1));
     long yearDiff = ChronoUnit.YEARS.between(start, end);
     int numParts;
-
     if ( totalDays <= 30  && totalDays > 0 ) {
       numParts = (int) totalDays;
-      helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
+      helperPortfolioPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
     }
     else if (totalDays == 31 ) {
       numParts = 16;
-      helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
+      helperPortfolioPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
     }
     else if (monthsDifference < 5 && monthsDifference > 0 && yearDiff == 0 ) {
       numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
+      helperPortfolioPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
     }
     else if (monthsDifference >= 5 && monthsDifference < 30 ) {
       numParts = (int) monthsDifference;
-      for (int i = 0; i < numParts; i++) {
-        LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
-        String currentDateString = currentDate.toString();
-        while (true) {
-          try {
-            value = portfolioName.portfolioValue(currentDateString, new StockData());
-            break;
-          }
-          catch (IllegalArgumentException e) {
-            if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-              throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
-            }
-            currentDate = currentDate.minusDays(1);
-            currentDateString = currentDate.toString();
-          }
-        }
-        //selectedData.put(currentDateString, value);
-        String formatDate = dateFormat(currentDateString);
-        selectedData.put(formatDate, value);
-      }
+      helperPortfolioPerformanceMonthDiffBetween5And30(numParts,start,value,portfolioName,selectedData);
     }
-
     else if (yearDiff >= 1 && yearDiff < 5 && monthsDifference >= 30) {
-      //numParts = (int) (monthsDifference/2);
       numParts = (int) Math.ceil((double) monthsDifference / 2);
-      //long interval = Math.round((float) totalDays / (numParts));
-      for (int i = 0; i < numParts; i++) {
-        LocalDate currentDate = start.plusMonths(i*2).withDayOfMonth(start.plusMonths(i*2).lengthOfMonth());
-        //LocalDate currentDate = start.plusDays(interval * i);
-        String currentDateString = currentDate.toString();
-        while (true) {
-          try {
-            value = portfolioName.portfolioValue(currentDateString, new StockData());
-            break;
-          }
-          catch (IllegalArgumentException e) {
-            if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-              throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
-            }
-            currentDate = currentDate.minusDays(1);
-            currentDateString = currentDate.toString();
-          }
-        }
-        //selectedData.put(currentDateString, value);
-        String formatDate = dateFormat(currentDateString);
-        selectedData.put(formatDate, value);
-      }
-
+      helperPortfolioPerformanceMonthDiffBetween1And5(numParts,start,value,portfolioName,selectedData);
     }
-
     else if (yearDiff >= 5 && yearDiff < 30) {
       numParts = (int) yearDiff;
-      for (int i = 0; i <= numParts; i++) {
-        LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
-        String currentDateString = currentDate.toString();
-        while (true) {
-          try {
-            value = portfolioName.portfolioValue(currentDateString,new StockData() );
-            break;
-          }
-          catch (IllegalArgumentException e) {
-            if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-              throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
-            }
-            currentDate = currentDate.minusDays(1);
-            currentDateString = currentDate.toString();
-          }
-        }
-        String formatDate = dateFormat(currentDateString);
-        selectedData.put(formatDate, value);
-      }
+      helperPortfolioPerformanceYearDiffBetween1And5(numParts,start,value,portfolioName,selectedData);
     }
     else if (yearDiff >= 30 ) {
-      numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
+      numParts = (int) Math.ceil((double) yearDiff / 2);
+      while(numParts > 30) {
+        numParts = (int) Math.ceil((double)numParts/2);
+      }
+      //numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
+      //helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
+      helperPortfolioPerformanceYearDiffMoreThan30(numParts,start,value,portfolioName,selectedData,yearDiff);
     }
-    //System.out.println(selectedData);
     return selectedData;
   }
+
+
 
   /**
    * this method formats a date string to the required format for performance , MMM yyyy.
@@ -433,6 +350,105 @@ public class Performance {
     TreeMap<String, Integer> orderedData = new TreeMap<>(customComparator);
     orderedData.putAll(data);
     return orderedData;
+  }
+
+  private void helperPortfolioPerformanceMonthDiffBetween5And30 (int numParts, LocalDate start,
+                                                                double value, Portfolio portfolioName,
+                                                                TreeMap <String, Double> selectedData) {
+    for (int i = 0; i < numParts; i++) {
+      LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i).lengthOfMonth());
+      String currentDateString = currentDate.toString();
+      while (true) {
+        try {
+          value = portfolioName.portfolioValue(currentDateString, new StockData());
+          break;
+        }
+        catch (IllegalArgumentException e) {
+          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+            throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+          }
+          currentDate = currentDate.minusDays(1);
+          currentDateString = currentDate.toString();
+        }
+      }
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, value);
+    }
+  }
+
+  private void helperPortfolioPerformanceMonthDiffBetween1And5 (int numParts, LocalDate start,
+                                          double value, Portfolio portfolioName,
+                                          TreeMap <String, Double> selectedData) {
+    for (int i = 0; i < numParts; i++) {
+      LocalDate currentDate = start.plusMonths(i*2).withDayOfMonth(start.plusMonths(i*2).lengthOfMonth());
+      String currentDateString = currentDate.toString();
+      while (true) {
+        try {
+          value = portfolioName.portfolioValue(currentDateString, new StockData());
+          break;
+        }
+        catch (IllegalArgumentException e) {
+          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+            throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+          }
+          currentDate = currentDate.minusDays(1);
+          currentDateString = currentDate.toString();
+        }
+      }
+      //selectedData.put(currentDateString, value);
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, value);
+    }
+  }
+
+  private void helperPortfolioPerformanceYearDiffBetween1And5 (int numParts, LocalDate start,
+                                                              double value, Portfolio portfolioName,
+                                                              TreeMap <String, Double> selectedData) {
+    for (int i = 0; i <= numParts; i++) {
+      LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
+      String currentDateString = currentDate.toString();
+      while (true) {
+        try {
+          value = portfolioName.portfolioValue(currentDateString,new StockData() );
+          break;
+        }
+        catch (IllegalArgumentException e) {
+          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+            throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+          }
+          currentDate = currentDate.minusDays(1);
+          currentDateString = currentDate.toString();
+        }
+      }
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, value);
+    }
+  }
+
+  private void helperPortfolioPerformanceYearDiffMoreThan30 (int numParts, LocalDate start,
+                                                             double value, Portfolio portfolioName,
+                                                             TreeMap <String, Double> selectedData,
+                                                             long yearDiff) {
+    for (int i = 0; i <= numParts; i++) {
+      long interval = Math.round((float) yearDiff / (numParts));
+      LocalDate currentDate = start.plusYears(i*interval).withMonth(12).withDayOfMonth(31);
+      String currentDateString = currentDate.toString();
+      while (true) {
+        try {
+          value = portfolioName.portfolioValue(currentDateString,new StockData() );
+          break;
+        }
+        catch (IllegalArgumentException e) {
+          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+            throw new IllegalArgumentException("Cannot find the performance as one of the share was not listed!");
+          }
+          currentDate = currentDate.minusDays(1);
+          currentDateString = currentDate.toString();
+        }
+      }
+      String formatDate = dateFormat(currentDateString);
+      selectedData.put(formatDate, value);
+    }
   }
 
 
