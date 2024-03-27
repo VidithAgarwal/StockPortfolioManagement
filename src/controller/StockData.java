@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -129,8 +128,8 @@ public class StockData {
   }
 
   /**
-   * loadDatFromCSV is used to load the csv file of a particular ticker symbol present in the
-   * current date's folder using the file handler load method and puts the data in the price data
+   * loadDatFromCSV is used to load the csv file of a particular ticker symbol present in.
+   * current date's folder using the file handler load method and puts the data in the price data.
    * object that contains the date and closing price data for the tickerSymbol.
    */
   private void loadDataFromFile() {
@@ -148,8 +147,7 @@ public class StockData {
   /**
    * this method gets the price for the tickerSymbol on a particular date.
    * @param tickerSymbol The ticker symbol of the stock for which price is to be fetched.
-   * @return TreeMap containing historical stock data, with dates as keys.
-   * and price information as values.
+   * @return TreeMap containing historical stock data, with dates & price information.
    * @throws IllegalArgumentException if no price data is found for the provided ticker symbol.
    */
   public TreeMap<String, ArrayList<Double>> fetchHistoricalData(String tickerSymbol) {
