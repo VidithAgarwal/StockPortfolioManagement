@@ -47,8 +47,6 @@ public class ControllerTest {
    */
   private double mockValue;
 
-  private int intMockValue;
-
   /**
    * Sets up the test environment before each test method execution.
    * It initializes mock objects and sets up initial data for testing.
@@ -57,12 +55,13 @@ public class ControllerTest {
   public void setUp() {
     Map<String, Integer> mockComposition = new HashMap<>();
     TreeMap<String,String> mockTreeMap = new TreeMap<>();
+    mockTreeMap.put("date", "buy/sell");
     TreeMap<String,Integer> mockStringInt = new TreeMap<>();
     mockComposition.put("AAPL", 20);
     mockComposition.put("Goog", 10);
     mockName = "Test Portfolio";
     mockValue = 17.5;
-    intMockValue = 10;
+    int intMockValue = 10;
 
     this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue,
             mockTreeMap, mockStringInt);
@@ -997,11 +996,12 @@ public class ControllerTest {
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
     controller.execute();
-    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder inputLog = newMockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
+    System.out.println(inputLog);
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Test Portfolio",
+    assertEquals("Calculating gain or loss for aapl on 2024-03-20",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1019,11 +1019,11 @@ public class ControllerTest {
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
     controller.execute();
-    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder inputLog = newMockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Test Portfolio",
+    assertEquals("Calculating gain or loss for hello on 2024-03-20",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1045,11 +1045,11 @@ public class ControllerTest {
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
     controller.execute();
-    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder inputLog = newMockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Test Portfolio",
+    assertEquals("Calculating gain or loss for aapl on 2024-03-20",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1058,16 +1058,249 @@ public class ControllerTest {
 
   @Test
   public void testStockGainLossOverPeriod() {
-    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this format " +
+            "yyyy-mm-dd: ", "Test"
+            + " Portfolio","Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n2\naapl\n2024-03-01\n2024-03-21\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating gain or loss for aapl from 2024-03-01 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockGainLossOverPeriodWrongStockName() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this format " +
+            "yyyy-mm-dd: ", "Test"
+            + " Portfolio", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n2\nhello\n2024-03-01\n2024-03-21\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating gain or loss for hello from 2024-03-01 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockGainLossOverPeriodWrongEndDate() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in this" +
+            " format " +
+            "yyyy-mm-dd: ", "Test"
+            + " Portfolio", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n2\nAAPL\n2024-03-01\n2024-13-01\n2024-03-21\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating gain or loss for AAPL from 2024-03-01 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockGainLossOverPeriodWrongDate() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
+            " format " +
+            "yyyy-mm-dd: ", "Test"
+            + " Portfolio", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n2\nAAPL\n2024-13-01\n2024-03-01\n2024-03-21\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating gain or loss for AAPL from 2024-03-01 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockXDayMovingAvg() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter X days before the given date you want to find the " +
+            "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n3\naapl\n2024-03-01\n10\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating 10-day moving average for aapl on 2024-03-01",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockXDayMovingAvgWongDate() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter X days before the given date you want to" +
+            " find the" +
+            " " +
+            "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n3\naapl\n2024-03-32\n2024-03-01\n10\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating 10-day moving average for aapl on 2024-03-01",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testStockXDayMovingAvgNegativeX() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter X days before the given date you want to" +
+            " find the moving average for: ", "Error", "Enter X days before the given date you " +
+            "want to find the moving average for: ", "0.0","Enter your choice: ","Enter your " +
+            "choice:" +
+            " "};
+    Reader in = new StringReader("3\n3\naapl\n2024-03-12\n-10\n10\n7\n4\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, newMockModel);
+    controller.execute();
+    StringBuilder inputLog = newMockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating 10-day moving average for aapl on 2024-03-12",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testCrossoverOverPeriod() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
+            " format " +
+            "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n4\nAAPL\n2024-03-01\n2024-03-21\n7\n11\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Test Portfolio",
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-01 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testCrossoverOverPeriodForWrongStartDate() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
+            " format " +
+            "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n4\nAAPL\n2024-02-30\n2024-03-11\n2024-03-21\n7\n11\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testCrossoverOverPeriodForWrongEndDate() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
+            " format " +
+            "yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in " +
+            "this format yyyy-mm-dd: ","date buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n4\nAAPL\n2024-03-11\n2024-15-11\n2024-03-21\n7\n11\n");
+    MockModel newMockModel = new MockModel(mockName);
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to 2024-03-21",
+            logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length; i++) {
+      assertEquals(expectedOutputLog[i], outputLogChecker[i]);
+    }
+  }
+
+  @Test
+  public void testMovingCrossover() {
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
+            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
+            " format " +
+            "yyyy-mm-dd: ", "Enter the end date","The date should be in " +
+            "this format yyyy-mm-dd: ","date buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n5\nAAPL\n2024-03-11\n2024-03-21\n10\n100\n7\n11\n");
+    this.controller =  new StockControllerImpl(mockView, in, mockModel);
+    controller.execute();
+    StringBuilder inputLog = mockModel.getLogger();
+    StringBuilder outputLogs = mockView.getPrintedOutput();
+    String[] logChecker = inputLog.toString().split("\n");
+    String[] outputLogChecker = outputLogs.toString().split("\n");
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to 2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
