@@ -1,201 +1,113 @@
-package controller;
+package model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.TreeMap;
 
-import model.PortfolioDir;
-import view.IView;
+import controller.StockData;
 
 /**
- * AbsHelperController class is an abstract class providing helper methods.
- * for controllers dealing with user input and validation.
- * It has all common functionality shared among controller helper classes.
+ * An abstract class implementing common functionality for flexible and inflexible portfolio.
  */
-abstract class AbsHelperController {
+abstract class AbstractPortfolio implements Portfolio {
 
   /**
-   * view component for user interaction. */
-  protected final IView view;
-
-  /**
-   * model component for managing portfolios. */
-  protected final PortfolioDir model;
-
-  /** scanner object for user input. */
-  protected final Scanner scan;
-
-  /**
-   * constructs AbsHelperController object with specified view, model, and scanner.
-   * @param view view component for user interaction.
-   * @param model model component for managing portfolios.
-   * @param scan scanner object for user input.
+   * The name of the portfolio.
    */
-  AbsHelperController(IView view, PortfolioDir model, Scanner scan) {
-    this.view = view;
-    this.model = model;
-    this.scan = scan;
+  protected final String portfolioName;
+
+  /**
+   * constructs an AbstractPortfolio object with the specified name.
+   * @param portfolioName name of the portfolio.
+   */
+  protected AbstractPortfolio(String portfolioName) {
+    this.portfolioName = portfolioName;
   }
 
   /**
-   * this prompts user to enter name for a new portfolio and ensures it is unique.
-   * @return validated portfolio name entered by user.
+   * retrieves name of the portfolio.
+   * @return name of the portfolio.
    */
-  protected String inputPortfolioName() {
-    view.print("Enter the name of the portfolio: ");
-    String portfolioName = scan.nextLine();
-    if (model.portfolioNameExists(portfolioName)) {
-      //System.out.println(portfolioName);
-      view.displayError("Portfolio with this name already exists!");
-      return inputPortfolioName();
-    }
+  @Override
+  public String getName() {
     return portfolioName;
   }
 
   /**
-   * this method validates user input to ensure it is a positive whole number.
-   * @param message message to prompt the user for input.
-   * @return positive integer input by the user.
+   * this method retrieves closing price of a stock on a specified date.
+   * @param ticker ticker symbol of the stock.
+   * @param api  StockData object used to fetch historical data.
+   * @param date date for which the closing price is to be retrieved.
+   * @return closing price of the stock on the specified date.
    */
-  protected int inputPositiveInteger(String message) {
-    view.print(message);
-
-    while (!scan.hasNextInt()) {
-      view.displayError("Please enter a whole number");
-      scan.next();
-      view.print(message);
+  protected double getClosingPriceOnDate(String ticker, StockData api, String date) {
+    TreeMap<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
+    LocalDate ipoDate = LocalDate.parse(priceData.lastEntry().getKey());
+    LocalDate thisDate = LocalDate.parse(date);
+    if (thisDate.isBefore(ipoDate)) {
+      throw new IllegalArgumentException("The share was not listed");
     }
-    int input = scan.nextInt();
-    scan.nextLine();
-
-    if (isNegative(input)) {
-      view.displayError("Enter a positive whole number");
-      return inputPositiveInteger(message);
-    }
-    return input;
+    return priceData.get(date).get(3);
   }
 
   /**
-   * this method checks the format of the date.
-   * @param date is the date that is passed to the method.
-   * @return boolean value true if the format is correct for date entered else false.
+   * this method computes total value of the portfolio on a specified date.
+   * @param date date for which the portfolio value is to be computed.
+   * @param composition composition of the portfolio (stock ticker symbols and quantities).
+   * @param api StockData object used to fetch historical data.
+   * @return total value of the portfolio on the specified date.
    */
-  protected boolean isValidDateFormat(String date) {
-    String regex = "\\d{4}-\\d{2}-\\d{2}";
-    return Pattern.matches(regex, date);
-  }
-
-  /**
-   * this method prompts user to input a date using view methods and validates format of the date.
-   * @return The date in day, month , year array format for further date validation.
-   */
-  protected int[] inputDate(String message) {
-    boolean validDate = false;
-    String date;
-    int day = 0;
-    int month = 0;
-    int year = 0;
-    do {
-      view.print(message);
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-
-      if (isValidDateFormat(date)) {
-        String[] dateParts = date.split("-");
-        year = Integer.parseInt(dateParts[0].trim());
-        month = Integer.parseInt(dateParts[1].trim());
-        day = Integer.parseInt(dateParts[2].trim());
-
-        if (validateDate(day, month, year)) {
-          validDate = true;
-        } else {
-          view.displayError("Invalid date!");
-        }
-      } else {
-        view.displayError("Invalid date format.");
+  protected double computeValue(String date, Map<String, Integer> composition, StockData api) {
+    double totalValue = 0;
+    for (Map.Entry<String, Integer> entry : composition.entrySet()) {
+      String ticker = entry.getKey();
+      Integer quantity = entry.getValue();
+      try {
+        Double closingPrice = getClosingPriceOnDate(ticker, api, date);
+        totalValue += closingPrice * quantity;
+      } catch (NullPointerException e) {
+        throw new IllegalArgumentException(ticker);
       }
     }
-    while (!validDate);
-    return new int[]{day, month, year};
+    return totalValue;
   }
 
   /**
-   * this method validates user input to ensure it is a valid choice among available portfolios.
-   * @return validated portfolio choice input by user, if wrong choice then displays error message.
+   * this method validates if the share name exists in the stocks.csv file.
+   * @param shareName The name of the share to be validated.
+   * @return ticker symbol of the share if found, otherwise null.
    */
-  protected int validateUserChoice() {
-    int choice = inputPositiveInteger("Enter the Portfolio number you want to select.");
-    if (choice >= model.getSize() || choice < 0) {
-      this.view.displayError("Enter a valid choice, this option doesn't exists.");
-      return validateUserChoice();
+  static String validateStockName(String shareName) {
+    FileHandler fileHandler = new FileHandler();
+    List<String[]> lines = fileHandler.load("stocks.csv");
+    for (String[] line : lines) {
+      if (line.length >= 2) {
+        String tickerSymbol = line[0].trim();
+        String companyName = line[1].trim().replaceAll("\\s", "");
+
+        if (companyName.equalsIgnoreCase(shareName.trim().replaceAll("\\s", ""))
+                || tickerSymbol.equalsIgnoreCase(shareName.trim().replaceAll("\\s",
+                ""))) {
+          return tickerSymbol;
+        }
+      }
     }
-    return choice;
+    return null;
   }
 
   /**
-   * this method is used for validation that num of shares entered by user are not negative.
-   * @param numShares number of shares entered by the user to be added in portfolio.
-   * @return boolean value true if num of shares is less than 0.
+   * this method creates a deep copy of a map.
+   * @param map1 the map to be copied.
+   * @return new map containing same key-value pairs as input map.
    */
-  protected boolean isNegative(int numShares) {
-    return numShares < 0;
-  }
-
-  /**
-   * this method is used to validate date, if it is a valid date or not.
-   * @param day   is the day of the date entered.
-   * @param month is the month of the date entered.
-   * @param year  is the year of the date entered.
-   * @return true if date is valid or else returns false.
-   */
-  protected boolean validateDate(int day, int month, int year) {
-    if (month < 1 || month > 12) {
-      return false;
+  protected Map<String, Integer> deepCopy(Map<String, Integer> map1) {
+    Map<String, Integer> map2 = new HashMap<>();
+    for (Map.Entry<String, Integer> entry : map1.entrySet()) {
+      map2.put(entry.getKey(), entry.getValue());
     }
-
-    if (day < 1 || day > 31) {
-      return false;
-    }
-
-    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
-      return false;
-    }
-
-    if (month == 2) {
-      boolean isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-      return (!isLeapYear || day <= 29) && (isLeapYear || day <= 28);
-    }
-
-    return year >= 0 && year <= 9999;
-  }
-
-  /**
-   * this method is used to show the list of portfolios to the user using the view.
-   * and then asks the user to enter the valid portfolio choice from the list.
-   * @return the portfolio number chosen by the user.
-   */
-  protected int inputPortfolioChoice() {
-    view.showListOfPortfolios(model.getListOfPortfoliosName());
-
-    return validateUserChoice();
-  }
-
-  /**
-   * this method prompts user to input a file path and validates it.
-   * used for validation in loading the portfolio.
-   * the file is loaded using persistence class in controller.
-   * @return The validated file path input by the user.
-   */
-  protected List<String[]> inputPath() {
-    view.print("Enter the full path of the file you want to load data from: ");
-    String pathName = scan.nextLine();
-
-    Persistence persistence = new Persistence();
-    try {
-      return persistence.loadFromCSV(pathName);
-    } catch (IllegalArgumentException e) {
-      view.displayError(e.getMessage());
-      return inputPath();
-    }
+    return map2;
   }
 }
