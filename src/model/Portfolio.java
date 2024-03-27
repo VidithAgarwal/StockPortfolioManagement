@@ -26,6 +26,12 @@ public interface Portfolio {
    */
   String getName();
 
+  /**
+   * this method generates a StringBuilder containing symbol and quantity data for each share,
+   * and for flexible portfolio it has transaction data and transaction type.
+   * in the portfolio. StringBuilder is returned for further processing or storage.
+   * @return StringBuilder containing symbol and quantity data for each share in the portfolio.
+   */
   StringBuilder save();
 
   /**
@@ -68,8 +74,15 @@ public interface Portfolio {
 
   /**
    * Checks if the portfolio is flexible.
-   * @return always returns false, as this is an inflexible portfolio.
+   * @return true if it is a flexible portfolio or else returns false.
    */
   boolean isFlexible();
+
+  /**
+   * the load method to load portfolio data from a list of string arrays representing lines of data.
+   * and the StockData object used for fetching stock data.
+   * @param lines A list of string arrays representing lines of portfolio data to be loaded.
+   * @param api The StockData object used for fetching stock data.
+   */
   void load(List<String[]> lines, StockData api);
 }
