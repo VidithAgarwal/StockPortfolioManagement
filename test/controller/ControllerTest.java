@@ -852,7 +852,8 @@ public class ControllerTest {
   @Test
   public void testLoadPortfolio()  {
     String path = System.getProperty("user.dir") + "/test/testFiles/loadTest.csv";
-    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the name of the "
+    String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: " ,"Enter the "
+            + "name of the "
             + "portfolio: ", "Enter the full path of the file you want to load data "
             + "from: ", "File loaded "
             + "successfully", "Enter your choice: "};
@@ -1060,9 +1061,9 @@ public class ControllerTest {
   @Test
   public void testStockGainLossOverPeriod() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this format " +
-            "yyyy-mm-dd: ", "Test"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this format "
+            + "yyyy-mm-dd: ", "Test"
             + " Portfolio","Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n2\naapl\n2024-03-01\n2024-03-21\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
@@ -1082,9 +1083,9 @@ public class ControllerTest {
   @Test
   public void testStockGainLossOverPeriodWrongStockName() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this format " +
-            "yyyy-mm-dd: ", "Test"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this format "
+            + "yyyy-mm-dd: ", "Test"
             + " Portfolio", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n2\nhello\n2024-03-01\n2024-03-21\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
@@ -1104,11 +1105,11 @@ public class ControllerTest {
   @Test
   public void testStockGainLossOverPeriodWrongEndDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Test"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Test"
             + " Portfolio", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n2\nAAPL\n2024-03-01\n2024-13-01\n2024-03-21\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
@@ -1128,11 +1129,11 @@ public class ControllerTest {
   @Test
   public void testStockGainLossOverPeriodWrongDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Test"
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Test"
             + " Portfolio", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n2\nAAPL\n2024-13-01\n2024-03-01\n2024-03-21\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
@@ -1152,9 +1153,9 @@ public class ControllerTest {
   @Test
   public void testStockXDayMovingAvg() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter X days before the given date you want to find the " +
-            "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter X days before the given date you want to find the "
+            + "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n3\naapl\n2024-03-01\n10\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -1173,12 +1174,12 @@ public class ControllerTest {
   @Test
   public void testStockXDayMovingAvgWongDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter X days before the given date you want to" +
-            " find the" +
-            " " +
-            "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter X days before the given date you want to"
+            + " find the"
+            + " "
+            + "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("3\n3\naapl\n2024-03-32\n2024-03-01\n10\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -1197,12 +1198,12 @@ public class ControllerTest {
   @Test
   public void testStockXDayMovingAvgNegativeX() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter X days before the given date you want to" +
-            " find the moving average for: ", "Error", "Enter X days before the given date you " +
-            "want to find the moving average for: ", "0.0","Enter your choice: ","Enter your " +
-            "choice:" +
-            " "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter X days before the given date you want to"
+            + " find the moving average for: ", "Error", "Enter X days before the given date you "
+            + "want to find the moving average for: ", "0.0","Enter your choice: ","Enter your "
+            + "choice:"
+            + " "};
     Reader in = new StringReader("3\n3\naapl\n2024-03-12\n-10\n10\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
@@ -1221,10 +1222,10 @@ public class ControllerTest {
   @Test
   public void testCrossoverOverPeriod() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n4\nAAPL\n2024-03-01\n2024-03-21\n7\n11\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -1243,11 +1244,11 @@ public class ControllerTest {
   @Test
   public void testCrossoverOverPeriodForWrongStartDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n4\nAAPL\n2024-02-30\n2024-03-11\n2024-03-21\n7\n11\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -1266,11 +1267,12 @@ public class ControllerTest {
   @Test
   public void testCrossoverOverPeriodForWrongEndDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ","date buy/sell", "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ","date buy/sell", "Enter your choice: ","Enter "
+            + "your choice: "};
     Reader in = new StringReader("9\n4\nAAPL\n2024-03-11\n2024-15-11\n2024-03-21\n7\n11\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -1279,7 +1281,8 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to 2024-03-21",
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to "
+                    + "2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1289,12 +1292,12 @@ public class ControllerTest {
   @Test
   public void testMovingCrossover() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ","Enter the " +
-            "value of y (longer moving average period, greater than x): ","date buy/sell",
-            "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ","Enter the "
+            + "value of y (longer moving average period, greater than x): ","date buy/sell", "Enter"
+            + " your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n5\nAAPL\n2024-03-11\n2024-03-21\n10\n100\n7\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1302,8 +1305,9 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating moving crossover for AAPL from 2024-03-11 to 2024-03-21 for x = 10 " +
-                    "and y = 100",
+    assertEquals("Calculating moving crossover for AAPL from "
+                    + "2024-03-11 to 2024-03-21 for x = 10 "
+                    + "and y = 100",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1313,23 +1317,23 @@ public class ControllerTest {
   @Test
   public void testMovingCrossoverWrongStartDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ","Enter the " +
-            "value of y (longer moving average period, greater than x): ","date buy/sell",
-            "Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("9\n5\nAAPL\n2024-03-32\n2024-03-01\n2024-03-21\n10\n100\n7\n11" +
-            "\n");
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in this"
+            + " format " + "yyyy-mm-dd: ", "Enter the value of x "
+            + "(shorter moving average period): ","Enter the "
+            + "value of y (longer moving average period, greater than x): ","date "
+            + "buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n5\nAAPL\n2024-03-32\n2024-03-01\n2024-03-21\n10\n100\n7\n11"
+            + "\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 for x = 10 " +
-                    "and y = 100",
+    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 "
+                    + "for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1339,23 +1343,23 @@ public class ControllerTest {
   @Test
   public void testMovingCrossoverWrongEndDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ","Error","Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ","Enter the " +
-            "value of y (longer moving average period, greater than x): ","date buy/sell",
-            "Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n10\n100\n7\n11" +
-            "\n");
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ","Error","Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ","Enter the "
+            + "value of y (longer moving average period, greater than x): ","date "
+            + "buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n10\n100\n7\n11"
+            + "\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 for x = 10 " +
-                    "and y = 100",
+    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to "
+                    + "2024-03-21 for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1365,26 +1369,24 @@ public class ControllerTest {
   @Test
   public void testMovingCrossoverWrongXValue() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ","Error","Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ","Error",
-            "Enter the value of x (shorter moving average period): ",
-    "Enter the " +
-            "value of y (longer moving average period, greater than x): ","date buy/sell",
-            "Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n-10\n10\n100\n7" +
-            "\n11" +
-            "\n");
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ","Error","Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period):"
+            + " ","Error", "Enter the value of x (shorter moving average period): ", "Enter the "
+            + "value of y (longer moving average period, greater than x): ","date "
+            + "buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n-10\n10\n100\n7"
+            + "\n11" + "\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 for x = 10 " +
-                    "and y = 100",
+    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to "
+                    + "2024-03-21 for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1394,29 +1396,25 @@ public class ControllerTest {
   @Test
   public void testMovingCrossoverWrongYValue() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ","Error","Enter the end date","The date should be in this" +
-            " format " +
-            "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ",
-            "Enter the " +
-                    "value of y (longer moving average period, greater than x): ", "Error",
-            "Enter the " +
-                    "value of y (longer moving average period, greater than x): ", "date buy/sell",
-            "Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n10\n\n-100\n" +
-            "100" +
-            "\n7" +
-            "\n11" +
-            "\n");
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ","Error","Enter the end date","The date should be in this"
+            + " format "
+            + "yyyy-mm-dd: ", "Enter the value of x (shorter moving average period): ", "Enter "
+            + "the "
+            + "value of y (longer moving average period, greater than x): ", "Error", "Enter the "
+            + "value of y (longer moving average period, greater than x): ", "date "
+            + "buy/sell", "Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n10\n\n-100\n"
+            + "100" + "\n7" + "\n11" + "\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 for x = 10 " +
-                    "and y = 100",
+    assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 "
+                    + "for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1426,11 +1424,10 @@ public class ControllerTest {
   @Test
   public void testStockPerformance() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for AAPL from 2024-03-01 to 2024-03-21:",
-            "date 10", "scale: 10",
-            "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for AAPL from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n6\nAAPL\n2024-03-01\n2024-03-21\n\n7\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1448,12 +1445,11 @@ public class ControllerTest {
   @Test
   public void testStockPerformanceWrongStartDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for AAPL from 2024-03-01 to 2024-03-21:",
-            "date 10", "scale: 10",
-            "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for AAPL from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n6\nAAPL\n2024-03-32\n2024-03-01\n2024-03-21\n\n7\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1471,12 +1467,11 @@ public class ControllerTest {
   @Test
   public void testStockPerformanceWrongEndDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for AAPL from 2024-03-01 to 2024-03-21:",
-            "date 10", "scale: 10",
-            "Enter your choice: ","Enter your choice: "};
+            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for AAPL from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n6\nAAPL\n2024-03-01\n2024-03-32\n2024-03-21\n\n7\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1493,13 +1488,12 @@ public class ControllerTest {
 
   @Test
   public void testPortfolioPerformance() {
-    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.","Enter the " +
-            "start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to " +
-            "2024-03-21:", "date 10", "scale: 10",
-            "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.","Enter the "
+            + "start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: "};
     Reader in = new StringReader("10\n0\n2024-03-01\n2024-03-21\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1507,7 +1501,8 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to 2024-03-21",
+    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
+                    + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1516,14 +1511,13 @@ public class ControllerTest {
 
   @Test
   public void testPortfolioPerformanceWrongPortfolioChoice() {
-    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the Portfolio number you want" +
-            " to select.", "Enter the " +
-            "start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to " +
-            "2024-03-21:", "date 10", "scale: 10",
-            "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the Portfolio number you want"
+            + " to select.", "Enter the "
+            + "start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: "};
     Reader in = new StringReader("10\n2\n0\n2024-03-01\n2024-03-21\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1531,7 +1525,8 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to 2024-03-21",
+    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
+                    + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1540,14 +1535,13 @@ public class ControllerTest {
 
   @Test
   public void testPortfolioPerformanceNegativePortfolioChoice() {
-    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the Portfolio number you want" +
-            " to select.", "Enter the " +
-            "start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to " +
-            "2024-03-21:", "date 10", "scale: 10",
-            "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the Portfolio number you want"
+            + " to select.", "Enter the "
+            + "start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: "};
     Reader in = new StringReader("10\n-2\n0\n2024-03-01\n2024-03-21\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1555,7 +1549,8 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to 2024-03-21",
+    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
+                    + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1564,14 +1559,13 @@ public class ControllerTest {
 
   @Test
   public void testPortfolioPerformanceWrongStartDate() {
-    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the " +
-            "start date","The date should be in " +
-            "this format yyyy-mm-dd: ",  "Error", "Enter the start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to " +
-            "2024-03-21:", "date 10", "scale: 10",
-            "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the "
+            + "start date","The date should be in "
+            + "this format yyyy-mm-dd: ",  "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: "};
     Reader in = new StringReader("10\n0\n2024-15-01\n2024-03-01\n2024-03-21\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1579,7 +1573,8 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to 2024-03-21",
+    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
+                    + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1588,14 +1583,13 @@ public class ControllerTest {
 
   @Test
   public void testPortfolioPerformanceWrongEndDate() {
-    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the " +
-            "start date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in " +
-            "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to " +
-            "2024-03-21:", "date 10", "scale: 10",
-            "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ","Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the "
+            + "start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the end date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Bar Graph for Test Portfolio from 2024-03-01 to "
+            + "2024-03-21:", "date 10", "scale: 10", "Enter your choice: "};
     Reader in = new StringReader("10\n0\n2024-03-01\n2024-03-33\n2024-03-21\n11\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1603,7 +1597,8 @@ public class ControllerTest {
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to 2024-03-21",
+    assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to"
+                    + " 2024-03-21",
             logChecker[logChecker.length - 1]);
     for (int i = 0; i < outputLogChecker.length; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
@@ -1612,8 +1607,8 @@ public class ControllerTest {
 
   @Test
   public void testCreateFlexiblePortfolio() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Enter your choice: ", "Enter the name " +
-            "of the portfolio: ", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Enter your choice: ", "Enter the name "
+            + "of the portfolio: ", "Enter your choice: "};
     Reader in = new StringReader("1\n2\nTest Portfolio1\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1630,11 +1625,11 @@ public class ControllerTest {
 
   @Test
   public void testBuyStock() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Enter the date of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Enter the date of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n0\nAAPL\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1651,14 +1646,14 @@ public class ControllerTest {
 
   @Test
   public void testBuyStockNegativeShares() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the " +
-            "quantity of AAPL you want to buy:", "Enter the " +
-            "date " +
-            "of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the "
+            + "quantity of AAPL you want to buy:", "Enter the "
+            + "date "
+            + "of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n0\nAAPL\n-25\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1675,14 +1670,14 @@ public class ControllerTest {
 
   @Test
   public void testBuyStockFractionalShares() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the " +
-            "quantity of AAPL you want to buy:", "Enter the " +
-            "date " +
-            "of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the "
+            + "quantity of AAPL you want to buy:", "Enter the "
+            + "date "
+            + "of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n0\nAAPL\n2.5\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1699,16 +1694,16 @@ public class ControllerTest {
 
   @Test
   public void testBuyStockInvalidPortfolioChoice() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the " +
-            "quantity of AAPL you want to buy:", "Enter the " +
-            "date " +
-            "of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the "
+            + "quantity of AAPL you want to buy:", "Enter the "
+            + "date "
+            + "of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n5\n0\nAAPL\n2.5\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1725,16 +1720,16 @@ public class ControllerTest {
 
   @Test
   public void testBuyStockNegativePortfolioChoice() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the " +
-            "quantity of AAPL you want to buy:", "Enter the " +
-            "date " +
-            "of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the "
+            + "quantity of AAPL you want to buy:", "Enter the "
+            + "date "
+            + "of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL bought "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n-5\n0\nAAPL\n2.5\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1751,17 +1746,15 @@ public class ControllerTest {
 
   @Test
   public void testBuyStockInvalidDate() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the " +
-            "quantity of AAPL you want to buy:", "Enter the date of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the " +
-            "date of your purchase", "The date should be in this format yyyy-mm-dd: ",
-            "25 AAPL " +
-            "bought " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the "
+            + "quantity of AAPL you want to buy:", "Enter the date of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the "
+            + "date of your purchase", "The date should be in this format yyyy-mm-dd: ", "25 AAPL "
+            + "bought " + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n-5\n0\nAAPL\n2.5\n25\n2024-13-05\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1778,17 +1771,15 @@ public class ControllerTest {
 
   @Test
   public void testBuyStockInvalidDateFormat() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the " +
-            "quantity of AAPL you want to buy:", "Enter the date of your " +
-            "purchase", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the " +
-            "date of your purchase", "The date should be in this format yyyy-mm-dd: ",
-            "25 AAPL " +
-                    "bought " +
-                    "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to buy:", "Error", "Enter the "
+            + "quantity of AAPL you want to buy:", "Enter the date of your "
+            + "purchase", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the "
+            + "date of your purchase", "The date should be in this format yyyy-mm-dd: ", "25 "
+            + "AAPL " + "bought " + "successfully", "Enter your choice: "};
     Reader in = new StringReader("6\n-5\n0\nAAPL\n2.5\n25\n23-11-2005\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1805,15 +1796,15 @@ public class ControllerTest {
 
   @Test
   public void testSellStockInvalidDateFormat() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the " +
-            "quantity of AAPL you want to sell:", "Enter the date of your " +
-            "sale", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the " +
-            "date of your sale", "The date should be in this format yyyy-mm-dd: ",
-            "25 AAPL sold successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the "
+            + "quantity of AAPL you want to sell:", "Enter the date of your "
+            + "sale", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the "
+            + "date of your sale", "The date should be in this format yyyy-mm-dd: ", "25 "
+            + "AAPL sold successfully", "Enter your choice: "};
     Reader in = new StringReader("7\n-5\n0\nAAPL\n2.5\n25\n23-11-2005\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1830,15 +1821,15 @@ public class ControllerTest {
 
   @Test
   public void testSellStockInvalidDate() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the " +
-            "quantity of AAPL you want to sell:", "Enter the date of your " +
-            "sale", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the " +
-            "date of your sale", "The date should be in this format yyyy-mm-dd: ",
-            "25 AAPL sold successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the "
+            + "quantity of AAPL you want to sell:", "Enter the date of your "
+            + "sale", "The date should be in this format yyyy-mm-dd: ", "Error", "Enter the "
+            + "date of your sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL "
+            + "sold successfully", "Enter your choice: "};
     Reader in = new StringReader("7\n-5\n0\nAAPL\n2.5\n25\n2024-03-32\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1855,11 +1846,11 @@ public class ControllerTest {
 
   @Test
   public void testSellStock() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to sell:", "Enter the date of your " +
-            "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to sell:", "Enter the date of your "
+            + "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("7\n0\nAAPL\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1876,14 +1867,14 @@ public class ControllerTest {
 
   @Test
   public void testSellStockNegativeShares() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the " +
-            "quantity of AAPL you want to sell:", "Enter the " +
-            "date " +
-            "of your " +
-            "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the "
+            + "quantity of AAPL you want to sell:", "Enter the "
+            + "date "
+            + "of your "
+            + "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("7\n0\nAAPL\n-25\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1900,14 +1891,13 @@ public class ControllerTest {
 
   @Test
   public void testSellStockFractionalShares() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the " +
-            "quantity of AAPL you want to sell:", "Enter the " +
-            "date " +
-            "of your " +
-            "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the "
+            + "quantity of AAPL you want to sell:", "Enter the "
+            + "date " + "of your "
+            + "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("7\n0\nAAPL\n2.5\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1924,16 +1914,15 @@ public class ControllerTest {
 
   @Test
   public void testSellStockNegativePortfolioChoice() {
-    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the name of the share or " +
-            "ticker " +
-            "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the " +
-            "quantity of AAPL you want to sell:", "Enter the " +
-            "date " +
-            "of your " +
-            "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold " +
-            "successfully", "Enter your choice: "};
+    String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the "
+            + "Portfolio number you want to select.", "Error", "Enter the "
+            + "Portfolio number you want to select.", "Enter the name of the share or "
+            + "ticker "
+            + "symbol: ", "Enter the quantity of AAPL you want to sell:", "Error", "Enter the "
+            + "quantity of AAPL you want to sell:", "Enter the "
+            + "date " + "of your "
+            + "sale", "The date should be in this format yyyy-mm-dd: ", "25 AAPL sold "
+            + "successfully", "Enter your choice: "};
     Reader in = new StringReader("7\n-5\n0\nAAPL\n2.5\n25\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
