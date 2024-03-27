@@ -6,8 +6,18 @@ import model.PortfolioDir;
 import model.PortfolioImpl;
 import view.IView;
 
+/**
+ * LoadHelper class provides helper methods for loading portfolios from files.
+ * It extends the AbsHelperController class, uses model and view methods.
+ */
 class LoadHelper extends AbsHelperController {
 
+  /**
+   * constructs a LoadHelper object with specified view, model, and scanner.
+   * @param view view component for user interaction.
+   * @param model model component for managing portfolios.
+   * @param scan scanner object for user input.
+   */
   LoadHelper(IView view, PortfolioDir model, Scanner scan) {
     super(view, model, scan);
   }
@@ -35,6 +45,12 @@ class LoadHelper extends AbsHelperController {
     view.print("File loaded successfully");
   }
 
+  /**
+   * this method loads data from a file to create a flexible portfolio.
+   * Prompts user for a portfolio name and file path.
+   * If the file contains invalid data format or cannot be loaded, it throws an exception.
+   * it uses view and model method to carry out this operation.
+   */
   void loadFlexiblePortfolio() {
     String name = inputPortfolioName();
     try {
