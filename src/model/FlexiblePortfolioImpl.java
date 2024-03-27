@@ -84,8 +84,9 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    */
   private void updateCompositionOnBuy(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
                                       String ticker, int quantity) {
-    for (Map.Entry<LocalDate, Map<String, Integer>> entry : (closestEntry != null ?
-            this.compositionOnDate.tailMap(closestEntry.getKey(), false) : this.compositionOnDate).entrySet()) {
+    for (Map.Entry<LocalDate, Map<String, Integer>> entry : (closestEntry != null
+            ? this.compositionOnDate.tailMap(closestEntry.getKey(), false)
+            : this.compositionOnDate).entrySet()) {
       Map<String, Integer> futureComposition = deepCopy(entry.getValue());
       if (futureComposition.containsKey(ticker)) {
         int currentValue = futureComposition.get(ticker);
@@ -151,7 +152,8 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   private void updateCompositionOnSell(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
                                        String ticker, int quantity) {
     boolean isQuantityValid = true;
-    for (Map.Entry<LocalDate, Map<String, Integer>> entry : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
+    for (Map.Entry<LocalDate, Map<String, Integer>> entry
+            : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
       Map<String, Integer> futureComposition = deepCopy(entry.getValue());
       if (futureComposition.containsKey(ticker)) {
         int currentValue = futureComposition.get(ticker);
@@ -168,7 +170,8 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
       throw new IllegalArgumentException("Invalid sell!");
     }
     // Proceed with updating the futureComposition
-    for (Map.Entry<LocalDate, Map<String, Integer>> entry : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
+    for (Map.Entry<LocalDate, Map<String, Integer>> entry
+            : this.compositionOnDate.tailMap(closestEntry.getKey(), false).entrySet()) {
       Map<String, Integer> futureComposition = deepCopy(entry.getValue());
       if (futureComposition.containsKey(ticker)) {
         int currentValue = futureComposition.get(ticker);
@@ -239,6 +242,11 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
     return computeValue(date, composition, api);
   }
 
+  /**
+   * this method saves transaction data associated with the portfolio to a StringBuilder object.
+   * The saved data includes the transaction type, symbol, quantity, and date.
+   * @return StringBuilder object containing the saved transaction data in CSV format.
+   */
   @Override
   public StringBuilder save() {
     StringBuilder sb = new StringBuilder();
@@ -262,6 +270,14 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
     return true;
   }
 
+  /**
+   * this method loads portfolio data from a list of string arrays representing lines of data,
+   * using the provided StockData object for fetching stock data.
+   * @param line list of string arrays representing lines of portfolio data to be loaded.
+   * @param api StockData object used for fetching stock data.
+   * @throws IllegalArgumentException if format of the date in file is incorrect
+   *                                  or if data in file is invalid.
+   */
   @Override
   public void load(List<String[]> line, StockData api) {
     for (String[] parts : line) {
@@ -282,11 +298,22 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
   }
 
+  /**
+   * this method validates a line of data from file.
+   * @param parts array representing a line of data from the file.
+   * @return true if lines are valid or else false if any entry is invalid.
+   */
   private boolean validateLine(String[] parts) {
-    return parts.length == 4 && isInteger(parts[2].trim()) && (parts[0].equalsIgnoreCase("buy")
+    return parts.length == 4 && isInteger(parts[2].trim())
+            && (parts[0].equalsIgnoreCase("buy")
             || parts[0].equalsIgnoreCase("sell"));
   }
 
+  /**
+   * this checks if a string represents an integer.
+   * @param str string to be checked.
+   * @return true if string represents an integer, otherwise false.
+   */
   private boolean isInteger(String str) {
     try {
       Integer.parseInt(str);
