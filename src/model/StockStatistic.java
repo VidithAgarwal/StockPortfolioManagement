@@ -15,7 +15,8 @@ public interface StockStatistic {
    * @param priceData    Price data of that stock over time.
    * @return string indicating the gain or loss on the specified date.
    */
-  String gainOrLoseOnDate (String tickerSymbol, String date, TreeMap<String, ArrayList<Double>> priceData);
+  String gainOrLoseOnDate(String tickerSymbol, String date, TreeMap<String,
+          ArrayList<Double>> priceData);
 
   /**
    * this method calculates gain or loss of a stock over a period of time.
@@ -26,7 +27,8 @@ public interface StockStatistic {
    * @param priceData    Price data of that stock over time.
    * @return string indicating gain or loss over specified period.
    */
-  String gainOrLoseOverPeriod (String tickerSymbol, String date1, String date2, TreeMap<String, ArrayList<Double>> priceData);
+  String gainOrLoseOverPeriod(String tickerSymbol, String date1, String date2,
+                               TreeMap<String, ArrayList<Double>> priceData);
 
   /**
    * this method calculates X-day moving average of a stock on a specific date.
@@ -37,7 +39,8 @@ public interface StockStatistic {
    * @param priceData    Price data of that stock over time.
    * @return  X-day moving average of stock on specified date.
    */
-  double xDayMovingAvg (String tickerSymbol, String date, int x, TreeMap<String, ArrayList<Double>> priceData);
+  double xDayMovingAvg(String tickerSymbol, String date, int x,
+                        TreeMap<String, ArrayList<Double>> priceData);
 
   /**
    * this method identifies crossover points over a specified period for a stock.
@@ -48,7 +51,8 @@ public interface StockStatistic {
    * @param endDate      end date of the period.
    * @return treeMap containing crossover points with details whether it was buy/sell opportunity.
    */
-  TreeMap<String, String> crossoverOverPeriod (String tickerSymbol,TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate);
+  TreeMap<String, String> crossoverOverPeriod(String tickerSymbol,TreeMap<String,
+          ArrayList<Double>> priceData, String startDate, String endDate);
 
   /**
    * this method identifies moving crossovers over a specified period for a stock.
@@ -61,6 +65,8 @@ public interface StockStatistic {
    * @param y            number of days for the longer moving average.
    * @return treeMap containing moving crossovers with details whether it was buy/sell opportunity.
    */
-  TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol, TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate, int x, int y);
+  TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol,
+              TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate,
+                                                     int x, int y);
 
-  }
+}
