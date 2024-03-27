@@ -19,7 +19,6 @@ import controller.StockData;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -1031,16 +1030,8 @@ public class ModelTest {
     }
 
 
-    //composition is empty
   }
 
-//  @Test(expected = IllegalArgumentException.class)
-//  public void testGetCompositionFlexiCallInflexiComposition() {
-//    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-//    assertEquals(1, portfolioDir.getSize());
-//    LocalDate date = LocalDate.of(2024, 3, 20);
-//    portfolioDir.portfolioComposition(0,date);
-//  }
 
   @Test(expected = IllegalArgumentException.class)
   public void buyFlexiblePortolioWrongPortfolio() {
@@ -1332,7 +1323,7 @@ public class ModelTest {
     LocalDate date2 = LocalDate.of(2016, 3, 10);
     portfolioDir.buyStock(0, "aapl", 10, date2, api);
     LocalDate date3 = LocalDate.of(2016, 3, 23);
-    Map<String, Integer> composition1= portfolioDir.portfolioComposition(0,date3);
+    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition1.size());
     assertEquals(10, (int) composition1.get("AAPL"));
 
@@ -1374,17 +1365,7 @@ public class ModelTest {
             portfolioDir.portfolioValue(0, 21, 3, 2024,api), 0.001);
   }
 
-//  @Test
-//  public void testPortfolioValueFlexibleWhenOneStockNotListed() {
-//    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-//    assertEquals(1, portfolioDir.getSize());
-//    StockData api = new StockData();
-//    LocalDate date = LocalDate.of(2013, 3, 20);
-//    portfolioDir.buyStock(0, "aapl", 15, date, api);
-//    portfolioDir.buyStock(0, "goog", 10, date, api);
-//    assertEquals(4057.9500000000003,
-//            portfolioDir.portfolioValue(0, 21, 3, 2012,api), 0.001);
-//  }
+
 
   @Test
   public void testValueOfPortfolioDiffDateFlexibleBuySell() {
@@ -1438,7 +1419,7 @@ public class ModelTest {
     portfolioDir.buyStock(0, "Canaan Inc", 15, date, api);
     portfolioDir.buyStock(0, "Can B Corp", 15, date, api);
 
-    try{
+    try {
       portfolioDir.portfolioValue(0, 23, 3, 2024, api);
     } catch (IllegalArgumentException e) {
       assertEquals("CAN", e.getMessage());
@@ -1578,7 +1559,7 @@ public class ModelTest {
     portfolioDir.buyStock(0, "aapl", 15, date, api);
 
     assertEquals(0,
-              portfolioDir.portfolioValue(0, 1, 12, 2, api), 0.001);
+            portfolioDir.portfolioValue(0, 1, 12, 2, api), 0.001);
 
 
     LocalDate currentDate = LocalDate.now();
@@ -1595,8 +1576,8 @@ public class ModelTest {
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
 
-      assertEquals(0,
-              portfolioDir.portfolioValue(0, 1, 12, 200, api), 0.001);
+    assertEquals(0,
+            portfolioDir.portfolioValue(0, 1, 12, 200, api), 0.001);
 
 
     LocalDate currentDate = LocalDate.now();
@@ -1711,14 +1692,16 @@ public class ModelTest {
   public void testGain() {
     StockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
-    assertEquals("AAPL gained on 2020-02-03", portfolioDir.gainOrLose("aapl",date,api) );
+    assertEquals("AAPL gained on 2020-02-03",
+            portfolioDir.gainOrLose("aapl",date,api) );
   }
 
   @Test
   public void testLoss() {
     StockData api = new StockData();
     LocalDate date = LocalDate.of(2021, 2, 3);
-    assertEquals("AAPL lost on 2021-02-03", portfolioDir.gainOrLose("aapl",date,api) );
+    assertEquals("AAPL lost on 2021-02-03",
+            portfolioDir.gainOrLose("aapl",date,api) );
   }
 
   @Test
@@ -2250,16 +2233,16 @@ public class ModelTest {
     }
   }
 
-    @Test
-    public void testMovingCrossoverWhenDataLessForMovingAvgForLarger() {
-      StockData api = new StockData();
-      LocalDate start = LocalDate.of(2014, 5, 15);
-      LocalDate end = LocalDate.of(2015, 3, 22);
-      try {
-        portfolioDir.movingCrossOver("goog",api,start,end,30,100);
-      } catch (IllegalArgumentException e) {
-        assertEquals("Insufficient data available for the specified period", e.getMessage());
-      }
+  @Test
+  public void testMovingCrossoverWhenDataLessForMovingAvgForLarger() {
+    StockData api = new StockData();
+    LocalDate start = LocalDate.of(2014, 5, 15);
+    LocalDate end = LocalDate.of(2015, 3, 22);
+    try {
+      portfolioDir.movingCrossOver("goog",api,start,end,30,100);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Insufficient data available for the specified period", e.getMessage());
+    }
   }
 
   @Test
@@ -2268,10 +2251,11 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2024, 3, 19);
     LocalDate end = LocalDate.of(2024, 3, 26);
     try {
-    portfolioDir.movingCrossOver("bkcc",api,start,end,30,100);
+      portfolioDir.movingCrossOver("bkcc",api,start,end,30,100);
     }
     catch (IllegalArgumentException e) {
-      assertEquals("No data found between this period for finding moving crossover.", e.getMessage());
+      assertEquals("No data found between this period for finding moving crossover.",
+              e.getMessage());
     }
   }
 
@@ -2317,7 +2301,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2010, 5, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Dec 2010", 27);
@@ -2343,7 +2327,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2022, 5, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("May 2022", 30);
@@ -2377,7 +2361,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2024, 1, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-01-12", 46);
@@ -2402,7 +2386,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2024, 3, 18);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-03-18", 43);
@@ -2418,7 +2402,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2024, 2, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-02-01", 47);
@@ -2451,7 +2435,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2023, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Oct 2023", 43);
@@ -2468,7 +2452,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2020, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Oct 2020", 27);
@@ -2554,7 +2538,7 @@ public class ModelTest {
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
     LocalDate date1 = LocalDate.of(2023, 3, 15);
     portfolioDir.sellStock(0, "aapl", 15, date1, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Dec 2010", 0);
@@ -2588,7 +2572,7 @@ public class ModelTest {
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
     LocalDate date1 = LocalDate.of(2023, 3, 15);
     portfolioDir.sellStock(0, "aapl", 15, date1, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("May 2022", 49);
@@ -2631,7 +2615,7 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 15, date1, api);
     LocalDate date2 = LocalDate.of(2024, 2, 1);
     portfolioDir.buyStock(0, "goog", 15, date2, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-01-12", 27);
@@ -2665,7 +2649,7 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 15, date1, api);
     LocalDate date2 = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "goog", 15, date2, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-03-18", 26);
@@ -2690,7 +2674,7 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 25, date1, api);
     LocalDate date2 = LocalDate.of(2024, 2, 23);
     portfolioDir.buyStock(0, "goog", 15, date2, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-02-01", 48);
@@ -2723,7 +2707,7 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 25, date1, api);
     LocalDate date2 = LocalDate.of(2024, 2, 23);
     portfolioDir.buyStock(0, "goog", 15, date2, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Dec 2023", 49);
@@ -2750,7 +2734,7 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 25, date1, api);
     LocalDate date2 = LocalDate.of(2024, 2, 23);
     portfolioDir.buyStock(0, "goog", 15, date2, api);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Oct 2020", 11);
@@ -2789,7 +2773,7 @@ public class ModelTest {
     newBuilder.addShare("Can B Corp", 10);
     portfolioDir.addPortfolio(newBuilder);
     assertEquals(1, portfolioDir.getSize());
-    TreeMap<String,Integer > actualData = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String,Integer> actualData = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Oct 2020", 27);
     data.put("Dec 2020", 34);
@@ -2828,7 +2812,7 @@ public class ModelTest {
     newBuilder.addShare("Can B Corp", 10);
     portfolioDir.addPortfolio(newBuilder);
     assertEquals(1, portfolioDir.getSize());
-    TreeMap<String,Integer > actualData = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String,Integer> actualData = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2023-11-01", 43);
     data.put("2023-11-06", 44);
@@ -2869,7 +2853,7 @@ public class ModelTest {
     newBuilder.addShare("Can B Corp", 10);
     portfolioDir.addPortfolio(newBuilder);
     assertEquals(1, portfolioDir.getSize());
-    TreeMap<String,Integer > actualData = portfolioDir.portfolioPerformance(0,start,end);
+    TreeMap<String,Integer> actualData = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("Mar 2023", 41);
     data.put("Apr 2023", 42);
@@ -2902,7 +2886,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2023, 1, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
-    try{
+    try {
       portfolioDir.scaleForStockPerformance("hello",api,start,end);
     } catch (IllegalArgumentException e) {
       assertEquals("Invalid ticker symbol", e.getMessage());
@@ -2915,7 +2899,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2024, 1, 15);
     LocalDate end = LocalDate.of(2023, 3, 22);
 
-    try{
+    try {
       portfolioDir.scaleForStockPerformance("aapl",api,start,end);
     } catch (IllegalArgumentException e) {
       assertEquals("Start Date should be less than End date", e.getMessage());
@@ -2928,7 +2912,7 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2023, 1, 15);
     LocalDate end = LocalDate.of(2024, 8, 26);
 
-    try{
+    try {
       portfolioDir.scaleForStockPerformance("aapl",api,start,end);
     } catch (IllegalArgumentException e) {
       assertEquals("End Date should be less than current date", e.getMessage());
@@ -3001,7 +2985,7 @@ public class ModelTest {
     LocalDate date2 = LocalDate.of(2023, 5, 12);
     portfolioDir.sellStock(0, "aapl", 15, date2, api);
     LocalDate date3 = LocalDate.of(2024, 3, 13);
-    Map<String, Integer> composition1= portfolioDir.portfolioComposition(0,date3);
+    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition1.size());
     assertEquals(15, (int) composition1.get("GOOG"));
     //assertNull((int) composition1.get("aapl"));
@@ -3016,7 +3000,7 @@ public class ModelTest {
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.addPortfolio(firstBuilder);
-    try{
+    try {
       portfolioDir.costBasis(0,date,api);
     } catch (IllegalArgumentException e) {
       assertEquals("Cannot get the cost basis of a inflexible portfolio!", e.getMessage());
@@ -3045,7 +3029,7 @@ public class ModelTest {
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.addPortfolio(firstBuilder);
-    try{
+    try {
       portfolioDir.buyStock(0,"aapl",10,date,api);
     } catch (IllegalArgumentException e) {
       assertEquals("Cannot buy in inflexible portfolio!", e.getMessage());
@@ -3073,7 +3057,7 @@ public class ModelTest {
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.addPortfolio(firstBuilder);
-    try{
+    try {
       portfolioDir.sellStock(0,"aapl",10,date,api);
     } catch (IllegalArgumentException e) {
       assertEquals("Cannot sell in inflexible portfolio!", e.getMessage());
@@ -3101,7 +3085,7 @@ public class ModelTest {
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
-    List <String[]> lines = new ArrayList<>();
+    List<String[]> lines = new ArrayList<>();
     String[] line1 = {"Hello", "World!"};
     String[] line2 = {"This", "is", "example"};
     portfolioDir.loadPortfolio("Test Portfolio1",lines,api);
@@ -3132,24 +3116,26 @@ public class ModelTest {
     try {
       portfolioDir.portfolioPerformance(0, date, date1);
     } catch (IllegalArgumentException e) {
-      assertEquals("Cannot find the performance as one of the share was not listed!", e.getMessage());
+      assertEquals("Cannot find the performance as one of the share was not listed!",
+              e.getMessage());
     }
   }
 
-    @Test
-    public void testPortfolioPerformanceBeforeStockListedShortDuration() {
-      PortfolioImpl.PortfolioBuilder firstBuilder
-              = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-      firstBuilder.addShare("Apple Inc", 10);
-      firstBuilder.addShare("GOOG", 10);
-      LocalDate date = LocalDate.of(2012, 3, 12);
-      LocalDate date1 = LocalDate.of(2012, 4,12 );
-      portfolioDir.addPortfolio(firstBuilder);
-      try{
-        portfolioDir.portfolioPerformance(0,date,date1);
-      } catch (IllegalArgumentException e) {
-        assertEquals("Cannot find the performance as one of the share was not listed!", e.getMessage());
-      }
+  @Test
+  public void testPortfolioPerformanceBeforeStockListedShortDuration() {
+    PortfolioImpl.PortfolioBuilder firstBuilder
+            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    firstBuilder.addShare("Apple Inc", 10);
+    firstBuilder.addShare("GOOG", 10);
+    LocalDate date = LocalDate.of(2012, 3, 12);
+    LocalDate date1 = LocalDate.of(2012, 4,12 );
+    portfolioDir.addPortfolio(firstBuilder);
+    try {
+      portfolioDir.portfolioPerformance(0,date,date1);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Cannot find the performance as one of the share was not listed!",
+              e.getMessage());
+    }
 
   }
 
@@ -3162,10 +3148,11 @@ public class ModelTest {
     LocalDate date = LocalDate.of(2007, 3, 12);
     LocalDate date1 = LocalDate.of(2012, 4,12 );
     portfolioDir.addPortfolio(firstBuilder);
-    try{
+    try {
       portfolioDir.portfolioPerformance(0,date,date1);
     } catch (IllegalArgumentException e) {
-      assertEquals("Cannot find the performance as one of the share was not listed!", e.getMessage());
+      assertEquals("Cannot find the performance as one of the share was not listed!",
+              e.getMessage());
     }
 
   }
@@ -3180,10 +3167,11 @@ public class ModelTest {
     LocalDate date = LocalDate.of(2009, 3, 12);
     LocalDate date1 = LocalDate.of(2012, 4,12 );
     portfolioDir.addPortfolio(firstBuilder);
-    try{
+    try {
       portfolioDir.portfolioPerformance(0,date,date1);
     } catch (IllegalArgumentException e) {
-      assertEquals("Cannot find the performance as one of the share was not listed!", e.getMessage());
+      assertEquals("Cannot find the performance as one of the share was not listed!",
+              e.getMessage());
     }
 
   }
@@ -3197,10 +3185,11 @@ public class ModelTest {
     LocalDate date = LocalDate.of(2012, 1, 12);
     LocalDate date1 = LocalDate.of(2012, 7,12 );
     portfolioDir.addPortfolio(firstBuilder);
-    try{
+    try {
       portfolioDir.portfolioPerformance(0,date,date1);
     } catch (IllegalArgumentException e) {
-      assertEquals("Cannot find the performance as one of the share was not listed!", e.getMessage());
+      assertEquals("Cannot find the performance as one of the share was not listed!",
+              e.getMessage());
     }
   }
 
@@ -3209,7 +3198,7 @@ public class ModelTest {
     StockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 1);
     LocalDate end = LocalDate.of(2024, 3, 3);
-    TreeMap<String,Integer > actualData
+    TreeMap<String,Integer> actualData
             = portfolioDir.stockPerformance("aapl",api,start,end);
     TreeMap<String, Integer> treeMap = new TreeMap<>();
     treeMap.put("2024-02-01", 47);
@@ -3258,7 +3247,7 @@ public class ModelTest {
     validLines.add(new String[]{"buy", "AAPL", "aapl", "2024-03-20"});
     validLines.add(new String[]{"buy", "GOOG", "10", "2024-02-20"});
     validLines.add(new String[]{"sell", "GOOG", "5", "2024-03-20"});
-    try{
+    try {
       portfolioDir.loadPortfolio("new portfolio", validLines,api );
     } catch (IllegalArgumentException e) {
       assertEquals("Invalid data in given file!", e.getMessage());
@@ -3337,10 +3326,10 @@ public class ModelTest {
     LocalDate date2 = LocalDate.of(2023, 5, 12);
     portfolioDir.sellStock(0, "aapl", 15, date2, api);
 
-    String expected = "Transaction Type,Symbol,Quantity,Date" + System.lineSeparator() +
-            "buy,AAPL,15,2023-03-13" + System.lineSeparator() +
-            "buy,GOOG,15,2024-03-12" + System.lineSeparator() +
-            "sell,AAPL,15,2023-05-12" + System.lineSeparator();
+    String expected = "Transaction Type,Symbol,Quantity,Date" + System.lineSeparator()
+            + "buy,AAPL,15,2023-03-13" + System.lineSeparator()
+            + "buy,GOOG,15,2024-03-12" + System.lineSeparator()
+            + "sell,AAPL,15,2023-05-12" + System.lineSeparator();
 
     StringBuilder result = portfolioDir.save(0);
     assertEquals(expected, result.toString());
@@ -3354,14 +3343,14 @@ public class ModelTest {
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
 
-    String expected = "Symbol,Quantity" + System.lineSeparator() +
-            "GOOG,10" + System.lineSeparator() +
-            "AAPL,10" + System.lineSeparator();
+    String expected = "Symbol,Quantity" + System.lineSeparator()
+            + "GOOG,10" + System.lineSeparator()
+            + "AAPL,10" + System.lineSeparator();
     StringBuilder result = portfolioDir.save(0);
     assertEquals(expected, result.toString());
   }
 
-  
+
 
 
 
