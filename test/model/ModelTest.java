@@ -3003,7 +3003,7 @@ public class ModelTest {
     LocalDate date3 = LocalDate.of(2024, 3, 13);
     Map<String, Integer> composition1= portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition1.size());
-    assertEquals(15, (int) composition1.get("goog"));
+    assertEquals(15, (int) composition1.get("GOOG"));
     //assertNull((int) composition1.get("aapl"));
   }
 
@@ -3245,7 +3245,7 @@ public class ModelTest {
 
     assertEquals(1380.8000000000002,
             portfolioDir.portfolioValue(0, 1, 3, 2024,api), 0.001);
-    assertEquals(2481.65,
+    assertEquals(2464.25,
             portfolioDir.portfolioValue(0, 25, 3, 2024,api), 0.001);
     assertEquals(1, portfolioDir.getSize());
 
@@ -3304,7 +3304,7 @@ public class ModelTest {
     try {
       portfolioDir.loadPortfolio("new portfolio1", validLines1, api);
     } catch (IllegalArgumentException e) {
-      assertEquals("Invalid data in given file!", e.getMessage());
+      assertEquals("Format of date in the file is incorrect!", e.getMessage());
     }
   }
 

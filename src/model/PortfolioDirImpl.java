@@ -120,6 +120,7 @@ public class PortfolioDirImpl implements PortfolioDir {
   public boolean portfolioNameExists(String portfolioName) {
 
     for (Portfolio obj : portfolioDirectory) {
+      System.out.println(obj.getName());
       if (obj.getName().equalsIgnoreCase(portfolioName)) {
         return true;
       }

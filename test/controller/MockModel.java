@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import model.FlexiblePortfolioImpl;
 import model.Portfolio;
 import model.PortfolioDir;
 import model.PortfolioImpl;
@@ -293,7 +294,8 @@ public class MockModel implements PortfolioDir {
   public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api, LocalDate startDate, LocalDate endDate, int x, int y) {
     logger.append("Calculating moving crossover for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
-            .append(endDate.toString()).append("\n");
+            .append(endDate.toString()).append(" for x = ").append(x).append(" and y = ").append(y).append(
+                    "\n");
     return mockMap;
   }
 

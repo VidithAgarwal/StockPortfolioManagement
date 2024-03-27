@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import controller.StockData;
  * It allows buying and selling stocks, computing portfolio composition, cost basis,
  * and portfolio value for a flexible portfolio.
  */
-class FlexiblePortfolioImpl extends AbstractPortfolio {
+public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * TreeMap to store composition of the portfolio on different dates.
@@ -265,11 +266,16 @@ class FlexiblePortfolioImpl extends AbstractPortfolio {
   public void load(List<String[]> line, StockData api) {
     for (String[] parts : line) {
       if (validateLine(parts)) {
-        if (parts[0].equalsIgnoreCase("buy")) {
-          buyStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
-        } else {
-          sellStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
+        try {
+          if (parts[0].equalsIgnoreCase("buy")) {
+            buyStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
+          } else {
+            sellStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
+          }
+        } catch (DateTimeParseException e) {
+          throw new IllegalArgumentException("Format of date in the file is incorrect!");
         }
+
       } else {
         throw new IllegalArgumentException("Invalid data in given file!");
       }
