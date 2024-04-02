@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import controller.StockData;
+import controller.IStockData;
 
 /**
  * An abstract class implementing common functionality for flexible and inflexible portfolio.
@@ -43,7 +43,7 @@ abstract class AbstractPortfolio implements Portfolio {
    * @param date date for which the closing price is to be retrieved.
    * @return closing price of the stock on the specified date.
    */
-  protected double getClosingPriceOnDate(String ticker, StockData api, String date) {
+  protected double getClosingPriceOnDate(String ticker, IStockData api, String date) {
     TreeMap<String, ArrayList<Double>> priceData = api.fetchHistoricalData(ticker);
     LocalDate ipoDate = LocalDate.parse(priceData.lastEntry().getKey());
     LocalDate thisDate = LocalDate.parse(date);
@@ -60,7 +60,7 @@ abstract class AbstractPortfolio implements Portfolio {
    * @param api StockData object used to fetch historical data.
    * @return total value of the portfolio on the specified date.
    */
-  protected double computeValue(String date, Map<String, Integer> composition, StockData api) {
+  protected double computeValue(String date, Map<String, Integer> composition, IStockData api) {
     double totalValue = 0;
     for (Map.Entry<String, Integer> entry : composition.entrySet()) {
       String ticker = entry.getKey();

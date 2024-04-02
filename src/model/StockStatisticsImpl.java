@@ -109,7 +109,7 @@ public class StockStatisticsImpl implements StockStatistic {
    * @throws IllegalArgumentException if TreeMap is empty.
    */
   private LocalDate returnLastEntry(TreeMap<String, ArrayList<Double>> priceData) {
-    String lastDate = null;
+    String lastDate;
     Map.Entry<String, ArrayList<Double>> lastEntry = priceData.lastEntry();
     if (lastEntry != null) {
       lastDate = lastEntry.getKey();

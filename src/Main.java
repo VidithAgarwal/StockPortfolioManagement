@@ -2,8 +2,8 @@ import java.io.InputStreamReader;
 
 import controller.StockControllerImpl;
 
-import model.PortfolioDir;
-import model.PortfolioDirImpl;
+import model.InvestmentManager;
+import model.InvestmentManagerImpl;
 import view.IView;
 import view.IViewImpl;
 
@@ -19,7 +19,7 @@ public class Main {
    */
   public static void main(String[] args) {
 
-    PortfolioDir model = new PortfolioDirImpl();
+    InvestmentManager model = new InvestmentManagerImpl();
 
     IView view = new IViewImpl(System.out, System.err);
 

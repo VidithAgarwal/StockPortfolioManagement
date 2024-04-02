@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import controller.StockData;
+import controller.IStockData;
 
 /**
  * Implementation of the Portfolio interface representing methods for a flexible portfolio.
@@ -43,10 +43,10 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    * @param tickerSymbol ticker symbol of the stock to buy.
    * @param quantity quantity of the stock to buy.
    * @param buyDate date of the purchase.
-   * @param api StockData object used to fetch historical data.
+   * @param api IStockData object used to fetch historical data.
    */
   @Override
-  public void buyStock(String tickerSymbol, int quantity, LocalDate buyDate, StockData api) {
+  public void buyStock(String tickerSymbol, int quantity, LocalDate buyDate, IStockData api) {
     String ticker = validateStockName(tickerSymbol);
     if (ticker == null) {
       throw new IllegalArgumentException("Ticker symbol doesn't exist");
@@ -103,10 +103,10 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    * @param tickerSymbol ticker symbol of stock to sell.
    * @param quantity quantity of the stock to sell.
    * @param sellDate date of the sale.
-   * @param api StockData object used to fetch historical data.
+   * @param api IStockData object used to fetch historical data.
    */
   @Override
-  public void sellStock(String tickerSymbol, int quantity, LocalDate sellDate, StockData api) {
+  public void sellStock(String tickerSymbol, int quantity, LocalDate sellDate, IStockData api) {
     String ticker = validateStockName(tickerSymbol);
     if (ticker == null) {
       throw new IllegalArgumentException("Ticker symbol doesn't exist");
@@ -204,11 +204,11 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   /**
    * this method calculates cost basis of portfolio up to a specified date.
    * @param date date up to which the cost basis is to be calculated.
-   * @param api StockData object used to fetch historical data.
+   * @param api IStockData object used to fetch historical data.
    * @return total cost basis of the portfolio.
    */
   @Override
-  public double costBasis(LocalDate date, StockData api) {
+  public double costBasis(LocalDate date, IStockData api) {
     double total = 0;
     for (var transaction : transactions) {
       if (!transaction.getDate().isAfter(date)) {
@@ -227,11 +227,11 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   /**
    * this method calculates total value of the portfolio on a specified date.
    * @param date date for which the portfolio value is to be calculated.
-   * @param api StockData object used to fetch historical data.
+   * @param api IStockData object used to fetch historical data.
    * @return total value of the portfolio.
    */
   @Override
-  public double portfolioValue(String date, StockData api) {
+  public double portfolioValue(String date, IStockData api) {
     LocalDate valueDate = LocalDate.parse(date);
     Map.Entry<LocalDate, Map<String, Integer>> closestEntry =
             compositionOnDate.floorEntry(valueDate);
@@ -274,12 +274,12 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    * this method loads portfolio data from a list of string arrays representing lines of data,
    * using the provided StockData object for fetching stock data.
    * @param line list of string arrays representing lines of portfolio data to be loaded.
-   * @param api StockData object used for fetching stock data.
+   * @param api IStockData object used for fetching stock data.
    * @throws IllegalArgumentException if format of the date in file is incorrect
    *                                  or if data in file is invalid.
    */
   @Override
-  public void load(List<String[]> line, StockData api) {
+  public void load(List<String[]> line, IStockData api) {
     for (String[] parts : line) {
       if (validateLine(parts)) {
         try {

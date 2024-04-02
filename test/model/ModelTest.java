@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.Set;
 
+import controller.IStockData;
 import controller.StockData;
 
 import static org.junit.Assert.assertEquals;
@@ -27,25 +28,25 @@ import static org.junit.Assert.assertTrue;
 public class ModelTest {
 
   /**
-   * Represents an instance of PortfolioDirImpl used for testing purposes.
+   * Represents an instance of InvestmentManagerImpl used for testing purposes.
    */
-  private PortfolioDirImpl portfolioDir;
+  private InvestmentManagerImpl portfolioDir;
 
   /**
    * Sets up the test environment before each test method execution.
-   * It initializes a new instance of the PortfolioDirImpl class to be tested.
+   * It initializes a new instance of the InvestmentManagerImpl class to be tested.
    */
   @Before
   public void setUp() {
-    portfolioDir = new PortfolioDirImpl();
+    portfolioDir = new InvestmentManagerImpl();
 
   }
 
 
   @Test
   public void testAddPortfolio() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     newBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(newBuilder);
     assertEquals(1, portfolioDir.getSize());
@@ -53,15 +54,15 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidStockName() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     newBuilder.addShare("India", 10);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidQuantity() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     newBuilder.addShare("AAPL", -10);
     portfolioDir.addPortfolio(newBuilder);
 
@@ -69,8 +70,8 @@ public class ModelTest {
 
   @Test
   public void testAddingStocksOfSameName() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     newBuilder.addShare("Apple Inc", 10);
     newBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(newBuilder);
@@ -85,12 +86,12 @@ public class ModelTest {
 
   @Test
   public void testGetListOfPortfoliosName() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(firstBuilder);
-    PortfolioImpl.PortfolioBuilder secondBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio2");
+    InflexiblePortfolioImpl.PortfolioBuilder secondBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio2");
     secondBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(secondBuilder);
 
@@ -104,15 +105,15 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testEmptyPortfolioCannotBeCreated() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     portfolioDir.addPortfolio(firstBuilder);
   }
 
   @Test
   public void testPortfolioCreated() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -126,10 +127,10 @@ public class ModelTest {
 
   @Test
   public void testPortfolioValueForYearInFourDigitFutureDate() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
-    StockData api = new StockData();
+    IStockData api = new StockData();
     portfolioDir.addPortfolio(firstBuilder);
     try {
       assertEquals(1000.749,
@@ -148,8 +149,8 @@ public class ModelTest {
   @Test
   public void testPortfolioComposition() {
 
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     firstBuilder.addShare("Apple Inc", 10);
     //share name given
     firstBuilder.addShare("Advanced Battery Technologies Inc", 20);
@@ -162,8 +163,8 @@ public class ModelTest {
     assertEquals(20, (int) composition.get("ABAT"));
 
 
-    PortfolioImpl.PortfolioBuilder secondBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio2");
+    InflexiblePortfolioImpl.PortfolioBuilder secondBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio2");
     // TICKER SYMBOL
     secondBuilder.addShare("AAON", 10);
     secondBuilder.addShare("ABEO", 20);
@@ -188,13 +189,13 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioOfSameNameCreated() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
-    PortfolioImpl.PortfolioBuilder secondBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder secondBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("CAN", 30);
     portfolioDir.addPortfolio(secondBuilder);
@@ -202,9 +203,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForPortfolioThatDoesnotExists() {
-    PortfolioImpl.PortfolioBuilder firstBuilder =
-            new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder =
+            new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -214,9 +215,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForDayWrong() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -226,9 +227,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForDayNegWrong() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -237,9 +238,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForDayZero() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -248,9 +249,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForDayBigNumber() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -259,9 +260,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForMonthBigNumber() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -270,9 +271,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForMonthZero() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -282,9 +283,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForMonthNeg() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -293,9 +294,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForMonthWrong() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -304,9 +305,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForYearWrong() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -315,9 +316,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForYearNeg() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -326,9 +327,9 @@ public class ModelTest {
 
   @Test
   public void testPortfolioValueForYearInSingleDigit() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(firstBuilder);
     try {
@@ -346,9 +347,9 @@ public class ModelTest {
 
   @Test
   public void testPortfolioValueForYearInThreeDigit() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(firstBuilder);
     try {
@@ -368,9 +369,9 @@ public class ModelTest {
 
   @Test
   public void testPortfolioValueForYearInFourDigitAvailableData() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -390,14 +391,14 @@ public class ModelTest {
 
   @Test
   public void testAvailableDataForDateMonthAsTwoDigit() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
     assertEquals(3177.4,
-            portfolioDir.portfolioValue(0, 01, 03, 2024, api), 0.001);
+            portfolioDir.portfolioValue(0, 1, 3, 2024, api), 0.001);
 
     LocalDate currentDate = LocalDate.now();
     String path = System.getProperty("user.dir") + "/Data/" + currentDate;
@@ -410,9 +411,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForWrongDate() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -421,9 +422,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForWrongDateDay() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -432,9 +433,9 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioValueForWrongDateDayFeb() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
@@ -444,8 +445,8 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioCompositionInputPortfolioNeg() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     firstBuilder.addShare("Apple Inc", 10);
     //share name given
     firstBuilder.addShare("Advanced Battery Technologies Inc", 20);
@@ -458,8 +459,8 @@ public class ModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPortfolioCompositionInputPortfolioGreaterThanListOfPortfolio() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     firstBuilder.addShare("Apple Inc", 10);
     //share name given
     firstBuilder.addShare("Advanced Battery Technologies Inc", 20);
@@ -470,9 +471,9 @@ public class ModelTest {
 
   @Test
   public void testValueOfPortfolioSingleDate() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("Canaan Inc", 10);
     firstBuilder.addShare("Can B Corp", 10);
@@ -497,9 +498,9 @@ public class ModelTest {
 
   @Test
   public void testValueOfPortfolioOnWeekend() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    IStockData api = new StockData();
     firstBuilder.addShare("Can B Corp", 10);
     portfolioDir.addPortfolio(firstBuilder);
     assertEquals(1, portfolioDir.getSize());
@@ -515,9 +516,9 @@ public class ModelTest {
 
   @Test
   public void testValueOfPortfolioBeforeListing() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(firstBuilder);
     assertEquals(1, portfolioDir.getSize());
@@ -534,12 +535,12 @@ public class ModelTest {
 
   @Test
   public void testValueOfPortfolioManyDate() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("Canaan Inc", 10);
     firstBuilder.addShare("Can B Corp", 10);
-    StockData api = new StockData();
+    IStockData api = new StockData();
     portfolioDir.addPortfolio(firstBuilder);
     assertEquals(1, portfolioDir.getSize());
 
@@ -565,9 +566,9 @@ public class ModelTest {
 
   @Test
   public void testValueOfTwoPortfoliosWithSameStocks() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("Canaan Inc", 10);
     firstBuilder.addShare("Can B Corp", 10);
@@ -582,8 +583,8 @@ public class ModelTest {
             portfolioDir.portfolioValue(0, 8, 3, 2024,api), 0.001);
 
 
-    PortfolioImpl.PortfolioBuilder secondBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder secondBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     secondBuilder.addShare("Apple Inc", 20);
     secondBuilder.addShare("Canaan Inc", 20);
     secondBuilder.addShare("Can B Corp", 50);
@@ -619,9 +620,9 @@ public class ModelTest {
 
   @Test
   public void testValueOfManyPortfolioManyDateHavingSomeSameShare() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("college fund");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("college fund");
+    IStockData api = new StockData();
     newBuilder.addShare("Apple Inc", 10);
     newBuilder.addShare("Canaan Inc", 10);
     newBuilder.addShare("Can B Corp", 10);
@@ -634,8 +635,8 @@ public class ModelTest {
             portfolioDir.portfolioValue(0, 8, 3, 2024,api),
             0.001);
 
-    PortfolioImpl.PortfolioBuilder second_builder
-            = new PortfolioImpl.PortfolioBuilder("college " + "fund2");
+    InflexiblePortfolioImpl.PortfolioBuilder second_builder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("college " + "fund2");
     second_builder.addShare("Apple Inc", 10);
     second_builder.addShare("Canaan Inc", 10);
     second_builder.addShare("Capricor Therapeutics Inc", 10);
@@ -669,11 +670,11 @@ public class ModelTest {
 
   @Test
   public void testIsEmptyAfterAddingElements() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("oldage fund");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("oldage fund");
     firstBuilder.addShare("Apple Inc", 10);
-    PortfolioImpl.PortfolioBuilder secondBuilder =
-            new PortfolioImpl.PortfolioBuilder("college fund");
+    InflexiblePortfolioImpl.PortfolioBuilder secondBuilder =
+            new InflexiblePortfolioImpl.PortfolioBuilder("college fund");
     secondBuilder.addShare("Goog", 10);
     portfolioDir.addPortfolio(firstBuilder);
     portfolioDir.addPortfolio(secondBuilder);
@@ -692,8 +693,8 @@ public class ModelTest {
 
   @Test
   public void testExistsWhenPortfolioExists() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("oldage fund");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("oldage fund");
     newBuilder.addShare("Apple Inc", 10);
     portfolioDir.addPortfolio(newBuilder);
 
@@ -705,8 +706,8 @@ public class ModelTest {
 
   @Test
   public void testWrongAddShare() {
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     newBuilder.addShare("Apple Inc", 10);
     try {
       newBuilder.addShare("Appple", 10);
@@ -719,9 +720,9 @@ public class ModelTest {
 
   @Test
   public void testPortfolioValueFor23StocksDifferent() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
 
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
@@ -784,8 +785,8 @@ public class ModelTest {
 
   @Test
   public void testAddShare() {
-    PortfolioImpl.PortfolioBuilder portfolioBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio");
 
     // Adding a valid share
     portfolioBuilder.addShare("Apple Inc", 10);
@@ -823,8 +824,8 @@ public class ModelTest {
 
   @Test
   public void testBuild() {
-    PortfolioImpl.PortfolioBuilder portfolioBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio");
 
     portfolioBuilder.addShare("Apple Inc", 10);
     portfolioBuilder.addShare("GOOG", 5);
@@ -839,8 +840,8 @@ public class ModelTest {
     assertEquals(5, (int) composition.get("GOOG"));
     assertNotNull(portfolioBuilder);
 
-    PortfolioImpl.PortfolioBuilder emptyPortfolioBuilder
-            = new PortfolioImpl.PortfolioBuilder("Empty Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder emptyPortfolioBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Empty Portfolio");
 
     try {
       emptyPortfolioBuilder.build();
@@ -852,9 +853,9 @@ public class ModelTest {
 
   @Test
   public void testLoad() {
-    PortfolioImpl.PortfolioBuilder portfolioBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio");
+    IStockData api = new StockData();
 
     List<String[]> validLines = new ArrayList<>();
     validLines.add(new String[]{"AAPL", "10"});
@@ -879,8 +880,8 @@ public class ModelTest {
 
   @Test
   public void testLoadInvalid() {
-    PortfolioImpl.PortfolioBuilder portfolioBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio");
 
     List<String[]> invalidLines = new ArrayList<>();
     invalidLines.add(new String[]{"AAPL"});
@@ -892,8 +893,8 @@ public class ModelTest {
       // catches illegal argument exception
     }
 
-    PortfolioImpl.PortfolioBuilder portfolioBuilder2
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio2");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder2
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio2");
 
     List<String[]> linesWithNegativeQuantity = new ArrayList<>();
     linesWithNegativeQuantity.add(new String[]{"AAPL", "-10"});
@@ -904,8 +905,8 @@ public class ModelTest {
       // catches illegal argument exception
     }
 
-    PortfolioImpl.PortfolioBuilder portfolioBuilder3
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio3");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder3
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio3");
 
     List<String[]> linesWithNonIntegerQuantity = new ArrayList<>();
     linesWithNonIntegerQuantity.add(new String[]{"AAPL", "invalid"});
@@ -916,8 +917,8 @@ public class ModelTest {
       // catches illegal argument exception
     }
 
-    PortfolioImpl.PortfolioBuilder portfolioBuilder4
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio4");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder4
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio4");
     List<String[]> linesWithNonExistingStock = new ArrayList<>();
     linesWithNonExistingStock.add(new String[]{"INVALID", "10"});
 
@@ -930,8 +931,8 @@ public class ModelTest {
 
   @Test
   public void testTypeOfPortfolio() {
-    PortfolioImpl.PortfolioBuilder portfolioBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test Portfolio");
+    InflexiblePortfolioImpl.PortfolioBuilder portfolioBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test Portfolio");
 
     portfolioBuilder.addShare("Apple Inc", 10);
     portfolioBuilder.addShare("GOOG", 5);
@@ -984,8 +985,8 @@ public class ModelTest {
   public void testCreatingFlexibleInflexibleList() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("college fund");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("college fund");
     newBuilder.addShare("Apple Inc", 10);
     newBuilder.addShare("Canaan Inc", 10);
     newBuilder.addShare("Can B Corp", 10);
@@ -1037,7 +1038,7 @@ public class ModelTest {
   public void buyFlexiblePortolioWrongPortfolio() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(1, "aapl", 10, date, api);
   }
@@ -1046,7 +1047,7 @@ public class ModelTest {
   public void sellFlexiblePortolioWrongPortfolio() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.sellStock(2, "aapl", 10, date, api);
   }
@@ -1055,7 +1056,7 @@ public class ModelTest {
   public void buySellFlexiblePortfolio() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 3, 20);
     LocalDate date1 = LocalDate.of(2024, 3, 20);
     LocalDate date2 = LocalDate.of(2023, 3, 20);
@@ -1082,7 +1083,6 @@ public class ModelTest {
 
     LocalDate date6 = LocalDate.of(2020, 4, 20);
     LocalDate date7 = LocalDate.of(2020, 4, 23);
-    LocalDate date8 = LocalDate.of(2023, 3, 20);
     portfolioDir.sellStock(0, "aapl", 5, date6, api);
     portfolioDir.sellStock(0, "aapl", 5, date7, api);
 
@@ -1111,7 +1111,7 @@ public class ModelTest {
   public void testSellWhenAlreadySoldInFuture() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2015, 3, 20);
     LocalDate date1 = LocalDate.of(2016, 3, 21);
     LocalDate date2 = LocalDate.of(2017, 3, 20);
@@ -1174,7 +1174,7 @@ public class ModelTest {
   public void testSellStockWithInvalidTickerSymbol() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2015, 3, 20);
     try {
       portfolioDir.sellStock(0, "hello", 10, date, api);
@@ -1187,7 +1187,7 @@ public class ModelTest {
   public void testSellStockWithWrongDateHoliday() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 16);
     try {
       portfolioDir.sellStock(0, "aapl", 10, date, api);
@@ -1200,7 +1200,7 @@ public class ModelTest {
   public void testSellStockBeforeBuying() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     try {
       portfolioDir.sellStock(0, "aapl", 10, date, api);
@@ -1213,7 +1213,7 @@ public class ModelTest {
   public void testSellStockWithInsufficientQuantity() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "aapl", 10, date, api);
     try {
@@ -1227,7 +1227,7 @@ public class ModelTest {
   public void testSellStockForNonExistingStock() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "aapl", 10, date, api);
     try {
@@ -1241,7 +1241,7 @@ public class ModelTest {
   public void testBuyStockWithInvalidTickerSymbol() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2015, 3, 20);
     try {
       portfolioDir.buyStock(0, "hello", 10, date, api);
@@ -1254,7 +1254,7 @@ public class ModelTest {
   public void testBuyStockWithWrongDateHoliday() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 16);
     try {
       portfolioDir.buyStock(0, "aapl", 10, date, api);
@@ -1267,7 +1267,7 @@ public class ModelTest {
   public void testBuyStockWithWrongDateFuture() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 12, 1);
     try {
       portfolioDir.buyStock(0, "aapl", 10, date, api);
@@ -1280,7 +1280,7 @@ public class ModelTest {
   public void testSellStockWithWrongDateFuture() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 12, 1);
     LocalDate date1 = LocalDate.of(2024, 1, 11);
     portfolioDir.buyStock(0, "aapl", 10, date1, api);
@@ -1295,7 +1295,7 @@ public class ModelTest {
   public void testSellStockMoreThanAvailable() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
 
     LocalDate date1 = LocalDate.of(2024, 1, 11);
     portfolioDir.buyStock(0, "aapl", 10, date1, api);
@@ -1310,7 +1310,7 @@ public class ModelTest {
   public void testSimpleGetCompositionFlexible() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 10, date, api);
@@ -1345,7 +1345,7 @@ public class ModelTest {
   public void testPortfolioValueFlexibleWhenPortfolioEmpty() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 10, date, api);
@@ -1357,7 +1357,7 @@ public class ModelTest {
   public void testPortfolioValueFlexible() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 10, date, api);
@@ -1371,7 +1371,7 @@ public class ModelTest {
   public void testValueOfPortfolioDiffDateFlexibleBuySell() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -1412,7 +1412,7 @@ public class ModelTest {
   public void testValueOfPortfolioDateFlexibleWhenHoliday() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -1430,7 +1430,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForPortfolioThatDoesnotExists() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1442,7 +1442,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForDayWrong() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1454,7 +1454,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForDayNegWrong() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1465,7 +1465,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForDayZero() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1476,7 +1476,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForDayBigNumber() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1487,7 +1487,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForMonthBigNumber() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1498,7 +1498,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForMonthZero() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1510,7 +1510,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForMonthNeg() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1521,7 +1521,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForMonthWrong() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1532,7 +1532,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForYearWrong() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1543,7 +1543,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForYearNeg() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1554,7 +1554,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForYearInSingleDigit() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
 
@@ -1572,7 +1572,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForYearInThreeDigit() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
 
@@ -1592,7 +1592,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForYearInFourDigitAvailableData() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1614,12 +1614,12 @@ public class ModelTest {
   public void testFlexiAvailableDataForDateMonthAsTwoDigit() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
     assertEquals(4766.1,
-            portfolioDir.portfolioValue(0, 01, 03, 2024, api), 0.001);
+            portfolioDir.portfolioValue(0, 1, 3, 2024, api), 0.001);
 
     LocalDate currentDate = LocalDate.now();
     String path = System.getProperty("user.dir") + "/Data/" + currentDate;
@@ -1634,7 +1634,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForWrongDate() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1645,7 +1645,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForWrongDateDay() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1656,7 +1656,7 @@ public class ModelTest {
   public void testFlexiPortfolioValueForWrongDateDayFeb() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 15, date, api);
@@ -1667,7 +1667,7 @@ public class ModelTest {
   public void testValueOfPortfolioFlexibleBuySell() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
     assertEquals(1, portfolioDir.getSize());
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -1690,7 +1690,7 @@ public class ModelTest {
 
   @Test
   public void testGain() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2020, 2, 3);
     assertEquals("AAPL gained on 2020-02-03",
             portfolioDir.gainOrLose("aapl",date,api) );
@@ -1698,7 +1698,7 @@ public class ModelTest {
 
   @Test
   public void testLoss() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2021, 2, 3);
     assertEquals("AAPL lost on 2021-02-03",
             portfolioDir.gainOrLose("aapl",date,api) );
@@ -1706,7 +1706,7 @@ public class ModelTest {
 
   @Test
   public void testLoseGainWhenHoliday() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 23);
     try {
       portfolioDir.gainOrLose("aapl",date,api);
@@ -1718,7 +1718,7 @@ public class ModelTest {
 
   @Test
   public void testLoseGainWhenStockWrong() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 22);
     try {
       portfolioDir.gainOrLose("hello",date,api);
@@ -1730,14 +1730,14 @@ public class ModelTest {
 
   @Test
   public void xDayMovingAverage() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 23);
     assertEquals(177.88899999999998, portfolioDir.xDayMovingAvg("aapl",date,30,api),0.0 );
   }
 
   @Test
   public void testXDayAvgWhenStockWrong() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 22);
     try {
       portfolioDir.xDayMovingAvg("hello",date,30,api);
@@ -1749,7 +1749,7 @@ public class ModelTest {
 
   @Test
   public void testXDayAvgWhenXNeg() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 22);
     try {
       portfolioDir.xDayMovingAvg("aapl",date,-1,api);
@@ -1762,7 +1762,7 @@ public class ModelTest {
 
   @Test
   public void testXDayAvgWhenXZero() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 22);
     try {
       portfolioDir.xDayMovingAvg("aapl",date,0,api);
@@ -1774,7 +1774,7 @@ public class ModelTest {
 
   @Test
   public void testXDayAvgWhenDataLess() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2014, 4, 4);
     try {
       portfolioDir.xDayMovingAvg("goog",date,10,api);
@@ -1786,7 +1786,7 @@ public class ModelTest {
 
   @Test
   public void testXDayAvgWhenStockNotListed() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2010, 2, 22);
     try {
       portfolioDir.xDayMovingAvg("goog",date,10,api);
@@ -1799,7 +1799,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverWrongStock() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2023, 12, 22);
     try {
@@ -1812,7 +1812,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverOverPeriod() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate startDate = LocalDate.of(2023, 1, 1);
     LocalDate endDate = LocalDate.of(2023, 12, 31);
 
@@ -1837,7 +1837,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverOverPeriodSmall() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate startDate = LocalDate.of(2024, 2, 1);
     LocalDate endDate = LocalDate.of(2024, 3, 16);
 
@@ -1851,7 +1851,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverDateAfterCurrentDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 12, 22);
     try {
@@ -1864,7 +1864,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverDateBeforeListingDateBothDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 2, 22);
     LocalDate end = LocalDate.of(2014, 1, 22);
     try {
@@ -1877,7 +1877,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverDateBeforeListingDateStartDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 2, 22);
     LocalDate end = LocalDate.of(2015, 1, 22);
     try {
@@ -1890,7 +1890,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverOverPeriodDatesReverseOrder() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate startDate = LocalDate.of(2023, 12, 1);
     LocalDate endDate = LocalDate.of(2023, 1, 31);
     try {
@@ -1904,7 +1904,7 @@ public class ModelTest {
 
   @Test
   public void testCrossoverWhen30dayXAvgHasLessData() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate startDate = LocalDate.of(2014, 4, 4);
     LocalDate endDate = LocalDate.of(2015, 1, 31);
     try {
@@ -1917,7 +1917,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodDateReverse() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate startDate = LocalDate.of(2023, 12, 1);
     LocalDate endDate = LocalDate.of(2023, 1, 31);
     try {
@@ -1930,7 +1930,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseDateAfterCurrentDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 12, 22);
     try {
@@ -1943,7 +1943,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodStockWrong() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2023, 12, 22);
     try {
@@ -1956,7 +1956,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodBeforeListing() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 2, 22);
     LocalDate end = LocalDate.of(2013, 2, 22);
     try {
@@ -1969,7 +1969,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodBeforeListingStartDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 2, 22);
     LocalDate end = LocalDate.of(2024, 3, 22);
     assertEquals("GOOG lost over the period from 2012-02-22 to 2024-03-22",
@@ -1979,7 +1979,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriod() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 3, 19);
     LocalDate end = LocalDate.of(2024, 3, 26);
     assertEquals("GOOG gained over the period from 2024-03-19 to 2024-03-26",
@@ -1989,7 +1989,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodWhenHolidayStartDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 3);
     LocalDate end = LocalDate.of(2024, 3, 15);
     assertEquals("GOOG lost over the period from 2024-02-03 to 2024-03-15",
@@ -1999,7 +1999,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodWhenHolidayEndDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 2);
     LocalDate end = LocalDate.of(2024, 3, 16);
     assertEquals("GOOG lost over the period from 2024-02-02 to 2024-03-16",
@@ -2009,7 +2009,7 @@ public class ModelTest {
 
   @Test
   public void testGainLoseOverPeriodWhenHoliday() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 3);
     LocalDate end = LocalDate.of(2024, 3, 16);
     assertEquals("GOOG lost over the period from 2024-02-03 to 2024-03-16",
@@ -2020,7 +2020,7 @@ public class ModelTest {
   @Test
   public void testCostBasisWhenEmptyPortfolio() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 2, 3);
     assertEquals(0, portfolioDir.costBasis(0,date,api),0.0);
 
@@ -2029,7 +2029,7 @@ public class ModelTest {
   @Test
   public void testCostBasis() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2042,7 +2042,7 @@ public class ModelTest {
   @Test
   public void testCostBasisOnHoliday() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2055,7 +2055,7 @@ public class ModelTest {
   @Test
   public void testCostBasisBuySell() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2075,7 +2075,7 @@ public class ModelTest {
   @Test
   public void testCostBasisWrongInput() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2091,7 +2091,7 @@ public class ModelTest {
   @Test
   public void testCostBasisWrongInputNeg() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2106,7 +2106,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWrongStock() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2023, 12, 22);
     try {
@@ -2119,7 +2119,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWrongDateOrder() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2023, 12, 22);
     try {
@@ -2132,7 +2132,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWrongEndDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 12, 22);
     try {
@@ -2145,7 +2145,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWrongXvalue() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 3, 22);
     try {
@@ -2159,7 +2159,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWrongYvalue() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 3, 22);
     try {
@@ -2173,7 +2173,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWrongXMoreThanY() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 3, 22);
     try {
@@ -2187,7 +2187,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossover() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 2, 22);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2203,7 +2203,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverDiff() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2020, 2, 22);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2223,7 +2223,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWhenDataLessForMovingAvg() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2014, 3, 31);
     LocalDate end = LocalDate.of(2015, 3, 22);
     try {
@@ -2235,7 +2235,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossoverWhenDataLessForMovingAvgForLarger() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2014, 5, 15);
     LocalDate end = LocalDate.of(2015, 3, 22);
     try {
@@ -2247,7 +2247,7 @@ public class ModelTest {
 
   @Test
   public void testMovingCrossOverWhenStockUnlisted() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 3, 19);
     LocalDate end = LocalDate.of(2024, 3, 26);
     try {
@@ -2261,7 +2261,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceInFuture() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2014, 5, 15);
     LocalDate end = LocalDate.of(2025, 3, 22);
     try {
@@ -2273,7 +2273,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceStartDateLessThanEndDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2015, 5, 15);
     LocalDate end = LocalDate.of(2014, 3, 22);
     try {
@@ -2285,7 +2285,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceWrongStock() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2015, 5, 15);
     LocalDate end = LocalDate.of(2016, 3, 22);
     try {
@@ -2297,7 +2297,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationYears() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2010, 5, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2323,7 +2323,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationMonths() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2022, 5, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2357,7 +2357,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationDays() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 1, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2382,7 +2382,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationDaysWhenDurationLessThan5Days() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 3, 18);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2398,7 +2398,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationDays31() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
@@ -2431,7 +2431,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationMonthLessThan30() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
@@ -2448,7 +2448,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDurationYearDiff4Years() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2020, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
@@ -2482,7 +2482,7 @@ public class ModelTest {
   @Test
   public void testPortfolioPerformanceInFuture() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2498,7 +2498,7 @@ public class ModelTest {
   @Test
   public void testPortfolioPerformanceStartDateLessThanEndDate() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2513,8 +2513,8 @@ public class ModelTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void testPortfolioPerformanceByInflexiblePortfolio() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     firstBuilder.addShare("Avis Budget Group Inc", 10);
@@ -2527,7 +2527,7 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceDurationYears() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2010, 5, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
@@ -2560,7 +2560,7 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceDurationMonths() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2022, 5, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2603,7 +2603,7 @@ public class ModelTest {
 
   @Test
   public void testPerformancePerformanceDurationDays() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 1, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2618,18 +2618,18 @@ public class ModelTest {
     TreeMap<String,Integer> actualData
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
-    data.put("2024-01-12", 27);
-    data.put("2024-01-19", 28);
+    data.put("2024-01-15", 27);
+    data.put("2024-01-20", 28);
     data.put("2024-01-25", 28);
     data.put("2024-01-30", 27);
-    data.put("2024-02-02", 48);
+    data.put("2024-02-04", 48);
     data.put("2024-02-09", 49);
     data.put("2024-02-14", 48);
-    data.put("2024-02-16", 47);
-    data.put("2024-02-23", 47);
+    data.put("2024-02-19", 47);
+    data.put("2024-02-24", 47);
     data.put("2024-02-29", 46);
     data.put("2024-03-05", 44);
-    data.put("2024-03-08", 44);
+    data.put("2024-03-10", 44);
     data.put("2024-03-15", 45);
     assertEquals(data,actualData);
   }
@@ -2637,7 +2637,7 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceDurationDaysWhenDurationLessThan5Days() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 3, 18);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2662,7 +2662,7 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceDurationDays31() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 1);
     LocalDate end = LocalDate.of(2024, 3, 3);
 
@@ -2678,24 +2678,27 @@ public class ModelTest {
             = portfolioDir.portfolioPerformance(0,start,end);
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2024-02-01", 48);
-    data.put("2024-02-02", 48);
+    data.put("2024-02-03", 48);
     data.put("2024-02-05", 49);
     data.put("2024-02-07", 49);
     data.put("2024-02-09", 49);
+    data.put("2024-02-11", 49);
     data.put("2024-02-13", 48);
     data.put("2024-02-15", 8);
-    data.put("2024-02-16", 8);
+    data.put("2024-02-17", 8);
+    data.put("2024-02-19", 8);
     data.put("2024-02-21", 8);
     data.put("2024-02-23", 27);
+    data.put("2024-02-25", 27);
     data.put("2024-02-27", 26);
     data.put("2024-02-29", 26);
-    data.put("2024-03-01", 26);
+    data.put("2024-03-02", 26);
     assertEquals(data,actualData);
   }
 
   @Test
   public void testPortfolioPerformanceDurationMonthLessThan30() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
@@ -2720,7 +2723,7 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceDurationYearDiff4Years() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2020, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
@@ -2766,8 +2769,8 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2020, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("college fund");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("college fund");
     newBuilder.addShare("Apple Inc", 10);
     newBuilder.addShare("Canaan Inc", 10);
     newBuilder.addShare("Can B Corp", 10);
@@ -2805,8 +2808,8 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2023, 11, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("college fund");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("college fund");
     newBuilder.addShare("Apple Inc", 10);
     newBuilder.addShare("Canaan Inc", 10);
     newBuilder.addShare("Can B Corp", 10);
@@ -2816,28 +2819,28 @@ public class ModelTest {
     TreeMap<String, Integer> data = new TreeMap<>();
     data.put("2023-11-01", 43);
     data.put("2023-11-06", 44);
-    data.put("2023-11-10", 46);
+    data.put("2023-11-11", 46);
     data.put("2023-11-16", 47);
     data.put("2023-11-21", 47);
-    data.put("2023-11-24", 47);
+    data.put("2023-11-26", 47);
     data.put("2023-12-01", 47);
     data.put("2023-12-06", 47);
     data.put("2023-12-11", 47);
-    data.put("2023-12-15", 49);
+    data.put("2023-12-16", 49);
     data.put("2023-12-21", 48);
     data.put("2023-12-26", 48);
-    data.put("2023-12-29", 48);
+    data.put("2023-12-31", 48);
     data.put("2024-01-05", 45);
     data.put("2024-01-10", 46);
-    data.put("2024-01-12", 46);
-    data.put("2024-01-19", 47);
+    data.put("2024-01-15", 46);
+    data.put("2024-01-20", 47);
     data.put("2024-01-25", 48);
     data.put("2024-01-30", 46);
-    data.put("2024-02-02", 46);
+    data.put("2024-02-04", 46);
     data.put("2024-02-09", 46);
     data.put("2024-02-14", 45);
-    data.put("2024-02-16", 45);
-    data.put("2024-02-23", 45);
+    data.put("2024-02-19", 45);
+    data.put("2024-02-24", 45);
     assertEquals(data,actualData);
   }
 
@@ -2846,8 +2849,8 @@ public class ModelTest {
     LocalDate start = LocalDate.of(2023, 3, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("college fund");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("college fund");
     newBuilder.addShare("Apple Inc", 10);
     newBuilder.addShare("Canaan Inc", 10);
     newBuilder.addShare("Can B Corp", 10);
@@ -2872,7 +2875,7 @@ public class ModelTest {
 
   @Test
   public void testScaleStockPerformance() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 1, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2882,7 +2885,7 @@ public class ModelTest {
 
   @Test
   public void testScaleStockPerformanceWrongStock() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 1, 15);
     LocalDate end = LocalDate.of(2024, 3, 22);
 
@@ -2895,7 +2898,7 @@ public class ModelTest {
 
   @Test
   public void testScaleStockPerformanceStartDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 1, 15);
     LocalDate end = LocalDate.of(2023, 3, 22);
 
@@ -2908,7 +2911,7 @@ public class ModelTest {
 
   @Test
   public void testScaleStockPerformanceEndDate() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2023, 1, 15);
     LocalDate end = LocalDate.of(2024, 8, 26);
 
@@ -2922,7 +2925,7 @@ public class ModelTest {
 
   @Test
   public void testScaleForPortfolioPerformance() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2020, 10, 1);
     LocalDate end = LocalDate.of(2024, 3, 2);
 
@@ -2945,7 +2948,7 @@ public class ModelTest {
   @Test
   public void testScalePortfolioPerformanceInFuture() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2961,7 +2964,7 @@ public class ModelTest {
   @Test
   public void testScalePortfolioPerformanceStartDateAfterEndDate() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "Apple Inc", 15, date, api);
@@ -2977,7 +2980,7 @@ public class ModelTest {
   @Test
   public void testPortfolioPerformanceSellingWhenAlreadySold() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2023, 3, 13);
     LocalDate date1 = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
@@ -2993,9 +2996,9 @@ public class ModelTest {
 
   @Test
   public void testInflexibleCostBasis() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
@@ -3009,9 +3012,9 @@ public class ModelTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void testInflexibleCostBasisException() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
@@ -3022,9 +3025,9 @@ public class ModelTest {
 
   @Test
   public void testInflexibleBuyStock() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
@@ -3038,9 +3041,9 @@ public class ModelTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void testInflexibleBuyStockException() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
@@ -3050,9 +3053,9 @@ public class ModelTest {
 
   @Test
   public void testInflexibleSellStock() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
@@ -3066,9 +3069,9 @@ public class ModelTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void testInflexibleSellStockException() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2024, 3, 12);
@@ -3079,22 +3082,24 @@ public class ModelTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void testInflexibleLoadFlexiblePortfolio() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
-    StockData api = new StockData();
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    IStockData api = new StockData();
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);
     List<String[]> lines = new ArrayList<>();
     String[] line1 = {"Hello", "World!"};
     String[] line2 = {"This", "is", "example"};
+    lines.add(line1);
+    lines.add(line2);
     portfolioDir.loadPortfolio("Test Portfolio1",lines,api);
   }
 
 
   @Test
   public void testStockPeformanceBeforeStockListed() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2012, 5, 15);
     LocalDate end = LocalDate.of(2013, 3, 22);
     try {
@@ -3106,8 +3111,8 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceBeforeStockListed() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2012, 3, 12);
@@ -3123,8 +3128,8 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceBeforeStockListedShortDuration() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2012, 3, 12);
@@ -3141,8 +3146,8 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceBeforeStockListedYearDiffMoreThan5() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2007, 3, 12);
@@ -3160,8 +3165,8 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceBeforeStockListedYearDiff3Year() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2009, 3, 12);
@@ -3178,8 +3183,8 @@ public class ModelTest {
 
   @Test
   public void testPortfolioPerformanceMonthDiff6() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     LocalDate date = LocalDate.of(2012, 1, 12);
@@ -3195,7 +3200,7 @@ public class ModelTest {
 
   @Test
   public void testStockPerformanceDiff31Days() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate start = LocalDate.of(2024, 2, 1);
     LocalDate end = LocalDate.of(2024, 3, 3);
     TreeMap<String,Integer> actualData
@@ -3220,7 +3225,7 @@ public class ModelTest {
 
   @Test
   public void testLoadFlexiblePortfolio() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     List<String[]> validLines = new ArrayList<>();
     validLines.add(new String[]{"buy", "AAPL", "10", "2024-03-20"});
     validLines.add(new String[]{"buy", "GOOG", "10", "2024-02-20"});
@@ -3242,7 +3247,7 @@ public class ModelTest {
 
   @Test
   public void testLoadFlexiblePortfolioInvalidLines() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     List<String[]> validLines = new ArrayList<>();
     validLines.add(new String[]{"buy", "AAPL", "aapl", "2024-03-20"});
     validLines.add(new String[]{"buy", "GOOG", "10", "2024-02-20"});
@@ -3257,7 +3262,7 @@ public class ModelTest {
 
   @Test
   public void testLoadFlexiblePortfolioInvalidLinesSecondWrong() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     List<String[]> validLines1 = new ArrayList<>();
     validLines1.add(new String[]{"buy", "aapl", "20", "2024-03-20"});
     validLines1.add(new String[]{"buy", "10", "10", "2024-02-20"});
@@ -3271,7 +3276,7 @@ public class ModelTest {
 
   @Test
   public void testLoadFlexiblePortfolioInvalidLines1stWrong() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     List<String[]> validLines1 = new ArrayList<>();
     validLines1.add(new String[]{"buy", "aapl", "20", "2024-03-20"});
     validLines1.add(new String[]{"buy", "aapl", "10", "2024-02-20"});
@@ -3285,7 +3290,7 @@ public class ModelTest {
 
   @Test
   public void testLoadFlexiblePortfolioInvalidLinesDateWrong() {
-    StockData api = new StockData();
+    IStockData api = new StockData();
     List<String[]> validLines1 = new ArrayList<>();
     validLines1.add(new String[]{"buy", "aapl", "20", "2024-03-20"});
     validLines1.add(new String[]{"buy", "aapl", "10", "2024-02-20"});
@@ -3300,7 +3305,7 @@ public class ModelTest {
   @Test
   public void testSaveFlexiblePortfolioInvalidChoice() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2023, 3, 13);
     LocalDate date1 = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
@@ -3318,7 +3323,7 @@ public class ModelTest {
   @Test
   public void testSaveFlexiblePortfolio() {
     portfolioDir.createFlexiblePortfolio("Test Portfolio1");
-    StockData api = new StockData();
+    IStockData api = new StockData();
     LocalDate date = LocalDate.of(2023, 3, 13);
     LocalDate date1 = LocalDate.of(2024, 3, 12);
     portfolioDir.buyStock(0, "aapl", 15, date, api);
@@ -3337,8 +3342,8 @@ public class ModelTest {
 
   @Test
   public void testSaveInFlexiblePortfolio() {
-    PortfolioImpl.PortfolioBuilder firstBuilder
-            = new PortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
     firstBuilder.addShare("Apple Inc", 10);
     firstBuilder.addShare("GOOG", 10);
     portfolioDir.addPortfolio(firstBuilder);

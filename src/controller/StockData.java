@@ -1,10 +1,6 @@
 package controller;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,12 +11,7 @@ import java.util.TreeMap;
 /**
  * StockData class provides methods for fetching historical stock data and storing it in a CSV file.
  */
-public class StockData {
-
-  /**
-   * The API key used for accessing the stock data service.
-   */
-  private final String apiKey = "W0M1JOKC82EZEQA8";
+public class StockData implements IStockData {
 
   /**
    * The ticker symbol representing the stock for which data is fetched.
@@ -43,44 +34,6 @@ public class StockData {
     tickerSymbol = null;
   }
 
-  /**
-   * fetchData method is used to call the api for the stockSymbol using api Key.
-   * It also calls the storeFetchedData method to store the fetched data in a csv file.
-   */
-  private void fetchData() {
-    String stockSymbol = tickerSymbol;
-    URL url;
-
-    try {
-      url = new URL("https://www.alphavantage"
-              + ".co/query?function=TIME_SERIES_DAILY"
-              + "&outputsize=full"
-              + "&symbol"
-              + "=" + stockSymbol + "&apikey=" + apiKey + "&datatype=csv");
-    } catch (MalformedURLException e) {
-      throw new RuntimeException("the alphavantage API has either changed or "
-              + "no longer works");
-    }
-
-    InputStream in;
-    StringBuilder output = new StringBuilder();
-
-    try {
-      in = url.openStream();
-      int b;
-
-      while ((b = in.read()) != -1) {
-        output.append((char) b);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("No price data found for " + stockSymbol);
-    }
-    if (output.toString().charAt(0) == '{') {
-      throw new RuntimeException();
-    }
-
-    storeFetchedData(output);
-  }
 
   /**
    * storeFetchedData is used to store the data got from the api call in the csv file.
@@ -89,6 +42,7 @@ public class StockData {
    * @param output is the price for the stock on dates fetched when the api is called.
    */
   private void storeFetchedData(StringBuilder output) {
+    output.delete(0, output.indexOf(System.lineSeparator()) + 1);
     LocalDate currentDate = LocalDate.now();
     String fileName =
             System.getProperty("user.dir") + "/Data/" + currentDate + "/" + tickerSymbol + ".csv";
@@ -100,7 +54,7 @@ public class StockData {
     }
 
     Persistence fileHandler = new Persistence();
-    fileHandler.save(fileName, this.priceData);
+    fileHandler.exportAsCSV(fileName, output);
   }
 
   /**
@@ -155,8 +109,8 @@ public class StockData {
 
     try {
       if (!isCSVFileExists()) {
-        //System.out.println("Hello");
-        fetchData();
+        FetchFromAPI api = new FetchFromAlphaVantage();
+        storeFetchedData(api.fetchData(tickerSymbol));
       } else if (isCSVFileExists()) {
         loadDataFromFile();
       }

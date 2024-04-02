@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import controller.StockData;
+import controller.IStockData;
 
 /**
  * Portfolio interface has the methods that are related to single portfolio object.
@@ -16,9 +16,10 @@ public interface Portfolio {
   /**
    * portfolioValue method is used to get the value of a portfolio on a particular date.
    * @param date is the date for which the portfolio value is to be determined.
+   * @param api IStockData object used for fetching stock data.
    * @return the price of the portfolio on the particular date entered.
    */
-  double portfolioValue(String date, StockData api);
+  double portfolioValue(String date, IStockData api);
 
   /**
    * it gets the name of the portfolio.
@@ -40,10 +41,10 @@ public interface Portfolio {
    * @param ticker ticker symbol of the stock to be bought.
    * @param quantity  quantity of stock to be bought.
    * @param date date on which the stock is bought.
-   * @param api StockData object used for fetching stock data.
+   * @param api IStockData object used for fetching stock data.
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
-  void buyStock(String ticker, int quantity, LocalDate date, StockData api);
+  void buyStock(String ticker, int quantity, LocalDate date, IStockData api);
 
   /**
    * this method sells stock from the portfolio is implemented in flexible portfolio.
@@ -51,10 +52,10 @@ public interface Portfolio {
    * @param ticker ticker symbol of the stock to be sold.
    * @param quantity quantity of stock to be sold.
    * @param date date on which the stock is sold.
-   * @param api StockData object used for fetching stock data.
+   * @param api IStockData object used for fetching stock data.
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
-  void sellStock(String ticker, int quantity, LocalDate date, StockData api);
+  void sellStock(String ticker, int quantity, LocalDate date, IStockData api);
 
   /**
    * portfolio composition method is used to get the composition of a portfolio.
@@ -70,7 +71,7 @@ public interface Portfolio {
    * @return cost basis of the portfolio.
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
-  double costBasis(LocalDate date, StockData api);
+  double costBasis(LocalDate date, IStockData api);
 
   /**
    * Checks if the portfolio is flexible.
@@ -84,5 +85,5 @@ public interface Portfolio {
    * @param lines A list of string arrays representing lines of portfolio data to be loaded.
    * @param api The StockData object used for fetching stock data.
    */
-  void load(List<String[]> lines, StockData api);
+  void load(List<String[]> lines, IStockData api);
 }

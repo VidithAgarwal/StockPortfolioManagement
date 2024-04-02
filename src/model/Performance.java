@@ -12,10 +12,11 @@ import controller.StockData;
 import java.util.Comparator;
 
 /**
- * Performance class provides methods for analyzing the performance of stocks and portfolios.
+ * This class implements the methods of IPerformance interface that analyzes the
+ * performance of stocks and portfolios.
  * Used for performance evaluation of stock trend and portfolio over time.
  */
-public class Performance {
+public class Performance implements IPerformance {
 
 
   /**
@@ -29,6 +30,10 @@ public class Performance {
    */
   public TreeMap<String, Double> stockPerformance(TreeMap<String, ArrayList<Double>> priceData,
                                                   LocalDate start, LocalDate end) {
+    if (start.isEqual(end)) {
+      throw new IllegalArgumentException("For performance overtime please enter time-period,"
+              + " not a single day.");
+    }
     TreeMap<String, Double> selectedData = new TreeMap<>();
     LocalDate lastDay = returnLastEntry(priceData);
     if (start.isBefore(lastDay)) {
@@ -85,15 +90,7 @@ public class Performance {
       long interval = Math.round((float) yearDiff / (numParts));
       LocalDate currentDate = start.plusYears(i * interval)
               .withMonth(12).withDayOfMonth(31);
-      String currentDateString = currentDate.toString();
-      while (!priceData.containsKey((currentDateString))) {
-        currentDate = currentDate.minusDays(1);
-        currentDateString = currentDate.toString();
-      }
-      ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(3);
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, closingValue);
+      helperStockPerformanceWhenPriceDataNotAvailable(currentDate, priceData, selectedData);
     }
   }
 
@@ -137,18 +134,11 @@ public class Performance {
    * @param selectedData treeMap to store selected stock data, with timestamp and closing price.
    */
   private void helperStockPerformanceYearDiffBetween5And30(int numParts, LocalDate start,
-                Map<String, ArrayList<Double>> priceData, TreeMap<String, Double> selectedData) {
+                                                           Map<String, ArrayList<Double>> priceData,
+                                                           TreeMap<String, Double> selectedData) {
     for (int i = 0; i <= numParts; i++) {
       LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
-      String currentDateString = currentDate.toString();
-      while (!priceData.containsKey((currentDateString))) {
-        currentDate = currentDate.minusDays(1);
-        currentDateString = currentDate.toString();
-      }
-      ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(3);
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, closingValue);
+      helperStockPerformanceWhenPriceDataNotAvailable(currentDate, priceData, selectedData);
     }
   }
 
@@ -163,21 +153,12 @@ public class Performance {
    * @param selectedData treeMap to store selected stock data.
    */
   private void helperStockPerformanceYearDiffBetween1And5(int numParts, LocalDate start,
-                Map<String, ArrayList<Double>> priceData, TreeMap<String, Double> selectedData) {
+                                                          Map<String, ArrayList<Double>> priceData,
+                                                          TreeMap<String, Double> selectedData) {
     for (int i = 0; i < numParts; i++) {
-      LocalDate currentDate = start.plusMonths(i * 2)
-              .withDayOfMonth(start.plusMonths(i * 2).lengthOfMonth());
-      //LocalDate currentDate = start.plusDays(interval * i);
-      String currentDateString = currentDate.toString();
-
-      while (!priceData.containsKey((currentDateString))) {
-        currentDate = currentDate.minusDays(1);
-        currentDateString = currentDate.toString();
-      }
-      ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(3);
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, closingValue);
+      LocalDate currentDate = start.plusMonths(i * 2L)
+              .withDayOfMonth(start.plusMonths(i * 2L).lengthOfMonth());
+      helperStockPerformanceWhenPriceDataNotAvailable(currentDate, priceData, selectedData);
     }
   }
 
@@ -192,20 +173,29 @@ public class Performance {
    * @param selectedData treeMap to store selected stock data.
    */
   private void helperStockPerformanceMonthDiffBetween5And30(int numParts, LocalDate start,
-           Map<String, ArrayList<Double>> priceData, TreeMap<String, Double> selectedData) {
+                                                            Map<String,
+                                                                    ArrayList<Double>> priceData,
+                                                            TreeMap<String, Double> selectedData) {
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i)
               .lengthOfMonth());
-      String currentDateString = currentDate.toString();
-      while (!priceData.containsKey((currentDateString))) {
-        currentDate = currentDate.minusDays(1);
-        currentDateString = currentDate.toString();
-      }
-      ArrayList<Double> values = priceData.get(currentDateString);
-      Double closingValue = values.get(3);
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, closingValue);
+      helperStockPerformanceWhenPriceDataNotAvailable(currentDate, priceData, selectedData);
     }
+  }
+
+  private void helperStockPerformanceWhenPriceDataNotAvailable(LocalDate currentDate,
+                                                               Map<String, ArrayList<Double>>
+                                                                       priceData, TreeMap<String,
+          Double> selectedData) {
+    String currentDateString = currentDate.toString();
+    while (!priceData.containsKey((currentDateString))) {
+      currentDate = currentDate.minusDays(1);
+      currentDateString = currentDate.toString();
+    }
+    ArrayList<Double> values = priceData.get(currentDateString);
+    Double closingValue = values.get(3);
+    String formatDate = dateFormat(currentDateString);
+    selectedData.put(formatDate, closingValue);
   }
 
   /**
@@ -216,7 +206,7 @@ public class Performance {
    * @throws IllegalArgumentException if the price data is empty.
    */
   private LocalDate returnLastEntry(TreeMap<String, ArrayList<Double>> priceData) {
-    String lastDate = null;
+    String lastDate;
     Map.Entry<String, ArrayList<Double>> lastEntry = priceData.lastEntry();
     if (lastEntry != null) {
       lastDate = lastEntry.getKey();
@@ -233,33 +223,50 @@ public class Performance {
    *
    * @param numParts      number of parts to divide the time period into.
    * @param start         start date of the time period.
-   * @param value         portfolio value at the specified date.
    * @param totalDays     total number of days in the time period.
    * @param portfolioName portfolio object, for which total value is calculated to find performance.
    * @param selectedData  TreeMap to store selected portfolio data, timestamp & portfolio value.
    */
-  private void helperPortfolioPerformanceYearDiff0(int numParts, LocalDate start, double value,
-                 long totalDays, Portfolio portfolioName, TreeMap<String, Double> selectedData) {
+  private void helperPortfolioPerformanceYearDiff0(int numParts, LocalDate start,
+                                                   long totalDays, Portfolio portfolioName,
+                                                   TreeMap<String, Double> selectedData) {
     long interval = Math.round((float) totalDays / (numParts));
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusDays(interval * i);
       String currentDateString = currentDate.toString();
-      while (true) {
-        try {
-          value = portfolioName.portfolioValue(currentDateString, new StockData());
-          break;
-        } catch (IllegalArgumentException e) {
-          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-            throw new IllegalArgumentException("Cannot find the performance as one of the "
-                    + "share was not listed!");
-          }
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-      }
+      double value = getValue(currentDateString, currentDate, portfolioName);
       selectedData.put(currentDateString, value);
     }
   }
+
+  private void portfolioPerformanceWhenDataNotAvailable(LocalDate currentDate,
+                                                        Portfolio portfolioName,
+                                                        TreeMap<String, Double> selectedData) {
+    String currentDateString = currentDate.toString();
+    double value = getValue(currentDateString, currentDate, portfolioName);
+    String formatDate = dateFormat(currentDateString);
+    selectedData.put(formatDate, value);
+  }
+
+  double getValue(String currentDateString, LocalDate currentDate, Portfolio portfolio) {
+    double value;
+    while (true) {
+      try {
+        value = portfolio.portfolioValue(currentDateString, new StockData());
+        break;
+      } catch (IllegalArgumentException e) {
+        if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
+          throw new IllegalArgumentException("Cannot find the performance as one of the "
+                  + "share was not listed!");
+        }
+        currentDate = currentDate.minusDays(1);
+        currentDateString = currentDate.toString();
+      }
+    }
+
+    return value;
+  }
+
 
   /**
    * this method computes performance of a portfolio within a specified time frame/ period.
@@ -272,7 +279,10 @@ public class Performance {
    */
   public TreeMap<String, Double> portfolioPerformance(Portfolio portfolioName, LocalDate start,
                                                       LocalDate end) {
-    double value = 0;
+    if (start.isEqual(end)) {
+      throw new IllegalArgumentException("For performance overtime please enter time-period, "
+              + "not a single day.");
+    }
     TreeMap<String, Double> selectedData = new TreeMap<>();
     long totalDays = ChronoUnit.DAYS.between(start, end);
     long monthsDifference = ChronoUnit.MONTHS.between(start.withDayOfMonth(1),
@@ -281,36 +291,34 @@ public class Performance {
     int numParts;
     if (totalDays <= 30 && totalDays > 0) {
       numParts = (int) totalDays;
-      helperPortfolioPerformanceYearDiff0(numParts, start, value, totalDays,
+      helperPortfolioPerformanceYearDiff0(numParts, start, totalDays,
               portfolioName, selectedData);
     } else if (totalDays == 31) {
       numParts = 16;
-      helperPortfolioPerformanceYearDiff0(numParts, start, value, totalDays,
+      helperPortfolioPerformanceYearDiff0(numParts, start, totalDays,
               portfolioName, selectedData);
     } else if (monthsDifference < 5 && monthsDifference > 0 && yearDiff == 0) {
       numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      helperPortfolioPerformanceYearDiff0(numParts, start, value, totalDays,
+      helperPortfolioPerformanceYearDiff0(numParts, start, totalDays,
               portfolioName, selectedData);
     } else if (monthsDifference >= 5 && monthsDifference < 30) {
       numParts = (int) monthsDifference;
-      helperPortfolioPerformanceMonthDiffBetween5And30(numParts, start, value,
+      helperPortfolioPerformanceMonthDiffBetween5And30(numParts, start,
               portfolioName, selectedData);
     } else if (yearDiff >= 1 && yearDiff < 5 && monthsDifference >= 30) {
       numParts = (int) Math.ceil((double) monthsDifference / 2);
-      helperPortfolioPerformanceMonthDiffBetween1And5(numParts, start, value,
+      helperPortfolioPerformanceMonthDiffBetween1And5(numParts, start,
               portfolioName, selectedData);
     } else if (yearDiff >= 5 && yearDiff < 30) {
       numParts = (int) yearDiff;
-      helperPortfolioPerformanceYearDiffBetween1And5(numParts, start, value,
+      helperPortfolioPerformanceYearDiffBetween1And5(numParts, start,
               portfolioName, selectedData);
     } else if (yearDiff >= 30) {
       numParts = (int) Math.ceil((double) yearDiff / 2);
       while (numParts > 30) {
         numParts = (int) Math.ceil((double) numParts / 2);
       }
-      //numParts = Math.min(Math.max((int) (totalDays / 5), 1), 29);
-      //helperPerformanceYearDiff0(numParts, start, value, totalDays, portfolioName, selectedData);
-      helperPortfolioPerformanceYearDiffMoreThan30(numParts, start, value,
+      helperPortfolioPerformanceYearDiffMoreThan30(numParts, start,
               portfolioName, selectedData, yearDiff);
     }
     return selectedData;
@@ -325,8 +333,7 @@ public class Performance {
    */
   private String dateFormat(String dateString) {
     LocalDate date = LocalDate.parse(dateString);
-    String formattedDate = date.format(DateTimeFormatter.ofPattern("MMM yyyy"));
-    return formattedDate;
+    return date.format(DateTimeFormatter.ofPattern("MMM yyyy"));
   }
 
   /**
@@ -342,8 +349,7 @@ public class Performance {
         maxValue = value;
       }
     }
-    int scale = (int) Math.ceil(maxValue / 49);
-    return scale;
+    return (int) Math.ceil(maxValue / 49);
   }
 
   /**
@@ -422,31 +428,17 @@ public class Performance {
    *
    * @param numParts      number of parts to divide the time period into.
    * @param start         start date of the time period.
-   * @param value         portfolio value at the specified date.
    * @param portfolioName portfolio object for which total value is calculated to find performance.
    * @param selectedData  treeMap to store selected portfolio data.
    */
   private void helperPortfolioPerformanceMonthDiffBetween5And30(int numParts, LocalDate start,
-                 double value, Portfolio portfolioName, TreeMap<String, Double> selectedData) {
+                                                                Portfolio portfolioName,
+                                                                TreeMap<String, Double>
+                                                                        selectedData) {
     for (int i = 0; i < numParts; i++) {
       LocalDate currentDate = start.plusMonths(i).withDayOfMonth(start.plusMonths(i)
               .lengthOfMonth());
-      String currentDateString = currentDate.toString();
-      while (true) {
-        try {
-          value = portfolioName.portfolioValue(currentDateString, new StockData());
-          break;
-        } catch (IllegalArgumentException e) {
-          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-            throw new IllegalArgumentException("Cannot find the performance as one of the "
-                    + "share was not listed!");
-          }
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-      }
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, value);
+      portfolioPerformanceWhenDataNotAvailable(currentDate, portfolioName, selectedData);
     }
   }
 
@@ -457,32 +449,17 @@ public class Performance {
    *
    * @param numParts      number of parts to divide the time period into.
    * @param start         start date of the time period.
-   * @param value         portfolio value at the specified date.
    * @param portfolioName portfolio object for which total value is calculated to find performance.
    * @param selectedData  treeMap to store selected portfolio data, timestamp, and portfolio value.
    */
   private void helperPortfolioPerformanceMonthDiffBetween1And5(int numParts, LocalDate start,
-                  double value, Portfolio portfolioName, TreeMap<String, Double> selectedData) {
+                                                               Portfolio portfolioName,
+                                                               TreeMap<String, Double>
+                                                                       selectedData) {
     for (int i = 0; i < numParts; i++) {
-      LocalDate currentDate = start.plusMonths(i * 2).withDayOfMonth(start
-              .plusMonths(i * 2).lengthOfMonth());
-      String currentDateString = currentDate.toString();
-      while (true) {
-        try {
-          value = portfolioName.portfolioValue(currentDateString, new StockData());
-          break;
-        } catch (IllegalArgumentException e) {
-          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-            throw new IllegalArgumentException("Cannot find the performance as one of the"
-                    + "share was not listed!");
-          }
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-      }
-      //selectedData.put(currentDateString, value);
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, value);
+      LocalDate currentDate = start.plusMonths(i * 2L).withDayOfMonth(start
+              .plusMonths(i * 2L).lengthOfMonth());
+      portfolioPerformanceWhenDataNotAvailable(currentDate, portfolioName, selectedData);
     }
   }
 
@@ -494,30 +471,16 @@ public class Performance {
    *
    * @param numParts      number of parts to divide time period.
    * @param start         start date of the time period.
-   * @param value         portfolio value at the specified date.
    * @param portfolioName portfolio object for which total value is calculated to find performance.
    * @param selectedData  treeMap to store selected portfolio data.
    */
   private void helperPortfolioPerformanceYearDiffBetween1And5(int numParts, LocalDate start,
-              double value, Portfolio portfolioName, TreeMap<String, Double> selectedData) {
+                                                              Portfolio portfolioName,
+                                                              TreeMap<String, Double>
+                                                                      selectedData) {
     for (int i = 0; i <= numParts; i++) {
       LocalDate currentDate = start.plusYears(i).withMonth(12).withDayOfMonth(31);
-      String currentDateString = currentDate.toString();
-      while (true) {
-        try {
-          value = portfolioName.portfolioValue(currentDateString, new StockData());
-          break;
-        } catch (IllegalArgumentException e) {
-          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-            throw new IllegalArgumentException("Cannot find the performance as one of the "
-                    + "share was not listed!");
-          }
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-      }
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, value);
+      portfolioPerformanceWhenDataNotAvailable(currentDate, portfolioName, selectedData);
     }
   }
 
@@ -529,35 +492,19 @@ public class Performance {
    *
    * @param numParts      number of parts to divide the time period into.
    * @param start         start date of the time period.
-   * @param value         portfolio value at the specified date.
    * @param portfolioName portfolio object for which total value is calculated to find performance.
    * @param selectedData  treeMap to store selected portfolio data.
    * @param yearDiff      year difference between start and end dates.
    */
   private void helperPortfolioPerformanceYearDiffMoreThan30(int numParts, LocalDate start,
-                                                            double value, Portfolio portfolioName,
+                                                            Portfolio portfolioName,
                                                             TreeMap<String, Double> selectedData,
                                                             long yearDiff) {
     for (int i = 0; i <= numParts; i++) {
       long interval = Math.round((float) yearDiff / (numParts));
       LocalDate currentDate = start.plusYears(i * interval).withMonth(12)
               .withDayOfMonth(31);
-      String currentDateString = currentDate.toString();
-      while (true) {
-        try {
-          value = portfolioName.portfolioValue(currentDateString, new StockData());
-          break;
-        } catch (IllegalArgumentException e) {
-          if (e.getMessage().equalsIgnoreCase("The share was not listed")) {
-            throw new IllegalArgumentException("Cannot find the performance as one of the share"
-                    + " was not listed!");
-          }
-          currentDate = currentDate.minusDays(1);
-          currentDateString = currentDate.toString();
-        }
-      }
-      String formatDate = dateFormat(currentDateString);
-      selectedData.put(formatDate, value);
+      portfolioPerformanceWhenDataNotAvailable(currentDate, portfolioName, selectedData);
     }
   }
 

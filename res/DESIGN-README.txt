@@ -1,21 +1,31 @@
-ASSIGNMENT - 4 
+ASSIGNMENT - 4
 
 The design is implemented as follows:
 
-My design follows the MVC pattern in which the work of the controller is of taking the input from
-the user and passing the input to the model for processing and, the controller send the processed
+My design follows the MVC pattern in which the work of the controller is taking the input from
+the user and passes the input to the model for processing and, the controller sends the processed
 data received from the model to the view to show that processed data to the user.
 
-Here my model is the PortfolioDir interface and my model represents list of portfolio of the current
-user. My model contains a list of Portfolio objects and methods which delegates the operation on a
-particular portfolio to the Portfolio class. My portfolio class contains name and a hashmap
-sharesList which maps the Stock object with the quantity of that particular stock object. The stock
-object contains the name of the stock(ticker symbol) and a hashmap priceData in which it contains the
-date and the price for that date.(Historical data).
+Here my model is the PortfolioDir interface and my model represents an Agent/ manager, that manages
+the user's portfolios, which is creating an Inflexible or flexible portfolio and storing a list,
+providing the user with portfolio statistics like totalValue at a given date, cost basis, buys and
+sells the specific amount of a specific stock on a specified date. Just like a manager it also gives
+the statistics of a particular stock asked by the user, such as if a stock gained or lost on a date,
+if the stock gained or lost over a given period, what the moving average of a stock for x days, what
+are the crossover days for a given period and what was a stock performance over a given period.
+Using these stats the model suggests to the user when to buy and when to sell that specified stock.
+So one object of my model represents a manager/ agent helping the user invest his money.
+My model contains a list of Portfolio objects and an object of Interface StockStatistics
+(used to get the stats of a given stock) and methods that delegate the operation on a particular
+portfolio to the Portfolio class and operation on a particular stock to the StockStatistics Class.
+
+AbstractPortfolio is an abstract class that implements the portfolio interface and is extended by
+the FlexiblePortfolioImpl and PortfolioImpl which implements the
+flexible portfolio functionalities and inflexible portfolio functionalities respectively.
 
 Here my controller is the StockController which takes the input from the user based on the menu
-showed by the view and calls the method of the model which is assigned to do that particular work.
-And it also sends the message or output received from the model to the view to display that output
+shown by the view and calls the method of the model that is assigned to do that particular work.
+It also sends the message or output received from the model to the view to display that output
 to the user.
 
 Here my view is the Iview Interface which takes the message or data from the controller and displays
@@ -24,56 +34,190 @@ controller sends.
 
 Upon starting the program the controller asks the view using the showMenu method to show the main
 menu to the user. The controller's go method takes the choice as input from the user. The user can
-choose to create a portfolio which uses a builder to create a single portfolio. The controller take
-the name of the portfolio from the user and creates a builder object. Now when user enter the share
+choose to create a portfolio. Then he is given a choice to create a flexible or an inflexible
+portfolio. For an inflexible portfolio, a builder is used to create it. The controller takes
+the name of the portfolio from the user and creates a builder object. Now when a user enters the share
 name and share quantity it validates the share name in the builder and adds it to a hashmap inside
-the builder. Now when the user has entered all the values the method addPortfolio is called which
+the builder. Now when the user has entered all the values the method and portfolio are called which
 builds a portfolio from the builder and adds it to the list of portfolios contained in my model
-(PortfolioDirImpl).
+(PortfolioDirImpl). This way it is made immutable and no one can add or remove stocks from it.
+But if the user chooses to create a flexible portfolio the the controller just takes the name of
+the portfolio and checks if the name already exists or not, if the name doesn't exist then it
+creates an empty portfolio. And to populate this flexible portfolio, user can buy stocks using option 6.
 
-If the user wants to load the portfolio, controller takes this input from the user and calls the
-loadPortfolio method in controller itself which takes in the portfolio name from the user and
-validates that the portfolio doesn't exist from before. It then takes the path of the file from the
-user and send the path to the persistence class which does the reading of the csv file. We currently
-support reading and writing to a csv file only. And the format of the file that we support for
-reading should be Stock name,quantity. Now the read file is sent to the builder load function which
-validates the share name and stores all the data in the hashmap, and then we call addPortfolio
+
+If the user wants to load the portfolio, the controller takes this input and asks the user if he
+wants to load an inflexible or flexible portfolio, and the user inputs that choice.If user chooses
+inFlexible then the controller uses loadInflexiblePortfolio method in the controller itself which
+takes in the portfolio name from the user and
+validates that the portfolio doesn't exist before. It then takes the path of the file from the
+user and sends the path to the persistence class which does the reading of the CSV file. We currently
+support reading and writing to a CSV file only. The format of the file that we support for
+reading should be Stock name and quantity for inflexible. Now the read file is sent to the builder
+load function which
+validates the share name and stores all the data in the hashmap, and then we call and addPortfolio
 method of the model to create the portfolio from the builder and add it to the portfolio list.
+For a flexible portfolio, we take the transaction in the CSV file from the user in the format
+Transaction Type(Buy/Sell), Ticker Symbol, Quantity of the share, the Transaction Date. If the
+file doesn't have this format or any data is invalid the model throws error to the controller and
+the controller shows this error to the user.
 
-The builder used to create a new portfolio is a static method inside the portfolio class which is
+The builder used to create a new portfolio is a static method inside the portfolioImpl class which is
 packaged private class.
 
 Now if the user wants to see the composition of the portfolio, it provides that choice to the
-controller and controller calls the examineComposition method in the controller itself which takes
-the user choice of which portfolio it wants to see the composition of. This method calls the
-getComposition method of my model and that delegates it to the portfolio getComposition method which
-returns a hashmap of stock ticker symbol and quantity present in that particular portfolio. The
-controller send this map from model the showComposition method of view, and it displays it to the
-user.
+controller and the date on which he wants the composition of the portfolio and the controller calls
+ the examineComposition method in the controller itself which takes
+the user's choice of which portfolio it wants to see the composition of. This method calls the
+getComposition method of my model and that delegates it to either FlexiblePortfolioImpl class or
+PortfolioImpl class based on the portfolio selected by the user and it uses dynamic dispatch to do
+so. This method in the classreturns a hashmap of the stock ticker symbol and quantity present in
+that particular portfolio. Thecontroller sends this map from the model through the showComposition
+method of view, and it displays it to the user.
 
 If the user wants to get the total value of the portfolio he asks the controller to get the total
-value and controller takes in the date from the user and send the choice of the portfolio and date
+value and the controller takes in the date from the user and sends the choice of the portfolio and date
 to the portfolioValue method of the model which delegates the portfolioValue functionality to the
-method in Portfolio class, and it calls a method getPrice for each stock inside the portfolio which
-takes in the date for which the price is required. the returnPrice method checks if the file for
-that stock is present or not for the current date, if it is not present it call the fetch data
-method which uses Alpha advantage api to get the historical price data. It then stores that
-historical data in a newly created file and also in the hashmap priceData. If priceData already has
-data then the api is not called or if the file exists the api is not called and the price for that
- particular date and stock is returned to the portfolio class which adds it to the total value.
- Similarly, this is done for each stock in the portfolio and the computed value is sent to the
- controller which sends it to the view to display it to the user.
+method in either PortfolioImpl class or FlexiblePortfolioImpl class based on the portfolio selected
+by the user and uses dynamic dispatch for it, this method also takes an object of type StockData
+(which is a class in the controller package). Using this object we get the historical price data
+for the ticker symbol. this class has a public method fetchHistoricalData which first checks if the
+file for that ticker symbol exists for that particular date or not. If it doesn't exist then it calls
+the API to get the data for that stock and saves the data into a file otherwise it reads the file and
+loads that data into a Map containing the date, and the list of prices (opening, closing, low and high)
+and returns it.  The total value is calculated based on the composition of the portfolio on that
+particular date.
 
 If the user wishes to save the portfolio it chooses which portfolio to save and gives a path to the
-controller. The controller then gets the composition of that portfolio from the getComposition
-method and sends that map to the save method in the persistence class where it writes to the csv
-file user has provided.
+controller. The controller then gets the StringBuilder object from the save method of the model and
+sends this object to the save method in the persistence class where it writes to the CSV
+file the user has provided.
 
-On exit of the program all the folders inside the Data folder is deleted other than the folder
+Now there is the functionality of cost basis which is valid for only flexible portfolios, so if the
+user wants to get the cost basis of an inflexible portfolio, the model will give an error that the
+cost basis cannot be found for the inflexible portfolio as the cost basis will be constant. The user
+provides the portfolio choice and date till which he needs the cost basis, from the list of portfolios
+he is being shown. The controller calls the get cost basis function of the model and that checks if
+the portfolio selected is flexible or not. If the portfolio is inflexible then the model throws an
+error and the controller displays it to the user. If the portfolio is flexible then it calls the
+getCostBasis function of the flexiblePortfolioImpl class and it uses the transaction log in the
+class to get all the buy transactions and calculate the total investment till that date and returns
+to the controller to display it to the user.
+
+Now for a flexible portfolio, we allow the user to buy or sell stock at any date in that portfolio.
+So when the user chooses to buy or sell a stock, the controller asks the user for the portfolio he
+wants to buy or sell the stock in the ticker symbol of the stock and the quantity and then the
+transaction date. Then with these data, the controller calls the respective method in the model,
+and the model checks if the portfolio is inflexible it throws an error to the controller, otherwise,
+it delegates the work to the buy/sell method in flexiblePortfolioImpl class. The flexiblePortfolio
+has a field that stores the composition of the portfolio on the date of every transaction.
+So whenever there is a buy or a sell in that portfolio on a specific date, it stores the composition
+for that date. So when there is a buy on a date it copies the composition present before that date
+and adds it to the composition of that date as well as updates the composition of dates present in
+the map after that date as all the future composition will consist of this share as well. The same
+we do for sell, we copy the composition just before that date and sell the quantity requested by the
+user, if it is not present it will give the user an error. If the quantity is present it will check
+if the quantity will be present in the future as well or not, and if it is present then we will
+deduct the quantity and save the composition for that date and deduct the quantity from the future
+composition as well. So this way we have the composition on days of transactions and between
+transactions composition remains the same. Also when buying and selling we add the transaction to
+a logger which is a list of transaction objects, containing transaction type, share name,
+quantity, and transaction date.
+
+To get the historical data for buying, selling, getting value we are using Alpha vantage api. The
+api call id made inside the FetchFromAlphaVantage class which implements FetchDataFromAPI interface
+which is in the controller package and is packaged private and only used from the class StockData
+which is also in the controller package. So fetching is done in isolation and this StockData class
+implements from the IStockData interface. And to all the function of model which needs the
+historical data we pass this interface object IStockData which is called to get the historical data.
+
+For portfolio Performance, the user provides the portfolio choice and start date and end date
+and the controller calls the performance method of the model, the model uses the performance
+class which is packaged private inside the model package to get the performance of that
+portfolio as a treemap of timestamps and the number of asterisks to be printed. This treemap
+is sent to the controller and the controller uses the view to print the performance.
+
+On exit of the program, all the folders inside the Data folder are deleted other than the folder
 containing the historical data of different stocks that were fetched today. As the date changes the
 folder is deleted upon exit as a new folder with that date's name will be created.
 
 Our program supports all stocks in NYSE and NASDAQ, and it supports all the dates
+
+CHANGES FROM THE PREVIOUS DESIGN:
+1) Initially I had the fetching from the API functionality inside my model package,
+but now I have created a new class Stock Data inside my Controller package as any data that
+comes from outside the program must belong to the controller, So now storing the historical data,
+fetching from API and getting historical data happens outside the model in the controller in
+isolation. As it was initially happening inside the model package, it was happening for the
+stocks of a portfolio, but in this assignment, we need historical data for other functions like
+the stock analysis. So it is better now to get the fetch historical data from the controller as
+now I can just pass the object to fetch this data to every method that requires it. So that is why
+I made this change where now getting the historical data of a stock is in the controller package
+and we are passing this class to the methods in the model. So to implement this functionality I
+changed the signature of my getValue method which now takes a new parameter StockData. I have two
+classes one StockData which returns the data either from file or uses the FetchDataFromApi interface
+ to call the alphavantage api and get the data from the API and return that data.
+
+2) So before we had this stock class which was storing the historical data and ticker symbol,
+and in my portfolioImpl class I had a map containing this stock object as key and its quantity
+as value. This StockImpl class was fetching the historical data and storing it, but now as
+historical data is being fetched outside, this class just contained the ticker symbol, so I
+removed this class altogether and changed the structure of my map to have String ticker symbol
+as the key in place of the whole stock object.
+
+3) I added methods like buyStock, sell stock, cost basis to my Portfolio interface and now my
+portfolio interface is implemented by an abstractPortfolio class which is in turn extended by
+the FlexiblePortfolio and InflexiblePortfolio class, but before only inflexible portfolio was
+implementing the Portfolio interface. This is code refactoring as it improves the code and common
+methods go in the abstract class and specific implementation and fields remain in the child class.
+The inflexible also implements the buy sell, but now it throws an error if buy of an inflexible
+portfolio is called.
+
+4)Changed my model name from PortfolioDir to InvestmentManager as now my model also suggests
+days to buy sell stock as compared to before when it only was keeping trach of list of portfolios.
+Now my model represents an investment manager who manages a users portfolio and also helps him
+invest, suggest days when to buy sell stock and gives the performance of the portfolio to the user.
+
+5) I added the required new methods to the model interface like methods to get stock statistics
+like crossover days, and it delegates the work to other classes inside model package. I did this
+because I feel this functionality is not separate from the management of investment so I added
+these method in the same model and this may my controller has only one model. I also added
+functions for buying and selling shares into my model. So now my model interface has many new
+methods, but it follows single responsibility and reduces coupling.
+
+6) My portfolioComposition method in model now takes a date, as for flexible portfolio we can
+see composition for any date, and it will be different and for an inflexible portfolio it doesn't
+really matter if the date is there or not, so we kept a single function which takes in a date and
+ returns the composition of the portfolio.
+
+7) As far as my export method is concerned, the save initially was taking in a map of string and
+integer and going through it and saving it to the file, but now I pass a string BUILDER object
+containing the data to be saved. This way my save is not just restricted to the data structure it
+is receiving, to save some other format of data in csv we had to write another function which would
+take map of string and transaction objects, so to avoid that we changed the argument of the export
+method and now it takes a string builder object and writes it into a file. So this made me add
+a save function in my model which calls the save method in Portfolio interface and gets the
+composition of either flexible or inflexible portfolio, and then converts the composition to a
+string builder and returns it to the controller and controller calls the export method in
+persistence class to export it to a file.
+
+8)In my controller to incorporate new functionalities so my switch case statements changed.
+
+9) My existing method getListOfPortfolio names changed, and now it returns a map of string and
+string which contains the name of the portfolio and its type: flexible or inflexible. This helps
+us to show the user this map so he can chose inflexible when needed and flexible when needed.This
+way user will be kept informed that which portfolio is flexible and which is inflexible.
+
+10) View had many changes as I needed to incorporate new functionalities. So now as different
+type of portfolio came and buy sell came so my menu changed, the meu options changed. Now my list
+of portfolio is a map so to print it in the view it must take a map so that also changed.
+
+12) I created an Interface for my persistence class, as it was not there before and it is always
+good to have an interface for all the classes.
+
+12) There are no other major changes in my design other than the above-mentioned. I feel all the
+changes were to incorporate new functionalities and making the code better, better designed and
+cleaner.
 
 
 The main program files created in the assignment are:
@@ -83,16 +227,21 @@ Model :
 
 1. PortfolioDir :
 
-Interface :  portfolio dir has the methods for delegating input to a particular portfolio through
+Interface:  portfolio dir has the methods for delegating input to a particular portfolio through
 the list of portfolios.
-Responsibility : stores the data of list of portfolios created in the program,
+
+Responsibility: stores the data of list of portfolios created in the program,
 through the portfolio directory array list.
-Description : Interface which determines the list of portfolio's created and
-is connected to the controller to connect the single portfolio object (model)
-in the portfolio list. It has methods which delegate the input from controller
-to the main model object that is a single portfolio, where the adding of new portfolio to portfolio
-directory takes place, getting composition of portfolio present in portfolio list, getting portfolio
-list, getting total value, which portfolio name exists and size of portfolio directory list.
+Description: The PortfolioDir interface represents a portfolio manager.
+It provides methods for managing portfolios within a portfolio directory.
+These methods include adding portfolios, creating flexible portfolios, retrieving the list of
+portfolio names, checking if the directory is empty, getting the size of the portfolio if a portfolio name
+exists.
+Additionally, it offers functionality for handling portfolio compositions, values, buying and
+selling stocks, calculating cost basis, and analyzing stock trends. For stock trend analyzes the
+methods are gain or lose on a date, gain or lose over a period, x-day moving average, crossover days
+over a period, moving cross over days for a period. It also has methods for getting stock performance
+over time and portfolio performance over time.
 
 Methods :
 1. addPortfolio() : this method is used to add new portfolio to the portfolio directory and builder
@@ -100,10 +249,10 @@ object is used to create the new portfolio.
 2. portfolioNameExists () : this method is used to check if the portfolio with a given name already
 exists in list of portfolios that is portfolio directory.
 3. getListOfPortfoliosName() : the method gives the list of portfolio names that have been already
-created.
-4. portfolioComposition() :this method takes in the portfolio number as the input and on based this
-portfolio is called, for that it calls the portfolioComposition method of Portfolio which loads the
-content of a particular portfolio.
+created, both flexible and inflexible list of portfolios.
+4. portfolioComposition() :this method takes in the portfolio number as the input and the date for which
+portfolio composition is to be found and on based this portfolio is called,
+for that it calls the portfolioComposition method of Portfolio which loads the content of a particular portfolio.
 5. getSize(): this method is used to get the size of number of portfolios in the array list of
 directory.
 6. portfolioValue() : this method takes in the input referring to portfolio number whose total
@@ -111,7 +260,27 @@ value is to be found and the date for which the total value is to be calculated 
 portfolioValue method of the Portfolio for further calculations and getting the price. The date is
 taken as day, month and year in integers.
 7. isEmpty() : this method checks if the portfolio directory list is empty.
-
+8. createFlexiblePortfolio() : Creates a new flexible portfolio with the given name.
+9. buyStock() : Buys stocks and adds them to the particular flexible portfolio.
+10. sellStock() :Sells stocks from the specified flexible portfolio.
+11. costBasis() : Calculates the cost basis of the flexible portfolio at the specified index for
+the given date.
+11. gainOrLose() : this method calculates the gain or loss of a stock for the given date.
+12. gainOrLoseOverAPeriod() :this method calculates gain or loss of a stock  over a specified period.
+13. xDayMovingAvg() : this method calculates the X-day moving average for a given stock on a specific date.
+14. crossoverOverPeriod() : this method calculates crossover events over a
+specified period for a given stock, whether it is a buy/ sell opportunity.
+15. movingCrossOver() :this method calculates moving crossovers over a specified period for a given stock,
+whether it is a buy/ sell opportunity.
+16. stockPerformance() : this method calculates the performance of a specific stock over a given period.
+17. portfolioPerformance() : this method calculates performance of a portfolio over a given period.
+18. scaleForStockPerformance() : this method determines appropriate scale for displaying the
+performance of a specific stock.
+19. scaleForPortfolioPerformance() : this method determines appropriate scale for displaying the
+performance of a portfolio.
+20. save() : Saves the portfolio, based on flexible or inflexible portfolio.
+21. loadPortfolio() : this method loads a portfolio from data provided by a list of strings and a
+StockData object, based on type of portfolio to be loaded.
 
 
 2. PortfolioDirImpl :
@@ -121,6 +290,11 @@ Description : it has methods which are implemented for adding portfolio to portf
 getting list of portfolios, composition of a portfolio, and portfolio value.
 Also. getting the total value of a specific portfolio in the array list of
 portfolios stored in this class.
+Additionally, it offers functionality for buying and selling stocks, calculating cost basis,
+and analyzing stock trends. For stock trend analyzes the methods are gain or lose on a date,
+gain or lose over a period, x-day moving average, crossover days
+over a period, moving cross over days for a period. It also has methods for getting stock performance
+over time and portfolio performance over time.
 
 Methods :
 Implementations for all methods defined in PortfolioDir Interface.
@@ -128,11 +302,15 @@ Implementations for all methods defined in PortfolioDir Interface.
 
 3. Portfolio :
 
-Interface : interface which acts as the main model and represents a single portfolio object.
+Interface : interface which acts as the main model for portfolios and represents a single
+portfolio object.
 Description :  The interface has methods that help in creating a single portfolio object,
-adding shares to portfolio, seeing the composition of portfolio, and getting total value
-of a portfolio. The adding of shares in portfolio takes place in its implementation.
-Responsibility : it contains the methods for managing a single portfolio.
+adding shares to portfolio, seeing the composition of portfolio, getting total value
+of a portfolio, obtaining the portfolio's name, and saving the portfolio. Additionally,
+it includes methods for buying and selling stocks, calculating cost basis,
+and checking if the portfolio is flexible.
+Responsibility : it contains the methods for managing a single portfolio. This portfolio can be
+either a flexible portfolio or an inflexible portfolio.
 
 Methods :
 1. portfolioComposition() : this method is used to get the portfolio composition of a portfolio
@@ -140,6 +318,14 @@ which contains the stock name and its quantity.
 2. portfolioValue() : this method takes in the date for which the portfolio value is to be found
 and returns the portfolio value.
 3. getName() : this method is used to get the name of the portfolio.
+4. save() : this method is used to save the portfolio, based on the type of portfolio to be saved
+the implementation varies.
+5. buyStock() : this method is used to buy stock for a flexible portfolio.
+6. sellStock() : this method is used to sell stock from a flexible portfolio
+7. costBasis() : this method calculates the cost basis of a flexible portfolio.
+8. isFlexible() : Checks if the portfolio is flexible.
+9. load() : this method loads a portfolio from data provided by a list of strings and a
+StockData object. The implementation varies based on the type of portfolio to be loaded.
 
 
 4. PortfolioImpl :
@@ -158,32 +344,157 @@ in a file that is read from the controller. It validates the line that it has va
 builds the portfolioImpl object with the portfolio name and sharelist which contains the data for
 particular shares entered by user in that portfolio. The validate stock name method validates if the
 stock name / ticker symbol passed for portfolio creation and while loading portfolio
-is correct or not.
+is correct or not. Additionally, it also has buy stock , sell stock, cost basis methods that throw
+an exception if these functionalities are retrieved for an inflexible portfolio. Also, if a flexible
+portfolio is loaded through the load method of inflexible portfolio it throws an exception.
+The is flexible method is used to check that this is not a flexible portfolio. The save method saves the
+inflexible portfolio as the ticker symbols and the quantity of stocks for that particular stock and
+returns the data to be saved as a string builder.
 
-5. StockInterface :
+5. StockStatistic :
+Interface: The StockStatistic interface provides methods to calculate various statistics related to
+ stocks, for finding the stock trend statistics.
+Description: The StockStatistic interface provides a framework for calculating various statistical
+measures related to stocks, facilitating analysis of stock market data, basically providing stock
+trends for a particular stock.
+Responsibility: This interface is responsible for defining methods that enable the computation
+of stock-related statistics such as gain/loss, moving averages, and identifying crossover points.
 
-Interface : interface has the methods that return the price of a particular stock on a particular
-date and has methods used for fetching the stock price through api calls.
-Responsibility: has the method for retrieving stock price data, decreasing the api calls by storing
-the fetched data from api to csv files for particular stocks whose api has been called, this save
-and load of file for fetching data takes place in file handler class of model.
+Methods:
+
+1. gainOrLoseOnDate(): Calculates gain or loss of a stock on a specific date.
+2. gainOrLoseOverPeriod(): Calculates gain or loss of a stock over a period of time.
+3. xDayMovingAvg(): Computes the X-day moving average of a stock on a specific date, using the last
+ x-number of days provided.
+4. crossoverOverPeriod(): Identifies crossover points over a specified period for a stock and finds
+whether a particular date in the period has sell or buy opportunity.
+5. movingCrossoversOverPeriod() : Identifies moving crossovers over a specified period for a stock,
+ using the x-day( shorter moving average days), y-days (larger moving average days) and identifies
+ the crossover days in the period with which type of crossover occurred a buy/sell crossover on that date.
+
+6. StockStatisticsImpl :
+Interface: it implements all the methods of StockStatistic interface.
+Description :The StockStatisticsImpl class implements the StockStatistic interface,
+providing methods for calculating various statistics related to stocks,
+particularly for analyzing stock trends.
+Responsibility:
+This class is responsible for implementing methods defined in the StockStatistic interface
+to perform calculations such as determining gain/loss, computing moving averages,
+and identifying crossover points for a given stock based on provided price data.
 
 Methods :
-1. returnPrice() : this method takes in the date for which the portfolio value is to be found.
-It returns the total price of a particular stock of a particular date.
+The gainOrLoseOnDate method provides that on a particular day whether a stock gained, lost or remain
+unchanged and also shows no price data found if for that date price data is not available for the stock.
 
+The gainOrLoseOverPeriod method provides the output that a particular stock gained / lost in a particular
+duration of time. If the start date entered has no price data available it moves to next day in the
+time period. If the end date of period has no price data on that date, it moves one day backward
+in the period. It shows a stock gained / lost/ remained unchanged over a period of time.
+If there is no price data available at all for the given period then it shows a
+message no price data available for that period.
 
-6. StockImpl:
+The xDayMovingAvg method calculates the x-day moving average for a specified stock using historical
+price data. It begins its computation from a given date, iteratively collecting closing prices for
+the specified number of days (x). If the closing price for a particular day is not available,
+it looks for the closest previous valid date with available price data. If there is insufficient
+data available, it throws an IllegalArgumentException.
+Finally, it computes the average of collected closing prices and returns the result.
 
-Responsibility : it implements the StockInterface to fetch stock price data using API calls.
-Description : it stores the price data of a stock until the current date in a CSV file using
-the file handler class methods that is present in model package , and also stores the data in a
-price-data object that has date and closing price for the stock.
-The data is stored in map object price-data for faster fetching of price whenever required for
-an already called stock data. Utilizes Alpha Vantage API for retrieving stock price data.
+The crossoverOverPeriod method identifies crossover points (buy/sell signals) within a specified
+period for a given stock, based on its 30-day moving average. It iterates through each date within
+the period, computing the moving average using the xDayMovingAvg method. It then compares the closing
+prices of the current and previous days with the moving average to determine if a crossover has
+occurred. If so, it adds the date and corresponding action ("buy" or "sell") to a TreeMap.
+In cases where price data is missing or incomplete, it handles these scenarios,
+either by skipping the date or throwing an IllegalArgumentException if essential data is absent.
+Finally, it returns the TreeMap containing crossover information.
 
-Methods :
-All methods defined in StockInterface are implemented here.
+The movingCrossoversOverPeriod method identifies moving average crossovers within a specified period
+for a given stock, where the shorter moving average (x) crosses over the longer moving average (y).
+It computes the moving averages for both x and y days at each date within the period using the
+xDayMovingAvg method. Then, it compares the current and previous day's moving averages for both x
+and y days to determine if a crossover has occurred. If a crossover is detected, it adds the date and
+corresponding action (buy/sell) to a TreeMap. The method sees that x is shorter than y,
+throwing an IllegalArgumentException if not.
+
+7. Performance :
+
+Description :  The Performance class in the model package provides methods for analyzing
+the performance of stocks and portfolios over time. It offers functionalities for calculating
+the performance of stocks within specified time frames, as well as determining the performance
+of portfolios. Additionally, it includes methods for determining scales for visualizing performance
+data, and converting the price data based on scale, for better representation.
+
+Methods:
+1.stockPerformance(): Computes the performance of a stock within a specified time frame.
+It takes historical price data of the stock, start date, and end date as input and returns a
+TreeMap containing the selected stock data, with timestamps and prices on those days.
+2. portfolioPerformance(): Computes the performance of a portfolio within a specified time frame.
+It takes a Portfolio object, start date, and end date as input and returns a TreeMap containing the
+ selected portfolio data, with timestamps and portfolio values on those days.
+3. determineScale(): Determines the scale for visualizing performance data over time.
+It takes a TreeMap containing price data as input and returns the scale value for better representation.
+4. determineValueBasedOnScale(): Scales the prices for the timestamps based on the calculated scale.
+It takes a TreeMap containing price data and a scale factor as input and returns a TreeMap
+containing scaled prices with timestamps.
+5.sortTreeMapByMonthAndYear(): Sorts a TreeMap containing data by month and year.
+It takes a TreeMap containing data with timestamps in the format "MMM yyyy" and returns the sorted
+TreeMap, by sorting the dates in proper chronological order.
+
+8. FlexiblePortfolioImpl :
+
+Description:
+This class is responsible for managing and processing data related to flexible portfolio.
+Responsibility:
+The class has methods for flexible portfolio management, including buying and selling stocks,
+computing portfolio composition, cost basis, and getting total value.
+
+Methods:
+
+1. buyStock(): Buys a specified quantity of a stock on a given date for a flexible portfolio..
+2. sellStock(): Sells a specified quantity of a stock on a given date for a flexible portfolio.
+3. portfolioComposition(): gets the composition of the portfolio on a specified date.
+4. costBasis(): Calculates the total cost basis of the portfolio up to a specified date.
+5. portfolioValue(): Calculates the total value of the portfolio on a specified date.
+6. save(): Generates a string representation of the portfolio transactions for saving to a file.
+7. isFlexible(): Indicates whether the portfolio is flexible or any other type of portfolio.
+8. load(): this method loads portfolio transactions from a list of string arrays representing
+transaction data, and creates a new flexible portfolio based on the data.
+
+9. Transaction :
+Description:
+The Transaction class, has details about a transaction, such as the transaction type
+(buy/sell), the ticker symbol of the stock, the quantity of shares involved,
+and the date of the transaction.
+
+Responsibility:
+This class ensures that transaction data is encapsulated in a Transaction object, providing methods to
+retrieve transaction details such as type, ticker symbol, quantity, and date.
+Methods:
+
+1.getType(): Returns the type of the transaction buy/sell.
+2. getStock(): Returns the ticker symbol of the stock involved in transaction.
+3. getQuantity(): Returns the quantity of shares involved in transaction.
+4. getDate(): Returns the date of the transaction.
+
+10. AbstractPortfolio :
+
+Description: abstract class implementing common functionality for both flexible and
+inflexible portfolios.
+Responsibility: it has common portfolio functionality such as retrieving
+closing prices of stocks, computing portfolio values, and validating stock names. Also, it has a
+method for creating deep copies of maps.
+
+Methods:
+
+1. getName(): gets the name of the portfolio.
+2. getClosingPriceOnDate(): gets the closing price of a stock on a specified date.
+3. computeValue(): this method computes the total value of the portfolio on a specified date
+based on the composition and stock prices.
+4. validateStockName(): Validates if a given share name exists in the stocks.csv file and
+returns its ticker symbol.
+5. deepCopy(): Creates deep copy of map to ensure independent copies of composition of portfolio.
+
 
 
 Controller :
@@ -212,6 +523,56 @@ name will be created.
  create a portfolio. So, here the file is read and returns the lines of file that contain stock name
  / ticker symbol and its quantity is returned.
 
+ Methods:
+
+1.exportAsCSV(): This method exports the given composition data to a CSV file at the specified path.
+ It takes the file path where the CSV file will be created and a StringBuilder containing the data
+ to be written to the file. The data is written to the CSV file in the format specified by
+ the StringBuilder. If the file path does not end with ".csv" or is invalid,
+ an IllegalArgumentException is thrown. After writing the data to the file,
+ it prints a success message indicating that the data has been exported successfully.
+2.save(): This method saves historical data to a CSV file at the specified path.
+It takes the file path where the CSV file will be created and a Map containing historical data,
+ where dates are mapped to lists of price values. The historical data is iterated over,
+ and each entry is formatted into a CSV row and written to the file. If the parent directory of the
+ specified file path does not exist, it creates the directories recursively.
+ 3. loadFromCSV(): This method loads data from a CSV file located at the specified file path.
+ It takes the file path of the CSV file to be loaded. It reads the lines from the CSV file, and
+ splits each line into an array of strings. These arrays are stored in a list,
+ which is returned once all lines have been read. If the file does not exist or the file format
+ is not CSV, appropriate exceptions are thrown.
+
+4. StockData :
+Description : The StockData class provides methods for fetching historical stock data and
+storing it in a CSV file.
+Responsibilities: Fetch historical stock data from an API. Store fetched data in a CSV file.
+Retrieve historical stock data from the CSV file.
+
+Methods :
+
+1. fetchHistoricalData(): This method fetches historical stock data for the specified ticker symbol.
+ It first checks if the data for the ticker symbol is already available in a CSV file.
+ If not, it fetches the data from an API, stores it in a CSV file, and then loads the data from the file.
+ Finally, it returns a TreeMap containing historical stock data, with dates as keys and price information as values.
+2. fetchData(): This private method is used to call the API for fetching stock data using
+ the API key. It constructs the API URL with the provided ticker symbol and API key, reads the data
+  from the URL, and then calls the storeFetchedData() method to store the fetched data in a CSV file.
+3. storeFetchedData(): This private method stores the data obtained from the API call in a CSV file.
+ It takes a StringBuilder containing the data fetched from the API as input, parses the data, and
+ stores it in a CSV file using a Persistence object.
+4. loadDataFromFile(): This private method is used to load data from a CSV file for a particular
+ticker symbol present in the current date's folder. It constructs the file path based on the
+ticker symbol and current date, then uses a Persistence object to load the data from the CSV file
+and populates the priceData object with the retrieved data.
+5. populateMap(): This private method populates the priceData TreeMap with historical
+stock data extracted from a given line of data. It takes an array of strings representing a line
+of historical stock data as input and parses the data to extract the date, opening price, closing
+price, high price, and low price. It then stores this data in the priceData TreeMap.
+6. isCSVFileExists(): This private method is used to check if a CSV file exists for a
+particular ticker symbol in the data folder. It constructs the file path based on the ticker symbol
+and current date, then checks if the file exists.
+It returns true if the CSV file exists, otherwise false.
+
 
 View :
 
@@ -225,14 +586,25 @@ created.
 exists / or is created.
 3. showComposition() : this method displays the composition of a portfolio.
 4. showTotalValue() : this method displays the total value of a portfolio.
-5. showListOfPortfolios() : this method displays a list of portfolios that have been created.
+5. showListOfPortfolios() : this method displays a list of portfolios that have been created along
+ with the type of portfolio.
 6. displayError() : this method displays an error message.
 7. print() : this method prints a message.
+8. barGraph() : this method displays a bar graph using the input got from the controller to show
+the stock and portfolio performance using asterisks.
+9. choosePortfolioType() : this method displays the type of portfolio to choose from flexible or
+inflexible.
+10. showStockStat() : this method displays the menu option for stock statistics trend.
+11. showXDayMovingAvg() : this method displays the x-day moving average for a particular stock.
+12. printTreeMapEntries() : this method displays the crossover output for the program, with the
+ string date and other string value showing the type of crossover on the particular date.
 
 2. IViewImpl :
  Responsibility : IViewImpl is the implementation of the interface IView, which has methods for
  showing menu to the user, portfolio composition, showing total value, list of portfolios,
- displaying error messages and printing the messages for user interaction with menu.
+ displaying error messages, showing the bar graph for portfolio and stock performance to the user,
+  showing the stock statistics menu, showing the x-day moving average, crossover days, displaying
+  portfolio types to choose from and printing the messages for user interaction with menu.
 
 
 

@@ -1,14 +1,11 @@
 package model;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * This class FileHandler as methods for loading the data from files, that are created when.
@@ -33,30 +30,5 @@ class FileHandler {
       System.err.println("Error reading file: " + e.getMessage());
     }
     return lines;
-  }
-
-  /**
-   * Saves data to a file located at the specified path.
-   * If the parent folder doesn't exist, it creates it.
-   * @param path The path to the file where data will be saved.
-   * @param historicalData A map representing the historical data to be saved, with keys as
-   *                       stock names and values as historical prices.
-   */
-  void save(String path, Map<String, Double> historicalData) {
-    File file = new File(path);
-    File parentDir = file.getParentFile();
-
-    if (!parentDir.exists()) {
-      parentDir.mkdirs(); // Create parent directories recursively
-    }
-
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-      for (Map.Entry<String, Double> entry : historicalData.entrySet()) {
-        writer.write(entry.getKey() + "," + entry.getValue());
-        writer.newLine();
-      }
-    } catch (IOException e) {
-      throw new IllegalArgumentException();
-    }
   }
 }

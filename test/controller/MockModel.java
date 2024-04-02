@@ -6,15 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import model.InvestmentManager;
 import model.Portfolio;
-import model.PortfolioDir;
-import model.PortfolioImpl;
+import model.InflexiblePortfolioImpl;
 
 /**
- * MockModel class is a mock implementation of the PortfolioDir interface.
+ * MockModel class is a mock implementation of the InvestmentManager interface.
  * is used for testing purposes.
  */
-public class MockModel implements PortfolioDir {
+public class MockModel implements InvestmentManager {
 
   /**
    * Represents a mock name used for testing purposes.
@@ -82,27 +83,11 @@ public class MockModel implements PortfolioDir {
   }
 
   /**
-   * Constructs a MockModel with the specified mock value.
-   * @param mockValue The mock value.
-   */
-  public MockModel(double mockValue) {
-    this.mockValue = mockValue;
-  }
-
-  /**
    * Constructs a MockModel with the specified mock name.
    * @param mockName The mock name.
    */
   public MockModel(String mockName) {
     this.mockName = mockName;
-  }
-
-  /**
-   * Constructs a MockModel with the specified integer mock value.
-   * @param intMockValue The integer mock value.
-   */
-  public MockModel(int intMockValue) {
-    this.intMockValue = intMockValue;
   }
 
   /**
@@ -118,7 +103,7 @@ public class MockModel implements PortfolioDir {
    * @param newBuilder The builder object used to construct the new portfolio.
    */
   @Override
-  public void addPortfolio(PortfolioImpl.PortfolioBuilder newBuilder) {
+  public void addPortfolio(InflexiblePortfolioImpl.PortfolioBuilder newBuilder) {
     portfolioDirectory.add(newBuilder.build());
     logger.append(portfolioDirectory.get(portfolioDirectory.size() - 1).getName()).append('\n');
   }
@@ -173,11 +158,11 @@ public class MockModel implements PortfolioDir {
    * @param day The day for which the value is retrieved.
    * @param month The month for which the value is retrieved.
    * @param year The year for which the value is retrieved.
-   * @param api The StockData object used for retrieving stock data.
+   * @param api The IStockData object used for retrieving stock data.
    * @return The value of the mock portfolio at the specified index.
    */
   @Override
-  public double portfolioValue(int input, int day, int month, int year, StockData api) {
+  public double portfolioValue(int input, int day, int month, int year, IStockData api) {
     logger.append("Retrieving composition for portfolio at index: ").append(input)
             .append(" For " + "the day: ")
             .append(day).append(" month: ")
@@ -212,10 +197,10 @@ public class MockModel implements PortfolioDir {
    * @param stock  ticker symbol of the stock to buy.
    * @param quantity  quantity of the stock to buy.
    * @param buyDate  date of the purchase.
-   * @param api  StockData object used for retrieving stock data.
+   * @param api  IStockData object used for retrieving stock data.
    */
   @Override
-  public void buyStock(int input, String stock, int quantity, LocalDate buyDate, StockData api) {
+  public void buyStock(int input, String stock, int quantity, LocalDate buyDate, IStockData api) {
     logger.append("Buying ").append(quantity).append(" shares of ").append(stock)
             .append(" for portfolio at index: ").append(input)
             .append(" on ").append(buyDate.toString()).append("\n");
@@ -227,10 +212,10 @@ public class MockModel implements PortfolioDir {
    * @param stock  ticker symbol of the stock to sell.
    * @param quantity  quantity of the stock to sell.
    * @param sellDate  date of the sale.
-   * @param api StockData object used for retrieving stock data.
+   * @param api IStockData object used for retrieving stock data.
    */
   @Override
-  public void sellStock(int input, String stock, int quantity, LocalDate sellDate, StockData api) {
+  public void sellStock(int input, String stock, int quantity, LocalDate sellDate, IStockData api) {
     logger.append("Selling ").append(quantity).append(" shares of ").append(stock)
             .append(" for portfolio at index: ").append(input)
             .append(" on ").append(sellDate.toString()).append("\n");
@@ -240,11 +225,11 @@ public class MockModel implements PortfolioDir {
    * this method calculates cost basis of the portfolio at specified index for given date.
    * @param input index of the portfolio.
    * @param date date for which the cost basis is calculated.
-   * @param api StockData object used for retrieving stock data.
+   * @param api IStockData object used for retrieving stock data.
    * @return cost basis of the portfolio at the specified index.
    */
   @Override
-  public double costBasis(int input, LocalDate date, StockData api) {
+  public double costBasis(int input, LocalDate date, IStockData api) {
     logger.append("Calculating cost basis for portfolio at index: ").append(input)
             .append("on date: ").append(date.toString()).append('\n');
     return mockValue;
@@ -255,11 +240,11 @@ public class MockModel implements PortfolioDir {
    * this method calculates gain or loss for a specified stock on a given date.
    * @param tickerSymbol The ticker symbol of the stock.
    * @param date date for which the gain or loss is calculated.
-   * @param api StockData object used for retrieving stock data.
+   * @param api IStockData object used for retrieving stock data.
    * @return gain or loss for the specified stock.
    */
   @Override
-  public String gainOrLose(String tickerSymbol, LocalDate date, StockData api) {
+  public String gainOrLose(String tickerSymbol, LocalDate date, IStockData api) {
     logger.append("Calculating gain or loss for ").append(tickerSymbol)
             .append(" on ").append(date.toString()).append("\n");
     return mockName;
@@ -271,12 +256,12 @@ public class MockModel implements PortfolioDir {
    * @param tickerSymbol The ticker symbol of the stock.
    * @param date1 The start date of the period.
    * @param date2 The end date of the period.
-   * @param api The StockData object used for retrieving stock data.
+   * @param api The IStockData object used for retrieving stock data.
    * @return The gain or loss for the specified stock over the period.
    */
   @Override
   public String gainOrLoseOverAPeriod(String tickerSymbol, LocalDate date1, LocalDate date2,
-                                      StockData api) {
+                                      IStockData api) {
     logger.append("Calculating gain or loss for ").append(tickerSymbol)
             .append(" from ").append(date1.toString()).append(" to ")
             .append(date2.toString()).append("\n");
@@ -288,11 +273,11 @@ public class MockModel implements PortfolioDir {
    * @param tickerSymbol  ticker symbol of the stock.
    * @param date  date for which the moving average is calculated.
    * @param x  number of days for the moving average.
-   * @param api  StockData object used for retrieving stock data.
+   * @param api  IStockData object used for retrieving stock data.
    * @return  x-day moving average for the specified stock.
    */
   @Override
-  public double xDayMovingAvg(String tickerSymbol, LocalDate date, int x, StockData api) {
+  public double xDayMovingAvg(String tickerSymbol, LocalDate date, int x, IStockData api) {
     logger.append("Calculating ").append(x).append("-day moving average for ")
             .append(tickerSymbol).append(" on ").append(date.toString()).append("\n");
     return mockValue;
@@ -302,13 +287,13 @@ public class MockModel implements PortfolioDir {
   /**
    * this method calculates crossover over a period of time for a specified stock.
    * @param tickerSymbol ticker symbol of the stock.
-   * @param api  StockData object used for retrieving stock data.
+   * @param api  IStockData object used for retrieving stock data.
    * @param startDate  start date of the period.
    * @param endDate  end date of the period.
    * @return  TreeMap containing the crossover information over the period.
    */
   @Override
-  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, StockData api,
+  public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol, IStockData api,
                                                      LocalDate startDate, LocalDate endDate) {
     logger.append("Calculating crossover over period for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
@@ -319,7 +304,7 @@ public class MockModel implements PortfolioDir {
   /**
    * this method calculates moving crossover for a specified stock over a period of time.
    * @param tickerSymbol ticker symbol of the stock.
-   * @param api  StockData object used for retrieving stock data.
+   * @param api  IStockData object used for retrieving stock data.
    * @param startDate  start date of the period.
    * @param endDate  end date of the period.
    * @param x  value of the shorter moving average.
@@ -327,7 +312,7 @@ public class MockModel implements PortfolioDir {
    * @return  TreeMap containing the moving crossover information.
    */
   @Override
-  public TreeMap<String, String> movingCrossOver(String tickerSymbol, StockData api,
+  public TreeMap<String, String> movingCrossOver(String tickerSymbol, IStockData api,
                               LocalDate startDate, LocalDate endDate, int x, int y) {
     logger.append("Calculating moving crossover for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
@@ -340,13 +325,13 @@ public class MockModel implements PortfolioDir {
   /**
    * this method calculates performance of a specified stock over a given period.
    * @param stock ticker symbol of the stock.
-   * @param api StockData object used for retrieving stock data.
+   * @param api IStockData object used for retrieving stock data.
    * @param start start date of the period.
    * @param end end date of the period.
    * @return TreeMap containing the performance data for the stock over the period.
    */
   @Override
-  public TreeMap<String, Integer> stockPerformance(String stock, StockData api,
+  public TreeMap<String, Integer> stockPerformance(String stock, IStockData api,
                                                    LocalDate start, LocalDate end) {
     logger.append("Calculating stock performance for ").append(stock)
             .append(" from ").append(start.toString()).append(" to ")
@@ -372,13 +357,14 @@ public class MockModel implements PortfolioDir {
   /**
    * this method scales the data for stock performance calculation over a given period.
    * @param stock ticker symbol of the stock.
-   * @param api StockData object used for retrieving stock data.
+   * @param api IStockData object used for retrieving stock data.
    * @param start start date of the period.
    * @param end end date of the period.
    * @return scaled value for stock performance.
    */
   @Override
-  public int scaleForStockPerformance(String stock, StockData api, LocalDate start, LocalDate end) {
+  public int scaleForStockPerformance(String stock, IStockData api, LocalDate start,
+                                      LocalDate end) {
     logger.append("Scaling for stock performance of ").append(stock)
             .append(" from ").append(start.toString()).append(" to ")
             .append(end.toString()).append("\n");
@@ -416,10 +402,10 @@ public class MockModel implements PortfolioDir {
    * this method loads a portfolio with the specified name and lines.
    * @param portfolioName name of the portfolio to be loaded.
    * @param lines list of lines representing the portfolio data.
-   * @param api StockData object used for retrieving stock data.
+   * @param api IStockData object used for retrieving stock data.
    */
   @Override
-  public void loadPortfolio(String portfolioName, List<String[]> lines, StockData api) {
+  public void loadPortfolio(String portfolioName, List<String[]> lines, IStockData api) {
     logger.append("Name of portfolio to be saved: ").append(portfolioName).append(" and "
             + "lines to be appended are: ").append(lines).append("\n");
 

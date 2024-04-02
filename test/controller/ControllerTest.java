@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import model.PortfolioImpl;
+import model.InflexiblePortfolioImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -62,14 +62,15 @@ public class ControllerTest {
     mockComposition.put("Goog", 10);
     mockName = "Test Portfolio";
     mockValue = 17.5;
-    StringBuilder mockSaveFlexible = new StringBuilder();
     StringBuilder mockSaveInflexible = new StringBuilder();
-    mockSaveInflexible.append("Stock, Quantity").append(System.lineSeparator()).append("AAPL,").append("20");
+    mockSaveInflexible.append("Stock, Quantity").append(System.lineSeparator()).append("AAPL,")
+                    .append("20");
     int intMockValue = 10;
 
     this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue,
             mockTreeMap, mockStringInt, mockSaveInflexible);
-    PortfolioImpl.PortfolioBuilder newBuilder = new PortfolioImpl.PortfolioBuilder(mockName);
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder = new InflexiblePortfolioImpl
+            .PortfolioBuilder(mockName);
     newBuilder.addShare("AAPL", 20);
     mockModel.addPortfolio(newBuilder);
     this.mockView = new MockView();
@@ -93,7 +94,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-03",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -117,7 +118,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-03",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -140,7 +141,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-20",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -162,7 +163,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-20",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -185,7 +186,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-20",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -208,7 +209,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -235,7 +236,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -263,7 +264,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -291,7 +292,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -318,7 +319,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -344,7 +345,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -369,7 +370,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -394,7 +395,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -419,7 +420,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Test",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -443,7 +444,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: "
                     + "5 month: 3 year: " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -468,7 +469,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: "
                     + "5 month: 3 year: " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -493,7 +494,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 5 "
                     + "month: 3 year: " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -518,7 +519,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 5 "
                     + "month: 3 year: " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -545,7 +546,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 5 "
                     + "month: 3 year: " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -572,7 +573,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: "
                     + "25 month: 2 year:" + " " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -600,7 +601,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: "
                     + "25 month: 2 year:" + " " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -627,7 +628,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 25 month: "
                     + "2 year:" + " " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -655,7 +656,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 25 "
                     + "month: 2 year:" + " " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -685,7 +686,7 @@ public class ControllerTest {
                     + " "
                     + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -713,7 +714,7 @@ public class ControllerTest {
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 25 month: "
                     + "2 year:" + " " + "2024",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -726,8 +727,8 @@ public class ControllerTest {
             + "which you would like to save portfolio.", "Portfolio exported to "
             + path + " successfully.", "Enter your choice: "};
     Reader in = new StringReader("5\n1\n" + path + "\n11\n");
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Vidith");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Vidith");
     newBuilder.addShare("AAPL", 20);
     mockModel.addPortfolio(newBuilder);
 
@@ -735,7 +736,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
     assertTrue(new File(path).exists());
@@ -753,8 +754,8 @@ public class ControllerTest {
             + "the file you want to load data from: ", "File loaded successfully", "Enter your "
             + "choice: "};
     Reader in = new StringReader("5\n1\n" + path + "\n2\n1\nTest2\n" + path + "\n11\n");
-    PortfolioImpl.PortfolioBuilder newBuilder
-            = new PortfolioImpl.PortfolioBuilder("Vidith");
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Vidith");
     newBuilder.addShare("AAPL", 20);
     mockModel.addPortfolio(newBuilder);
 
@@ -762,7 +763,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
     assertTrue(new File(path).exists());
@@ -783,7 +784,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
     assertTrue(new File(path).exists());
@@ -804,7 +805,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
     assertTrue(new File(path).exists());
@@ -825,7 +826,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
     assertFalse(new File(path).exists());
@@ -846,7 +847,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
     assertFalse(new File(path).exists());
@@ -866,7 +867,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -888,7 +889,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -910,7 +911,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -922,11 +923,9 @@ public class ControllerTest {
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
-    StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
-    String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -938,11 +937,9 @@ public class ControllerTest {
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
-    StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
-    String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -954,11 +951,9 @@ public class ControllerTest {
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
-    StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
-    String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -973,7 +968,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -988,7 +983,7 @@ public class ControllerTest {
     controller.execute();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1006,12 +1001,11 @@ public class ControllerTest {
     controller.execute();
     StringBuilder inputLog = newMockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
-    System.out.println(inputLog);
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for aapl on 2024-03-20",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1033,7 +1027,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for hello on 2024-03-20",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1059,7 +1053,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for aapl on 2024-03-20",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1081,7 +1075,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for aapl from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1103,7 +1097,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for hello from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1127,7 +1121,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for AAPL from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1151,7 +1145,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating gain or loss for AAPL from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1172,7 +1166,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating 10-day moving average for aapl on 2024-03-01",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1196,7 +1190,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating 10-day moving average for aapl on 2024-03-01",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1220,7 +1214,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating 10-day moving average for aapl on 2024-03-12",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1233,16 +1227,15 @@ public class ControllerTest {
             + " format "
             + "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n4\nAAPL\n2024-03-01\n2024-03-21\n7\n11\n");
-    MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating crossover over period for AAPL from 2024-03-01 to 2024-03-21",
-            logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-01 to 2024-03-21"
+            , logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1256,16 +1249,15 @@ public class ControllerTest {
             + " format "
             + "yyyy-mm-dd: ", "date buy/sell", "Enter your choice: ","Enter your choice: "};
     Reader in = new StringReader("9\n4\nAAPL\n2024-02-30\n2024-03-11\n2024-03-21\n7\n11\n");
-    MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
     StringBuilder outputLogs = mockView.getPrintedOutput();
     String[] logChecker = inputLog.toString().split("\n");
     String[] outputLogChecker = outputLogs.toString().split("\n");
-    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to 2024-03-21",
-            logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to 2024-03-21"
+            , logChecker[logChecker.length - 1]);
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1280,7 +1272,6 @@ public class ControllerTest {
             + "this format yyyy-mm-dd: ","date buy/sell", "Enter your choice: ","Enter "
             + "your choice: "};
     Reader in = new StringReader("9\n4\nAAPL\n2024-03-11\n2024-15-11\n2024-03-21\n7\n11\n");
-    MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
@@ -1290,7 +1281,7 @@ public class ControllerTest {
     assertEquals("Calculating crossover over period for AAPL from 2024-03-11 to "
                     + "2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1315,7 +1306,7 @@ public class ControllerTest {
                     + "2024-03-11 to 2024-03-21 for x = 10 "
                     + "and y = 100",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1341,7 +1332,7 @@ public class ControllerTest {
     assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 "
                     + "for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1367,7 +1358,7 @@ public class ControllerTest {
     assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to "
                     + "2024-03-21 for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1383,8 +1374,8 @@ public class ControllerTest {
             + " ","Error", "Enter the value of x (shorter moving average period): ", "Enter the "
             + "value of y (longer moving average period, greater than x): ","date "
             + "buy/sell", "Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n-10\n10\n100\n7"
-            + "\n11" + "\n");
+    Reader in = new StringReader("9\n5\nAAPL\n2024-03-01\n2024-15-01\n2024-03-21\n-10\n10\n100\n"
+            + "7\n11" + "\n");
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
     StringBuilder inputLog = mockModel.getLogger();
@@ -1394,7 +1385,7 @@ public class ControllerTest {
     assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to "
                     + "2024-03-21 for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1422,7 +1413,7 @@ public class ControllerTest {
     assertEquals("Calculating moving crossover for AAPL from 2024-03-01 to 2024-03-21 "
                     + "for x = 10 " + "and y = 100",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1443,7 +1434,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Scaling for stock performance of AAPL from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1465,7 +1456,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Scaling for stock performance of AAPL from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1487,7 +1478,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Scaling for stock performance of AAPL from 2024-03-01 to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1510,7 +1501,7 @@ public class ControllerTest {
     assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
                     + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1534,7 +1525,7 @@ public class ControllerTest {
     assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
                     + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1558,7 +1549,7 @@ public class ControllerTest {
     assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
                     + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1582,7 +1573,7 @@ public class ControllerTest {
     assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 "
                     + "to 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1606,7 +1597,7 @@ public class ControllerTest {
     assertEquals("Scaling for portfolio performance at index: 0 from 2024-03-01 to"
                     + " 2024-03-21",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1624,7 +1615,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Creating flexible portfolio with name: Test Portfolio1",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1645,7 +1636,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1669,7 +1660,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1693,7 +1684,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1719,7 +1710,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1745,7 +1736,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1 - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1770,7 +1761,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1795,7 +1786,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Buying 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1820,7 +1811,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Selling 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1845,7 +1836,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Selling 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1866,7 +1857,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Selling 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1890,7 +1881,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Selling 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1913,7 +1904,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Selling 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1938,7 +1929,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Selling 25 shares of AAPL for portfolio at index: 0 on 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1946,9 +1937,9 @@ public class ControllerTest {
   @Test
   public void testCostBasis() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "17.5",
-            "Enter your choice: "};
+        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "The cost " +
+            "basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n0\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1958,7 +1949,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating cost basis for portfolio at index: 0on date: 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1966,10 +1957,10 @@ public class ControllerTest {
   @Test
   public void testCostBasisInvalidDate() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
-            "Enter the date till which you want the cost basis of the portfolio", "The date " +
-            "should be in this format yyyy-mm-dd: ", "17.5", "Enter your choice: "};
+        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
+        "Enter the date till which you want the cost basis of the portfolio", "The date " +
+        "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n0\n2024-13-05\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1979,7 +1970,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating cost basis for portfolio at index: 0on date: 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -1987,10 +1978,10 @@ public class ControllerTest {
   @Test
   public void testCostBasisInvalidDateFormat() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
-            "Enter the date till which you want the cost basis of the portfolio", "The date " +
-            "should be in this format yyyy-mm-dd: ", "17.5", "Enter your choice: "};
+        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
+        "Enter the date till which you want the cost basis of the portfolio", "The date " +
+        "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n0\n13-10-2023\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -2000,7 +1991,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating cost basis for portfolio at index: 0on date: 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
@@ -2008,11 +1999,11 @@ public class ControllerTest {
   @Test
   public void testCostBasisInvalidPortfolioChoice() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-            "Portfolio number you want to select.", "Error", "Enter the " +
-            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
-            "Enter the date till which you want the cost basis of the portfolio", "The date " +
-            "should be in this format yyyy-mm-dd: ", "17.5", "Enter your choice: "};
+        "Portfolio number you want to select.", "Error", "Enter the " +
+        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
+        "Enter the date till which you want the cost basis of the portfolio", "The date " +
+        "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n-3\n0\n13-10-2023\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -2022,7 +2013,7 @@ public class ControllerTest {
     String[] outputLogChecker = outputLogs.toString().split("\n");
     assertEquals("Calculating cost basis for portfolio at index: 0on date: 2024-03-05",
             logChecker[logChecker.length - 1]);
-    for (int i = 0; i < outputLogChecker.length; i++) {
+    for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
   }
