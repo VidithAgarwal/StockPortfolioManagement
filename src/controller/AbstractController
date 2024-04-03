@@ -1,0 +1,242 @@
+package controller;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Scanner;
+import java.util.TreeMap;
+
+import model.InflexiblePortfolioImpl;
+import model.InvestmentManager;
+import view.IView;
+public class AbstractController implements Features{
+
+  private final IView view;
+
+  /**
+   * model object of portfolioDir that is required to call the portfolioDir methods in controller.
+   */
+  private final InvestmentManager model;
+
+  /**
+   * The Scanner object used for reading input.
+   */
+  //private final Scanner scan;
+
+
+  /**
+   * Constructs a StockControllerImpl object with the specified view, input stream.
+   * and portfolio directory.
+   *
+   * @param view         The view component responsible for displaying information to the user.
+   * @param portfolioDir The portfolio directory model component representing the model object.
+   */
+
+  public AbstractController(IView view, InvestmentManager portfolioDir) {
+    this.view = view;
+    this.model = portfolioDir;
+    //this.scan = new Scanner(in);
+  }
+
+  @Override
+  public void createFlexiblePortfolio(String name) {
+    model.createFlexiblePortfolio(name);
+  }
+
+  @Override
+  public void export(int input, String path) {
+    Persistence persistence = new Persistence();
+    try {
+      persistence.exportAsCSV(path, model.save(input));
+      view.print("Portfolio exported to " + path + " successfully.");
+
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void buyStock(int[] date, int quantity, String shareName, int choice) {
+    LocalDate buyDate = LocalDate.of(date[2], date[1], date[0]);
+
+    try {
+      model.buyStock(choice, shareName, quantity, buyDate, new StockData());
+      view.print(quantity + " " + shareName + " bought successfully");
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void sellStock(int[] date, int quantity, String shareName, int choice) {
+    LocalDate sellDate = LocalDate.of(date[2], date[1], date[0]);
+
+    try {
+      model.sellStock(choice, shareName, quantity, sellDate, new StockData());
+      view.print(quantity + " " + shareName + " sold successfully");
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+//  @Override
+//  public void loadInflexiblePortfolio(InflexiblePortfolioImpl.PortfolioBuilder newBuilder) {
+//    try {
+//      this.model.addPortfolio(newBuilder);
+//    } catch (IllegalArgumentException e) {
+//      view.displayError("Cannot create portfolio with no stocks!");
+//    }
+//    view.print("File loaded successfully");
+//  }
+
+  public void loadFlexiblePortfolio(String name, List<String[]> lines) {
+    try {
+      model.loadPortfolio(name, lines, new StockData());
+    } catch (IllegalArgumentException e) {
+      view.displayError("The values provided in the file is invalid");
+      return;
+    }
+    view.print("File loaded successfully");
+  }
+
+  @Override
+  public void examineComposition(int input, int[] date) {
+    LocalDate compositionDate = LocalDate.of(date[2], date[1], date[0]);
+    try {
+      view.showComposition(model.portfolioComposition(input, compositionDate));
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void getTotalValue(int choice, int[] date) {
+    try {
+      StockData api = new StockData();
+      double totalValue = model.portfolioValue(choice, date[0], date[1], date[2], api);
+      view.showTotalValue(totalValue);
+    } catch (IllegalArgumentException e) {
+      if (e.getMessage() != null) {
+        view.print("No price data found for " + e.getMessage() + " on the "
+                + "date: " + date[2] + "-" + date[1] + "-" + date[0]);
+      } else {
+        view.print("Invalid date!");
+      }
+    } catch (RuntimeException e) {
+      view.print("The data could not be fetched today, try again later!");
+    }
+  }
+
+  @Override
+  public void getCostBasis(int choice, int[] date) {
+    LocalDate costBasisDate = LocalDate.of(date[2], date[1], date[0]);
+
+    try {
+      double costBasis = model.costBasis(choice, costBasisDate, new StockData());
+      view.print("The cost basis is: $" + costBasis);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void portfolioPerformance(int[] startDateArray, int[] endDateArray, int choice,
+                                   String portfolioName) {
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    TreeMap<String, Integer> result;
+    try {
+      result = model.portfolioPerformance(choice, startDate, endDate);
+      int scale = model.scaleForPortfolioPerformance(choice, startDate, endDate);
+      view.barGraph(scale, result, portfolioName, startDate + "", endDate + "");
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void stockPerformance(int[] startDateArray, int[] endDateArray, String ticker ) {
+    StockData api = new StockData();
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    TreeMap<String, Integer> result;
+    try {
+      result = model.stockPerformance(ticker, api, startDate, endDate);
+      int scale = model.scaleForStockPerformance(ticker, api, startDate, endDate);
+      view.barGraph(scale, result, ticker, startDate + "", endDate + "");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void gainOrLose(int[] dateArray, String ticker) {
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(dateArray[2], dateArray[1], dateArray[0]);
+
+    try {
+      String result = model.gainOrLose(ticker, date, api);
+      view.print(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void gainOrLoseOverPeriod(int[] startDateArray, int[] endDateArray,String ticker ) {
+    StockData api = new StockData();
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+
+    try {
+      String result = model.gainOrLoseOverAPeriod(ticker, startDate, endDate, api);
+      view.print(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void xDayMovingAvg(String ticker, int x, int[] startDateArray) {
+    StockData api = new StockData();
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    try {
+      double result = model.xDayMovingAvg(ticker, startDate, x, api);
+      view.showXDayMovingAvg(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void crossoverOverPeriod(int[] startDateArray, int[] endDateArray, String ticker) {
+    StockData api = new StockData();
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    try {
+      TreeMap<String, String> result = model.crossoverOverPeriod(ticker, api, startDate, endDate);
+      view.printTreeMapEntries(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void movingCrossoversOverPeriod(int[] startDateArray, int[] endDateArray, int x,int y,
+                                         String ticker ) {
+    StockData api = new StockData();
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    TreeMap<String, String> result;
+    try {
+      result = model.movingCrossOver(ticker, api, startDate, endDate, x, y);
+      view.printTreeMapEntries(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+  }
+
+
+
+
+
+}
