@@ -1,0 +1,226 @@
+package controller;
+
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.Objects;
+
+import model.InvestmentManager;
+import view.IViewGUI;
+import view.IView;
+
+public class StockControllerImplGUI extends AbstractController  {
+
+  private IViewGUI view;
+
+  private final InvestmentManager model;
+
+  /**
+   * Constructs a StockControllerImpl object with the specified view, input stream.
+   * and portfolio directory.
+   *
+   * @param view         The view component responsible for displaying information to the user.
+   * @param portfolioDir The portfolio directory model component representing the model object.
+   */
+  public StockControllerImplGUI(IView view, InvestmentManager portfolioDir) {
+    super(view, portfolioDir);
+    this.model = portfolioDir;
+  }
+
+  public void setView(IViewGUI v) {
+    view = v;
+    //provide view with all the callbacks
+    view.addFeatures(this);
+  }
+  private String errorMessage;
+  private String successMessage;
+
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public String getSuccessMessage() {
+    return successMessage;
+  }
+
+  public void createFlexiblePortfolioV(String name) {
+    do {
+      if (model.portfolioNameExists(name)) {
+        errorMessage = "Portfolio with this name already exists!";
+      }
+    } while (model.portfolioNameExists(name));
+    createFlexiblePortfolio(name);
+
+    successMessage = "Flexible portfolio created: " + name;
+  }
+
+  public void saveFlexiblePortfolio(int input,String path) {
+    // here in view we will provide drop down for selecting portfolio
+    // THE DATA WILL BE DISPLAYED IN THAT ORDER OF INDEX OF PORTFOLIOS
+    //int input = view.selectPortfolio(model.getListOfPortfoliosName());
+    //String path = view.getPath();
+    export(input,path);
+  }
+
+  public void buyStockFlexiblePortfolio() {
+    int choice = view.selectPortfolio(model.getListOfPortfoliosName());
+    String name = view.getShareName();
+    int shareQuantity;
+    do {
+      try {
+        shareQuantity = Integer.parseInt(view.getPositiveInput());
+        if (shareQuantity <= 0) {
+          view.displayError("Share quantity must be a positive integer.");
+        }
+      } catch (NumberFormatException e) {
+        view.displayError("Share quantity must be a positive integer.");
+        shareQuantity = -1; // Set to negative to continue the loop
+      }
+    } while (shareQuantity <= 0);
+    // where to validate date ?
+    int date[] = view.inputDate();
+    buyStock(date,shareQuantity,name,choice);
+  }
+
+  public void sellStockFlexiblePortfolio() {
+    int choice = view.selectPortfolio(model.getListOfPortfoliosName());
+    String name = view.getShareName();
+    int shareQuantity;
+    do {
+      try {
+        shareQuantity = Integer.parseInt(view.getPositiveInput());
+        if (shareQuantity <= 0) {
+          view.displayError("Share quantity must be a positive integer.");
+        }
+      } catch (NumberFormatException e) {
+        view.displayError("Share quantity must be a positive integer.");
+        shareQuantity = -1; // Set to negative to continue the loop
+      }
+    } while (shareQuantity <= 0);
+    // where to validate date ?
+    int date[] = view.inputDate();
+    sellStock(date,shareQuantity,name,choice);
+  }
+
+  public void examineComposition() {
+    int choice = view.selectPortfolio(model.getListOfPortfoliosName());
+    // where to validate date ?
+    int date[] = view.inputDate();
+    examineComposition(choice,date);
+  }
+
+  public void getTotalValue() {
+    int choice = view.selectPortfolio(model.getListOfPortfoliosName());
+    // where to validate date ?
+    int date[] = view.inputDate();
+    getTotalValue(choice, date);
+  }
+
+  public void costBasis() {
+    int choice = view.selectPortfolio(model.getListOfPortfoliosName());
+    // where to validate date ?
+    int date[] = view.inputDate();
+    getCostBasis(choice, date);
+  }
+
+  public void gainOrLose() {
+    String name = view.getShareName();
+    // where to validate date ?
+    int date[] = view.inputDate();
+    gainOrLose(date, name);
+  }
+
+  public void gainOrLoseOverPeriod() {
+    String name = view.getShareName();
+    // where to validate date ?
+    int startDate[] = view.inputDate();
+    int endDate[] = view.inputDate();
+    gainOrLoseOverPeriod(startDate,endDate,name);
+  }
+
+  public void xDayMovingAvg() {
+    String name = view.getShareName();
+    int x;
+    do {
+      try {
+        x = Integer.parseInt(view.getPositiveInput());
+        if (x <= 0) {
+          view.displayError("Share quantity must be a positive integer.");
+        }
+      } catch (NumberFormatException e) {
+        view.displayError("Share quantity must be a positive integer.");
+        x = -1; // Set to negative to continue the loop
+      }
+    } while (x <= 0);
+    // where to validate date ?
+    int startDate[] = view.inputDate();
+    xDayMovingAvg(name,x,startDate);
+  }
+
+  public void crossOverPeriod() {
+    String name = view.getShareName();
+    // where to validate date ?
+    int startDate[] = view.inputDate();
+    int endDate[] = view.inputDate();
+    crossoverOverPeriod(startDate,endDate,name);
+  }
+
+  public void movingCrossoverPeriod() {
+    String name = view.getShareName();
+    // where to validate date ?
+    int startDate[] = view.inputDate();
+    int endDate[] = view.inputDate();
+    int x,y;
+    do {
+      try {
+        x = Integer.parseInt(view.getPositiveInput());
+        y = Integer.parseInt(view.getPositiveInput());
+        if (x <= 0 || y <= 0) {
+          view.displayError("Share quantity must be a positive integer.");
+        }
+      } catch (NumberFormatException e) {
+        view.displayError("Share quantity must be a positive integer.");
+        x = -1;
+        y = -1;// Set to negative to continue the loop
+      }
+    } while (x <= 0 && y <= 0);
+    movingCrossoversOverPeriod(startDate,endDate,x,y,name);
+  }
+
+  public void stockPerformance() {
+    String name = view.getShareName();
+    // where to validate date ?
+    int startDate[] = view.inputDate();
+    int endDate[] = view.inputDate();
+    stockPerformance(startDate,endDate,name);
+  }
+
+  public void portfolioPerformance() {
+    int choice = view.selectPortfolio(model.getListOfPortfoliosName());
+    // where to validate date ?
+    int startDate[] = view.inputDate();
+    int endDate[] = view.inputDate();
+    // can be added in abstract controller
+    String portfolioName = "";
+    Map<String, String> portfolioList = model.getListOfPortfoliosName();
+    int index = 0;
+    for (Map.Entry<String, String> entry : portfolioList.entrySet()) {
+      if (index == choice) {
+        portfolioName = entry.getKey();
+        break;
+      }
+      index++;
+    }
+    if (Objects.equals(portfolioName, "")) {
+      view.displayError("No such portfolio found");
+      return;
+    }
+    portfolioPerformance(startDate,endDate,choice,portfolioName);
+  }
+
+
+
+
+
+
+}
