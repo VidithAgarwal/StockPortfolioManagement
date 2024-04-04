@@ -198,7 +198,7 @@ public class StockControllerImpl extends AbstractController implements StockCont
     }
     if (exit) {
       String currentDirectory = System.getProperty("user.dir") + "/Data";
-      deleteCSVFilesFromStocklist(currentDirectory);
+      //deleteCSVFilesFromStocklist(currentDirectory);
     }
     return exit;
   }
@@ -373,8 +373,17 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * and delegates to model that creates flexible portfolio of entered name.
    */
   private void createFlexiblePortfolio() {
-    String name = inputPortfolioName();
-    createFlexiblePortfolio(name);
+    //String name = inputPortfolioName();
+    view.print("Enter the name of the portfolio: ");
+    String portfolioName = scan.nextLine();
+    createFlexiblePortfolio(portfolioName);
+    if(getErrorMessage() != null) {
+      view.displayError(getErrorMessage());
+      createFlexiblePortfolio();
+    }
+    else {
+      view.print(getSuccessMessage());
+    }
     //model.createFlexiblePortfolio(name);
   }
 
@@ -391,6 +400,12 @@ public class StockControllerImpl extends AbstractController implements StockCont
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = scan.nextLine();
     export(input, path);
+    if(getErrorMessage() != null) {
+      view.displayError(getErrorMessage());
+    }
+    else {
+      view.print(getSuccessMessage());
+    }
   }
 
   /**
@@ -400,12 +415,25 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void buyStock() {
     int choice = inputPortfolioChoice();
-
+    String date;
     view.print("Enter the name of the share or ticker symbol: ");
     String shareName = scan.nextLine();
     int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you want to buy:");
-    int[] date = inputDate("Enter the date of your purchase");
-    buyStock(date, quantity, shareName, choice);
+    //int[] date = inputDate("Enter the date of your purchase");
+    do {
+      view.print("Enter the date of your purchase");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = scan.nextLine();
+      buyStock(date, quantity, shareName, choice);
+      if(getErrorMessage() != null) {
+        view.displayError(getErrorMessage());
+      }
+      else {
+        view.print(getSuccessMessage());
+      }
+    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+            || Objects.equals(getErrorMessage(), "Invalid date format."));
+
   }
 
   /**
@@ -415,13 +443,27 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void sellStock() {
     int choice = inputPortfolioChoice();
-
+    String date;
     view.print("Enter the name of the share or ticker symbol: ");
     String shareName = scan.nextLine();
     int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you want to "
             + "sell:");
-    int[] date = inputDate("Enter the date of your sale");
-    sellStock(date, quantity,shareName,choice);
+    //int[] date = inputDate("Enter the date of your sale");
+    do {
+      view.print("Enter the date of your sale");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = scan.nextLine();
+      sellStock(date, quantity,shareName,choice);
+      //buyStock(date, quantity, shareName, choice);
+      if(getErrorMessage() != null) {
+        view.displayError(getErrorMessage());
+      }
+      else {
+        view.print(getSuccessMessage());
+      }
+    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+            || Objects.equals(getErrorMessage(), "Invalid date format."));
+
   }
 
   /**
@@ -456,6 +498,7 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void loadFlexiblePortfolio() {
     String name = inputPortfolioName();
+
     try {
       model.loadPortfolio(name, inputPath(), new StockData());
     } catch (IllegalArgumentException e) {
@@ -472,8 +515,22 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void examineComposition() {
     int input = inputPortfolioChoice();
-    int[] date = inputDate("Enter the date you want to see the composition for: ");
-    examineComposition(input, date);
+    String date;
+    //int[] date = inputDate("Enter the date you want to see the composition for: ");
+    do {
+      view.print("Enter the date you want to see the composition for: ");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = scan.nextLine();
+      examineComposition(input, date);
+      //buyStock(date, quantity, shareName, choice);
+      if(getErrorMessage() != null) {
+        view.displayError(getErrorMessage());
+      }
+
+    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+            || Objects.equals(getErrorMessage(), "Invalid date format."));
+
+
   }
 
   /**
@@ -489,6 +546,25 @@ public class StockControllerImpl extends AbstractController implements StockCont
 
     view.print("Wait until the total value is calculated");
     getTotalValue(choice,date);
+//    int choice = inputPortfolioChoice();
+//    String date;
+//    //int[] date = inputDate("Enter the date for which you want to get the total"+ " price of the portfolio. ");
+//    do {
+//      view.print("Enter the date for which you want to get the total price of the portfolio. ");
+//      view.print("The date should be in this format yyyy-mm-dd: ");
+//      date = scan.nextLine();
+//      getTotalValue(choice,date);
+//      view.print("Wait until the total value is calculated");
+//      if(getErrorMessage() != null) {
+//        view.displayError(getErrorMessage());
+//      }
+//      else if ((getSuccessMessage() != null)) {
+//        view.print(getSuccessMessage());
+//      }
+//    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+//            || Objects.equals(getErrorMessage(), "Invalid date format."));
+
+
   }
 
   /**
@@ -497,9 +573,25 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void getCostBasis() {
     int choice = inputPortfolioChoice();
+    String date;
+    //int[] date = inputDate("Enter the date till which you want the cost basis of the portfolio");
 
-    int[] date = inputDate("Enter the date till which you want the cost basis of the portfolio");
-    getCostBasis(choice,date);
+
+    do {
+      view.print("Enter the date till which you want the cost basis of the portfolio");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = scan.nextLine();
+      getCostBasis(choice,date);
+      //sellStock(date, quantity,shareName,choice);
+      //buyStock(date, quantity, shareName, choice);
+      if(getErrorMessage() != null) {
+        view.displayError(getErrorMessage());
+      }
+      else {
+        view.print(getSuccessMessage());
+      }
+    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+            || Objects.equals(getErrorMessage(), "Invalid date format."));
   }
 
   /**
@@ -546,10 +638,24 @@ public class StockControllerImpl extends AbstractController implements StockCont
   private void gainOrLose() {
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
-    int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that"
-            + " "
-            + "date: ");
-    gainOrLose(dateArray,ticker);
+    String date;
+    //int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that"+ " "+ "date: ");
+    do {
+      view.print("Enter the date to know if the above stock gained or lost on that"+ " "+ "date: ");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = scan.nextLine();
+      gainOrLose(date,ticker);
+      //sellStock(date, quantity,shareName,choice);
+      //buyStock(date, quantity, shareName, choice);
+      if(getErrorMessage() != null) {
+        view.displayError(getErrorMessage());
+      }
+      else {
+        view.print(getSuccessMessage());
+      }
+    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+            || Objects.equals(getErrorMessage(), "Invalid date format."));
+
   }
 
   /**
