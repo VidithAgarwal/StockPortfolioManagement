@@ -19,7 +19,7 @@ import view.IView;
  * This class has methods to delegate the input from user and give the input to model.
  * and get the output from model and print it using the view methods.
  */
-public class StockControllerImpl extends AbstractController implements StockController {
+public class StockControllerImpl implements StockController {
 
 
   /**
@@ -48,7 +48,6 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
 
   public StockControllerImpl(IView view, Readable in, InvestmentManager portfolioDir) {
-    super(view, portfolioDir);
     this.view = view;
     this.model = portfolioDir;
     this.scan = new Scanner(in);
@@ -198,7 +197,7 @@ public class StockControllerImpl extends AbstractController implements StockCont
     }
     if (exit) {
       String currentDirectory = System.getProperty("user.dir") + "/Data";
-      //deleteCSVFilesFromStocklist(currentDirectory);
+     //deleteCSVFilesFromStocklist(currentDirectory);
     }
     return exit;
   }
@@ -373,21 +372,10 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * and delegates to model that creates flexible portfolio of entered name.
    */
   private void createFlexiblePortfolio() {
-    //String name = inputPortfolioName();
-    view.print("Enter the name of the portfolio: ");
-    String portfolioName = scan.nextLine();
-    createFlexiblePortfolio(portfolioName);
-    if(getErrorMessage() != null) {
-      view.displayError(getErrorMessage());
-      createFlexiblePortfolio();
-    }
-    else {
-      view.print(getSuccessMessage());
-    }
-    //model.createFlexiblePortfolio(name);
+    String name = inputPortfolioName();
+
+    model.createFlexiblePortfolio(name);
   }
-
-
 
   /**
    * This method takes in path from user for saving portfolio.
@@ -399,12 +387,12 @@ public class StockControllerImpl extends AbstractController implements StockCont
     int input = inputPortfolioChoice();
     view.print("Enter the proper path with file name in which you would like to save portfolio.");
     String path = scan.nextLine();
-    export(input, path);
-    if(getErrorMessage() != null) {
-      view.displayError(getErrorMessage());
-    }
-    else {
-      view.print(getSuccessMessage());
+    Persistence persistence = new Persistence();
+    try {
+      persistence.exportAsCSV(path, model.save(input));
+      view.print("Portfolio exported to " + path + " successfully.");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
     }
   }
 
@@ -415,25 +403,19 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void buyStock() {
     int choice = inputPortfolioChoice();
-    String date;
+
     view.print("Enter the name of the share or ticker symbol: ");
     String shareName = scan.nextLine();
     int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you want to buy:");
-    //int[] date = inputDate("Enter the date of your purchase");
-    do {
-      view.print("Enter the date of your purchase");
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-      buyStock(date, quantity, shareName, choice);
-      if(getErrorMessage() != null) {
-        view.displayError(getErrorMessage());
-      }
-      else {
-        view.print(getSuccessMessage());
-      }
-    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-            || Objects.equals(getErrorMessage(), "Invalid date format."));
+    int[] date = inputDate("Enter the date of your purchase");
+    LocalDate buyDate = LocalDate.of(date[2], date[1], date[0]);
 
+    try {
+      model.buyStock(choice, shareName, quantity, buyDate, new StockData());
+      view.print(quantity + " " + shareName + " bought successfully");
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
@@ -443,27 +425,20 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void sellStock() {
     int choice = inputPortfolioChoice();
-    String date;
+
     view.print("Enter the name of the share or ticker symbol: ");
     String shareName = scan.nextLine();
     int quantity = inputPositiveInteger("Enter the quantity of " + shareName + " you want to "
             + "sell:");
-    //int[] date = inputDate("Enter the date of your sale");
-    do {
-      view.print("Enter the date of your sale");
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-      sellStock(date, quantity,shareName,choice);
-      //buyStock(date, quantity, shareName, choice);
-      if(getErrorMessage() != null) {
-        view.displayError(getErrorMessage());
-      }
-      else {
-        view.print(getSuccessMessage());
-      }
-    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-            || Objects.equals(getErrorMessage(), "Invalid date format."));
+    int[] date = inputDate("Enter the date of your sale");
+    LocalDate sellDate = LocalDate.of(date[2], date[1], date[0]);
 
+    try {
+      model.sellStock(choice, shareName, quantity, sellDate, new StockData());
+      view.print(quantity + " " + shareName + " sold successfully");
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
@@ -481,7 +456,7 @@ public class StockControllerImpl extends AbstractController implements StockCont
       view.displayError("The values provided in the file is invalid");
       return;
     }
-    //loadInflexiblePortfolio(newBuilder);
+
     try {
       this.model.addPortfolio(newBuilder);
     } catch (IllegalArgumentException e) {
@@ -498,7 +473,6 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void loadFlexiblePortfolio() {
     String name = inputPortfolioName();
-
     try {
       model.loadPortfolio(name, inputPath(), new StockData());
     } catch (IllegalArgumentException e) {
@@ -515,22 +489,13 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void examineComposition() {
     int input = inputPortfolioChoice();
-    String date;
-    //int[] date = inputDate("Enter the date you want to see the composition for: ");
-    do {
-      view.print("Enter the date you want to see the composition for: ");
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-      examineComposition(input, date);
-      //buyStock(date, quantity, shareName, choice);
-      if(getErrorMessage() != null) {
-        view.displayError(getErrorMessage());
-      }
-
-    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-            || Objects.equals(getErrorMessage(), "Invalid date format."));
-
-
+    int[] date = inputDate("Enter the date you want to see the composition for: ");
+    LocalDate compositionDate = LocalDate.of(date[2], date[1], date[0]);
+    try {
+      view.showComposition(model.portfolioComposition(input, compositionDate));
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
@@ -545,26 +510,21 @@ public class StockControllerImpl extends AbstractController implements StockCont
             + " price of the portfolio. ");
 
     view.print("Wait until the total value is calculated");
-    getTotalValue(choice,date);
-//    int choice = inputPortfolioChoice();
-//    String date;
-//    //int[] date = inputDate("Enter the date for which you want to get the total"+ " price of the portfolio. ");
-//    do {
-//      view.print("Enter the date for which you want to get the total price of the portfolio. ");
-//      view.print("The date should be in this format yyyy-mm-dd: ");
-//      date = scan.nextLine();
-//      getTotalValue(choice,date);
-//      view.print("Wait until the total value is calculated");
-//      if(getErrorMessage() != null) {
-//        view.displayError(getErrorMessage());
-//      }
-//      else if ((getSuccessMessage() != null)) {
-//        view.print(getSuccessMessage());
-//      }
-//    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-//            || Objects.equals(getErrorMessage(), "Invalid date format."));
 
-
+    try {
+      StockData api = new StockData();
+      double totalValue = model.portfolioValue(choice, date[0], date[1], date[2], api);
+      view.showTotalValue(totalValue);
+    } catch (IllegalArgumentException e) {
+      if (e.getMessage() != null) {
+        view.print("No price data found for " + e.getMessage() + " on the "
+                + "date: " + date[2] + "-" + date[1] + "-" + date[0]);
+      } else {
+        view.print("Invalid date!");
+      }
+    } catch (RuntimeException e) {
+      view.print("The data could not be fetched today, try again later!");
+    }
   }
 
   /**
@@ -573,25 +533,16 @@ public class StockControllerImpl extends AbstractController implements StockCont
    */
   private void getCostBasis() {
     int choice = inputPortfolioChoice();
-    String date;
-    //int[] date = inputDate("Enter the date till which you want the cost basis of the portfolio");
 
+    int[] date = inputDate("Enter the date till which you want the cost basis of the portfolio");
+    LocalDate costBasisDate = LocalDate.of(date[2], date[1], date[0]);
 
-    do {
-      view.print("Enter the date till which you want the cost basis of the portfolio");
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-      getCostBasis(choice,date);
-      //sellStock(date, quantity,shareName,choice);
-      //buyStock(date, quantity, shareName, choice);
-      if(getErrorMessage() != null) {
-        view.displayError(getErrorMessage());
-      }
-      else {
-        view.print(getSuccessMessage());
-      }
-    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-            || Objects.equals(getErrorMessage(), "Invalid date format."));
+    try {
+      double costBasis = model.costBasis(choice, costBasisDate, new StockData());
+      view.print("The cost basis is: $" + costBasis);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
@@ -616,7 +567,16 @@ public class StockControllerImpl extends AbstractController implements StockCont
     }
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
-    portfolioPerformance(startDateArray,endDateArray,choice,portfolioName);
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    TreeMap<String, Integer> result;
+    try {
+      result = model.portfolioPerformance(choice, startDate, endDate);
+      int scale = model.scaleForPortfolioPerformance(choice, startDate, endDate);
+      view.barGraph(scale, result, portfolioName, startDate + "", endDate + "");
+    } catch (RuntimeException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
@@ -624,11 +584,21 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * using view and model methods.
    */
   private void stockPerformance() {
+    StockData api = new StockData();
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
-    stockPerformance(startDateArray,endDateArray,ticker);
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    TreeMap<String, Integer> result;
+    try {
+      result = model.stockPerformance(ticker, api, startDate, endDate);
+      int scale = model.scaleForStockPerformance(ticker, api, startDate, endDate);
+      view.barGraph(scale, result, ticker, startDate + "", endDate + "");
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
@@ -636,25 +606,21 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * using view and model methods.
    */
   private void gainOrLose() {
+    StockData api = new StockData();
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
-    String date;
-    //int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that"+ " "+ "date: ");
-    do {
-      view.print("Enter the date to know if the above stock gained or lost on that"+ " "+ "date: ");
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-      gainOrLose(date,ticker);
-      //sellStock(date, quantity,shareName,choice);
-      //buyStock(date, quantity, shareName, choice);
-      if(getErrorMessage() != null) {
-        view.displayError(getErrorMessage());
-      }
-      else {
-        view.print(getSuccessMessage());
-      }
-    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-            || Objects.equals(getErrorMessage(), "Invalid date format."));
+    int[] dateArray = inputDate("Enter the date to know if the above stock gained or lost on that"
+            + " "
+            + "date: ");
+
+    LocalDate date = LocalDate.of(dateArray[2], dateArray[1], dateArray[0]);
+
+    try {
+      String result = model.gainOrLose(ticker, date, api);
+      view.print(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
 
   }
 
@@ -663,11 +629,21 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * using view and model methods.
    */
   private void gainOrLoseOverPeriod() {
+    StockData api = new StockData();
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
-    gainOrLoseOverPeriod(startDateArray, endDateArray, ticker);
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+
+    try {
+      String result = model.gainOrLoseOverAPeriod(ticker, startDate, endDate, api);
+      view.print(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+
   }
 
   /**
@@ -675,25 +651,19 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * using view and model methods.
    */
   private void xDayMovingAvg() {
+    StockData api = new StockData();
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
-    String date;
-    //int[] startDateArray = inputDate("Enter the start date");
+    int[] startDateArray = inputDate("Enter the start date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
     int x = inputPositiveInteger("Enter X days before the given date you want to find the moving "
             + "average for: ");
-    do {
-      view.print("Enter the start date");
-      view.print("The date should be in this format yyyy-mm-dd: ");
-      date = scan.nextLine();
-      //gainOrLose(date,ticker);
-      xDayMovingAvg(ticker,x,date);
-      if(getErrorMessage() != null) {
-        view.displayError(getErrorMessage());
-      }
-    } while (Objects.equals(getErrorMessage(), "Invalid date!")
-            || Objects.equals(getErrorMessage(), "Invalid date format."));
-
-   // xDayMovingAvg(ticker,x,startDateArray);
+    try {
+      double result = model.xDayMovingAvg(ticker, startDate, x, api);
+      view.showXDayMovingAvg(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
 
@@ -702,11 +672,20 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * using view and model methods.
    */
   private void crossoverOverPeriod() {
+    StockData api = new StockData();
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
-    crossoverOverPeriod(startDateArray,endDateArray,ticker);
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    try {
+      TreeMap<String, String> result = model.crossoverOverPeriod(ticker, api, startDate, endDate);
+      view.printTreeMapEntries(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
+
   }
 
   /**
@@ -714,15 +693,24 @@ public class StockControllerImpl extends AbstractController implements StockCont
    * using view and model methods.
    */
   private void movingCrossoversOverPeriod() {
+    StockData api = new StockData();
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
     int[] startDateArray = inputDate("Enter the start date");
     int[] endDateArray = inputDate("Enter the end date");
+    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
+    TreeMap<String, String> result;
+
     int x = inputPositiveInteger("Enter the value of x (shorter moving average period): ");
     int y = inputPositiveInteger("Enter the value of y (longer moving average period, greater "
             + "than x): ");
-    movingCrossoversOverPeriod(startDateArray,endDateArray,x,y,ticker);
-
+    try {
+      result = model.movingCrossOver(ticker, api, startDate, endDate, x, y);
+      view.printTreeMapEntries(result);
+    } catch (IllegalArgumentException e) {
+      view.displayError(e.getMessage());
+    }
   }
 
   /**
