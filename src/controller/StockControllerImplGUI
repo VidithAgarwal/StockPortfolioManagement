@@ -148,7 +148,7 @@ public class StockControllerImplGUI extends AbstractController  {
     } while (x <= 0);
     // where to validate date ?
     int startDate[] = view.inputDate();
-    xDayMovingAvg(name,x,startDate);
+    //xDayMovingAvg(name,x,startDate);
   }
 
   public void crossOverPeriod() {
