@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import controller.IStockData;
+import controller.StockData;
 
 /**
  * Implementation of the InvestmentManager interface.
@@ -329,6 +330,15 @@ public class InvestmentManagerImpl implements InvestmentManager {
     }
 
     return p.stockPerformance(api.fetchHistoricalData(tickerSymbol), start, end);
+  }
+
+  void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate,
+                                   LocalDate endDate,
+                                   int frequencyDays, double amount, double commissionFee,
+                                   StockData api) {
+    BuyingStrategy newStrategy = new BuySchedule(amount, frequencyDays, startDate, endDate,
+            commissionFee, null, buyingList);
+    portfolioDirectory.get(input).dollarCostAverage(LocalDate.now(), newStrategy, api);
   }
 
 

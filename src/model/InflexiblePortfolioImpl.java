@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import controller.IStockData;
+import controller.StockData;
 
 /**
  * Implementation of the Portfolio interface representing methods for a single inflexible portfolio.
@@ -137,6 +138,11 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    */
   @Override
   public void load(List<String[]> lines, IStockData api) {
+    throw new IllegalArgumentException();
+  }
+
+  @Override
+  public void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api) {
     throw new IllegalArgumentException();
   }
 

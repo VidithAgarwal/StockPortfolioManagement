@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import controller.IStockData;
+import controller.StockData;
 
 /**
  * Portfolio interface has the methods that are related to single portfolio object.
@@ -86,4 +87,6 @@ public interface Portfolio {
    * @param api The StockData object used for fetching stock data.
    */
   void load(List<String[]> lines, IStockData api);
+
+  void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api);
 }

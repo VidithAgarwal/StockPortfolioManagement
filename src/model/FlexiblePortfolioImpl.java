@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import controller.IStockData;
+import controller.StockData;
 
 /**
  * Implementation of the Portfolio interface representing methods for a flexible portfolio.
@@ -30,6 +31,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * Constructor to initialize a flexible portfolio with a given name.
+   *
    * @param portfolioName The name of the portfolio.
    */
   FlexiblePortfolioImpl(String portfolioName) {
@@ -40,10 +42,11 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method buys a specified quantity of a stock on a given date.
+   *
    * @param tickerSymbol ticker symbol of the stock to buy.
-   * @param quantity quantity of the stock to buy.
-   * @param buyDate date of the purchase.
-   * @param api IStockData object used to fetch historical data.
+   * @param quantity     quantity of the stock to buy.
+   * @param buyDate      date of the purchase.
+   * @param api          IStockData object used to fetch historical data.
    */
   @Override
   public void buyStock(String tickerSymbol, int quantity, LocalDate buyDate, IStockData api) {
@@ -78,9 +81,10 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method updates composition of the portfolio on a buy transaction.
+   *
    * @param closestEntry closest entry in composition map to the buy date.
-   * @param ticker ticker symbol of the stock bought.
-   * @param quantity quantity of the stock bought.
+   * @param ticker       ticker symbol of the stock bought.
+   * @param quantity     quantity of the stock bought.
    */
   private void updateCompositionOnBuy(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
                                       String ticker, int quantity) {
@@ -100,10 +104,11 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method sells a specified quantity of a stock on a given date.
+   *
    * @param tickerSymbol ticker symbol of stock to sell.
-   * @param quantity quantity of the stock to sell.
-   * @param sellDate date of the sale.
-   * @param api IStockData object used to fetch historical data.
+   * @param quantity     quantity of the stock to sell.
+   * @param sellDate     date of the sale.
+   * @param api          IStockData object used to fetch historical data.
    */
   @Override
   public void sellStock(String tickerSymbol, int quantity, LocalDate sellDate, IStockData api) {
@@ -145,9 +150,10 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method updates composition of the portfolio on a sell transaction.
+   *
    * @param closestEntry closest entry in the composition map to the sell date.
-   * @param ticker ticker symbol of the stock sold.
-   * @param quantity of the stock sold.
+   * @param ticker       ticker symbol of the stock sold.
+   * @param quantity     of the stock sold.
    */
   private void updateCompositionOnSell(Map.Entry<LocalDate, Map<String, Integer>> closestEntry,
                                        String ticker, int quantity) {
@@ -188,6 +194,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method retrieves composition of the portfolio on a specified date.
+   *
    * @param date date for which the composition is to be retrieved.
    * @return map containing composition of the portfolio, stock ticker symbols and quantities.
    */
@@ -203,8 +210,9 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method calculates cost basis of portfolio up to a specified date.
+   *
    * @param date date up to which the cost basis is to be calculated.
-   * @param api IStockData object used to fetch historical data.
+   * @param api  IStockData object used to fetch historical data.
    * @return total cost basis of the portfolio.
    */
   @Override
@@ -226,8 +234,9 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method calculates total value of the portfolio on a specified date.
+   *
    * @param date date for which the portfolio value is to be calculated.
-   * @param api IStockData object used to fetch historical data.
+   * @param api  IStockData object used to fetch historical data.
    * @return total value of the portfolio.
    */
   @Override
@@ -245,6 +254,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   /**
    * this method saves transaction data associated with the portfolio to a StringBuilder object.
    * The saved data includes the transaction type, symbol, quantity, and date.
+   *
    * @return StringBuilder object containing the saved transaction data in CSV format.
    */
   @Override
@@ -263,6 +273,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method indicates whether portfolio is flexible or not.
+   *
    * @return true, indicating the portfolio is flexible.
    */
   @Override
@@ -273,8 +284,9 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   /**
    * this method loads portfolio data from a list of string arrays representing lines of data,
    * using the provided StockData object for fetching stock data.
+   *
    * @param line list of string arrays representing lines of portfolio data to be loaded.
-   * @param api IStockData object used for fetching stock data.
+   * @param api  IStockData object used for fetching stock data.
    * @throws IllegalArgumentException if format of the date in file is incorrect
    *                                  or if data in file is invalid.
    */
@@ -300,6 +312,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this method validates a line of data from file.
+   *
    * @param parts array representing a line of data from the file.
    * @return true if lines are valid or else false if any entry is invalid.
    */
@@ -311,6 +324,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
 
   /**
    * this checks if a string represents an integer.
+   *
    * @param str string to be checked.
    * @return true if string represents an integer, otherwise false.
    */
@@ -324,4 +338,35 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   }
 
 
+  public void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api) {
+    LocalDate current = schedule.getLastRunDate() == null ? schedule.getStartDate()
+            .minusDays(schedule.getFrequencyDays()) : schedule.getLastRunDate();
+    double totalAmount =
+            schedule.getAmount() - schedule.getTransactionFee() * schedule.getBuyingList().size();
+    today = schedule.getEndDate() != null && today.isAfter(schedule.getEndDate())
+            ? schedule.getEndDate() : today;
+    while (today.isAfter(current)) {
+      LocalDate newBuy = current.plusDays(schedule.getFrequencyDays());
+      current = current.plusDays(schedule.getFrequencyDays());
+      for (Map.Entry<String, Double> entry : schedule.getBuyingList().entrySet()) {
+        int tryNextDay = 0;
+        Map<String, ArrayList<Double>> prices = api.fetchHistoricalData(entry.getKey());
+        Double buyPrice = null;
+        while (tryNextDay < 7 && tryNextDay < schedule.getFrequencyDays()) {
+          try {
+            buyPrice = prices.get(newBuy.plusDays(tryNextDay) + "").get(3);
+            break;
+          } catch (Exception ignored) {
+            tryNextDay += 1;
+          }
+        }
+        if (buyPrice == null) {
+          continue;
+        }
+        double quantity =
+                ((entry.getValue() / 100) * totalAmount) / buyPrice;
+        this.buyStock(entry.getKey(), (int) quantity, newBuy.plusDays(tryNextDay), api);
+      }
+    }
+  }
 }
