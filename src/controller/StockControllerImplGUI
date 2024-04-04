@@ -44,14 +44,8 @@ public class StockControllerImplGUI extends AbstractController  {
   }
 
   public void createFlexiblePortfolioV(String name) {
-    do {
-      if (model.portfolioNameExists(name)) {
-        errorMessage = "Portfolio with this name already exists!";
-      }
-    } while (model.portfolioNameExists(name));
     createFlexiblePortfolio(name);
 
-    successMessage = "Flexible portfolio created: " + name;
   }
 
   public void saveFlexiblePortfolio(int input,String path) {
@@ -79,7 +73,7 @@ public class StockControllerImplGUI extends AbstractController  {
     } while (shareQuantity <= 0);
     // where to validate date ?
     int date[] = view.inputDate();
-    buyStock(date,shareQuantity,name,choice);
+    //buyStock(date,shareQuantity,name,choice);
   }
 
   public void sellStockFlexiblePortfolio() {
@@ -99,35 +93,35 @@ public class StockControllerImplGUI extends AbstractController  {
     } while (shareQuantity <= 0);
     // where to validate date ?
     int date[] = view.inputDate();
-    sellStock(date,shareQuantity,name,choice);
+    //sellStock(date,shareQuantity,name,choice);
   }
 
   public void examineComposition() {
     int choice = view.selectPortfolio(model.getListOfPortfoliosName());
     // where to validate date ?
     int date[] = view.inputDate();
-    examineComposition(choice,date);
+    //examineComposition(choice,date);
   }
 
   public void getTotalValue() {
     int choice = view.selectPortfolio(model.getListOfPortfoliosName());
     // where to validate date ?
     int date[] = view.inputDate();
-    getTotalValue(choice, date);
+    //getTotalValue(choice, date);
   }
 
   public void costBasis() {
     int choice = view.selectPortfolio(model.getListOfPortfoliosName());
     // where to validate date ?
     int date[] = view.inputDate();
-    getCostBasis(choice, date);
+    //getCostBasis(choice, date);
   }
 
   public void gainOrLose() {
     String name = view.getShareName();
     // where to validate date ?
     int date[] = view.inputDate();
-    gainOrLose(date, name);
+    //gainOrLose(date, name);
   }
 
   public void gainOrLoseOverPeriod() {
