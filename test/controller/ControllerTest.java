@@ -1153,10 +1153,10 @@ public class ControllerTest {
   @Test
   public void testStockXDayMovingAvg() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
-            + "this format yyyy-mm-dd: ", "Enter X days before the given date you want to find the "
-            + "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("3\n3\naapl\n2024-03-01\n10\n7\n4\n");
+            + " of the share or ticker symbol: ","Enter X days before the given date you want to find the "
+            + "moving average for: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "0.0","Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n3\naapl\n10\n2024-03-01\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
     controller.execute();
@@ -1174,13 +1174,13 @@ public class ControllerTest {
   @Test
   public void testStockXDayMovingAvgWongDate() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
-            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
-            + "this format yyyy-mm-dd: ", "Enter X days before the given date you want to"
+            + " of the share or ticker symbol: ","Enter X days before the given date you want to"
             + " find the"
             + " "
-            + "moving average for: ", "0.0","Enter your choice: ","Enter your choice: "};
-    Reader in = new StringReader("3\n3\naapl\n2024-03-32\n2024-03-01\n10\n7\n4\n");
+            + "moving average for: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "Error", "Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "0.0","Enter your choice: ","Enter your choice: "};
+    Reader in = new StringReader("3\n3\naapl\n10\n2024-03-32\n2024-03-01\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
     controller.execute();
@@ -1198,13 +1198,13 @@ public class ControllerTest {
   @Test
   public void testStockXDayMovingAvgNegativeX() {
     String[] expectedOutputLog = {"Enter your choice: ","Enter your choice: ","Enter the name"
-            + " of the share or ticker symbol: ","Enter the start date","The date should be in "
-            + "this format yyyy-mm-dd: ", "Enter X days before the given date you want to"
+            + " of the share or ticker symbol: ","Enter X days before the given date you want to"
             + " find the moving average for: ", "Error", "Enter X days before the given date you "
-            + "want to find the moving average for: ", "0.0","Enter your choice: ","Enter your "
+            + "want to find the moving average for: ","Enter the start date","The date should be in "
+            + "this format yyyy-mm-dd: ", "0.0","Enter your choice: ","Enter your "
             + "choice:"
             + " "};
-    Reader in = new StringReader("3\n3\naapl\n2024-03-12\n-10\n10\n7\n4\n");
+    Reader in = new StringReader("3\n3\naapl\n-10\n10\n2024-03-12\n7\n4\n");
     MockModel newMockModel = new MockModel(mockName);
     this.controller =  new StockControllerImpl(mockView, in, newMockModel);
     controller.execute();
