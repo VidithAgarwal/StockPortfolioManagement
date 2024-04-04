@@ -677,10 +677,23 @@ public class StockControllerImpl extends AbstractController implements StockCont
   private void xDayMovingAvg() {
     view.print("Enter the name of the share or ticker symbol: ");
     String ticker = scan.nextLine();
-    int[] startDateArray = inputDate("Enter the start date");
+    String date;
+    //int[] startDateArray = inputDate("Enter the start date");
     int x = inputPositiveInteger("Enter X days before the given date you want to find the moving "
             + "average for: ");
-    xDayMovingAvg(ticker,x,startDateArray);
+    do {
+      view.print("Enter the start date");
+      view.print("The date should be in this format yyyy-mm-dd: ");
+      date = scan.nextLine();
+      //gainOrLose(date,ticker);
+      xDayMovingAvg(ticker,x,date);
+      if(getErrorMessage() != null) {
+        view.displayError(getErrorMessage());
+      }
+    } while (Objects.equals(getErrorMessage(), "Invalid date!")
+            || Objects.equals(getErrorMessage(), "Invalid date format."));
+
+   // xDayMovingAvg(ticker,x,startDateArray);
   }
 
 
