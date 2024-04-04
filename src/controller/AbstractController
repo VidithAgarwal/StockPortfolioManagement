@@ -426,6 +426,7 @@ public class AbstractController implements Features{
   @Override
   public void gainOrLoseOverPeriod(int[] startDateArray, int[] endDateArray,String ticker ) {
     StockData api = new StockData();
+
     LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
     LocalDate endDate = LocalDate.of(endDateArray[2], endDateArray[1], endDateArray[0]);
 
@@ -438,14 +439,40 @@ public class AbstractController implements Features{
   }
 
   @Override
-  public void xDayMovingAvg(String ticker, int x, int[] startDateArray) {
+  public void xDayMovingAvg(String ticker, int x, String startDateArray) {
     StockData api = new StockData();
-    LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
+    errorMessage = null;
+    successMessage = null;
+    boolean validDate = false;
+    int day = 0;
+    int month = 0;
+    int year = 0;
+    if (isValidDateFormat(startDateArray)) {
+      String[] dateParts = startDateArray.split("-");
+      year = Integer.parseInt(dateParts[0].trim());
+      month = Integer.parseInt(dateParts[1].trim());
+      day = Integer.parseInt(dateParts[2].trim());
+
+      if (validateDate(day, month, year)) {
+        validDate = true;
+      } else {
+        errorMessage = "Invalid date!";
+        return;
+        //view.displayError("Invalid date!");
+      }
+    } else {
+      errorMessage = "Invalid date format.";
+      return;
+      //view.displayError("Invalid date format.");
+    }
+    LocalDate startDate = LocalDate.parse(startDateArray);
+    //LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
     try {
       double result = model.xDayMovingAvg(ticker, startDate, x, api);
       view.showXDayMovingAvg(result);
     } catch (IllegalArgumentException e) {
-      view.displayError(e.getMessage());
+      errorMessage = e.getMessage();
+      //view.displayError(e.getMessage());
     }
   }
 
