@@ -1605,7 +1605,7 @@ public class ControllerTest {
   @Test
   public void testCreateFlexiblePortfolio() {
     String[] expectedOutputLog = {"Enter your choice: ", "Enter your choice: ", "Enter the name "
-            + "of the portfolio: ", "Enter your choice: "};
+            + "of the portfolio: ","Portfolio created successfully." ,"Enter your choice: "};
     Reader in = new StringReader("1\n2\nTest Portfolio1\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
