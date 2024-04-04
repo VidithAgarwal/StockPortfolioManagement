@@ -1,0 +1,204 @@
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
+
+import controller.Features;
+import controller.StockControllerImplGUI;
+
+public class GUIView extends JFrame implements IViewGUI {
+
+  private JTextArea outputArea;
+  private JButton createPortfolioButton;
+  private JButton loadPortfolioButton;
+  private JButton stockStatisticsButton;
+
+  private JButton gainOrLoseButton;
+  private JButton gainOrLoseOverPeriodButton;
+  private JButton xdaymovingavgButton;
+  private JButton crossoverperiodButton;
+  private JButton movingcrossoverperiodButton;
+
+  private StockControllerImplGUI stockGUI;
+
+  private JPanel additionalButtonPanel;
+
+  public GUIView() {
+    setTitle("Investment Application");
+    setSize(600, 400); // increased width for the image
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setLayout(new BorderLayout());
+
+    // Image label
+    ImageIcon icon = new ImageIcon("ass6.png");
+    JLabel imageLabel = new JLabel(icon);
+    add(imageLabel, BorderLayout.WEST);
+
+    // Button panel
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new GridLayout(5, 1));
+
+    createPortfolioButton = new JButton("Create Portfolio");
+    createPortfolioButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        // Create and display a custom dialog for entering the portfolio name
+        JTextField portfolioNameField = new JTextField();
+        JPanel dialogPanel = new JPanel(new GridLayout(2, 1));
+        dialogPanel.add(new JLabel("Enter Portfolio Name:"));
+        dialogPanel.add(portfolioNameField);
+
+        JLabel statusLabel = new JLabel(""); // JLabel to display status message
+        dialogPanel.add(statusLabel);
+
+        int result = JOptionPane.showConfirmDialog(null, dialogPanel,
+                "Create Portfolio", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+          String portfolioName = portfolioNameField.getText();
+              // Call the method to create flexible portfolio
+              stockGUI.createFlexiblePortfolioV(portfolioName);
+
+          if (stockGUI.getErrorMessage() != null) {
+            statusLabel.setText("<html><font color='red'>" + stockGUI.getErrorMessage() + "</font></html>");
+          } else {
+            statusLabel.setText("<html><font color='green'>" + stockGUI.getSuccessMessage() + "</font></html>");
+          }
+
+
+        }
+      }
+    });
+    buttonPanel.add(createPortfolioButton);
+
+    loadPortfolioButton = new JButton("Load Portfolio");
+    buttonPanel.add(loadPortfolioButton);
+
+    stockStatisticsButton = new JButton("Stock Statistics");
+    stockStatisticsButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        showAdditionalButtons();
+      }
+    });
+    buttonPanel.add(stockStatisticsButton);
+
+    add(buttonPanel, BorderLayout.NORTH);
+
+    setVisible(true);
+  }
+
+  private void showAdditionalButtons() {
+    if (additionalButtonPanel == null) {
+      additionalButtonPanel = new JPanel();
+      additionalButtonPanel.setLayout(new GridLayout(5, 1));
+
+      gainOrLoseButton = new JButton("Gain or Lose");
+      gainOrLoseButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          // Handle Gain or Lose button clickSa@090701
+        }
+      });
+      additionalButtonPanel.add(gainOrLoseButton);
+
+      gainOrLoseOverPeriodButton = new JButton("Gain or Lose Over Period");
+      gainOrLoseOverPeriodButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          // Handle Gain or Lose Over Period button click
+        }
+      });
+      additionalButtonPanel.add(gainOrLoseOverPeriodButton);
+
+      xdaymovingavgButton = new JButton("X-Day Moving Average");
+      xdaymovingavgButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          // Handle X-Day Moving Average button click
+        }
+      });
+      additionalButtonPanel.add(xdaymovingavgButton);
+
+      crossoverperiodButton = new JButton("Crossover Period");
+      crossoverperiodButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          // Handle Crossover Period button click
+        }
+      });
+      additionalButtonPanel.add(crossoverperiodButton);
+
+      movingcrossoverperiodButton = new JButton("Moving Crossover Period");
+      movingcrossoverperiodButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          // Handle Moving Crossover Period button click
+        }
+      });
+      additionalButtonPanel.add(movingcrossoverperiodButton);
+
+      add(additionalButtonPanel, BorderLayout.CENTER);
+      revalidate();
+      repaint();
+    } else {
+      remove(additionalButtonPanel);
+      additionalButtonPanel = null;
+      revalidate();
+      repaint();
+    }
+  }
+
+  @Override
+  public void displayError(String error) {
+    JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+  }
+
+  @Override
+  public void print(String message) {
+    System.out.println(message);
+  }
+
+  @Override
+  public void addFeatures(Features features) {
+
+  }
+
+  @Override
+  public String getPortfolioName() {
+    return null;
+  }
+
+  @Override
+  public String getPositiveInput() {
+    return null;
+  }
+
+  @Override
+  public int[] inputDate() {
+    return new int[0];
+  }
+
+  @Override
+  public int selectPortfolio(Map<String, String> listOfPortfolios) {
+    return 0;
+  }
+
+  @Override
+  public String getPath() {
+    return null;
+  }
+
+  @Override
+  public String getShareName() {
+    return null;
+  }
+
+//  @Override
+//  public void addFeatures(Features features) {
+//    // Implement if needed
+//  }
+
+  public static void main(String[] args) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        new GUIView();
+      }
+    });
+  }
+}

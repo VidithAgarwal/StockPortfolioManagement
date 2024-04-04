@@ -1,0 +1,41 @@
+package controller;
+
+import java.util.List;
+
+import model.InflexiblePortfolioImpl;
+
+public interface Features {
+
+  void createFlexiblePortfolio(String name);
+
+  void export(int input, String path);
+
+  void buyStock(int[] date, int quantity, String shareName, int choice);
+
+  void sellStock(int[] date, int quantity, String shareName, int choice);
+
+  void examineComposition(int input, int[] date);
+
+  void getTotalValue(int choice, int[] date);
+
+  void getCostBasis(int choice, int[] date);
+
+  void portfolioPerformance(int[] startDateArray, int[] endDateArray, int choice,
+                            String portfolioName);
+
+  void stockPerformance(int[] startDateArray, int[] endDateArray, String ticker );
+
+  void gainOrLose(int[] dateArray, String ticker);
+
+  void gainOrLoseOverPeriod(int[] startDateArray, int[] endDateArray,String ticker );
+
+  void xDayMovingAvg(String ticker, int x, int[] startDateArray);
+
+  void crossoverOverPeriod(int[] startDateArray, int[] endDateArray, String ticker);
+
+  void movingCrossoversOverPeriod(int[] startDateArray, int[] endDateArray, int x,int y,
+                                  String ticker );
+
+
+
+}
