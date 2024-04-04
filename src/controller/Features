@@ -10,30 +10,29 @@ public interface Features {
 
   void export(int input, String path);
 
-  void buyStock(String date, int quantity, String shareName, int choice);
+  void buyStock(String date, String quantity, String shareName, int choice);
 
-  void sellStock(String date, int quantity, String shareName, int choice);
+  void sellStock(String date, String quantity, String shareName, int choice);
 
   void examineComposition(int input, String date);
 
-  void getTotalValue(int choice, int[] date);
+  void getTotalValue(int choice, String date);
 
   void getCostBasis(int choice, String date);
 
-  void portfolioPerformance(int[] startDateArray, int[] endDateArray, int choice,
-                            String portfolioName);
+  void portfolioPerformance(String startDateArray, String endDateArray, int choice);
 
-  void stockPerformance(int[] startDateArray, int[] endDateArray, String ticker );
+  void stockPerformance(String startDateArray, String endDateArray, String ticker );
 
   void gainOrLose(String date, String ticker);
 
-  void gainOrLoseOverPeriod(int[] startDateArray, int[] endDateArray,String ticker );
+  void gainOrLoseOverPeriod(String startDateArray, String endDateArray,String ticker );
 
-  void xDayMovingAvg(String ticker, int x, String startDateArray);
+  void xDayMovingAvg(String ticker, String x, String startDateArray);
 
-  void crossoverOverPeriod(int[] startDateArray, int[] endDateArray, String ticker);
+  void crossoverOverPeriod(String startDateArray, String endDateArray, String ticker);
 
-  void movingCrossoversOverPeriod(int[] startDateArray, int[] endDateArray, int x,int y,
+  void movingCrossoversOverPeriod(String startDateArray, String endDateArray, String x,String y,
                                   String ticker );
 
 
