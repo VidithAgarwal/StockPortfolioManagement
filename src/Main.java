@@ -1,10 +1,14 @@
 import java.io.InputStreamReader;
 
+import controller.Features;
 import controller.StockControllerImpl;
 
+import controller.StockControllerImplGUI;
 import model.InvestmentManager;
 import model.InvestmentManagerImpl;
+import view.GUIView;
 import view.IView;
+import view.IViewGUI;
 import view.IViewImpl;
 
 /**
@@ -21,12 +25,12 @@ public class Main {
 
     InvestmentManager model = new InvestmentManagerImpl();
 
-    IView view = new IViewImpl(System.out, System.err);
+    IViewGUI view = new GUIView();
 
-    StockControllerImpl controller = new StockControllerImpl(view, new InputStreamReader(System.in),
+    StockControllerImplGUI controller = new StockControllerImplGUI(view,
             model);
 
-    controller.execute();
+    controller.setView(view);
 
 
   }

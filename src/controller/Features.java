@@ -36,5 +36,5 @@ public interface Features {
                                   String ticker );
 
 
-
+  String getErrorMessage();
 }

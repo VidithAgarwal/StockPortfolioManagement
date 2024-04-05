@@ -11,7 +11,7 @@
 //import model.InflexiblePortfolioImpl;
 //import model.InvestmentManager;
 //import view.IView;
-//public class AbstractController implements Features{
+//public class AbstractController implements Features.java{
 //
 //  private final IView view;
 //

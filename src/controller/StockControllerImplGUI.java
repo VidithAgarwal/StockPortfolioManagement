@@ -38,16 +38,13 @@ public class StockControllerImplGUI implements Features  {
   private String errorMessage;
   private String successMessage;
 
-
-  public String getErrorMessage() {
-    return errorMessage;
-  }
-
   public String getSuccessMessage() {
     return successMessage;
   }
 
   public void createFlexiblePortfolio(String name) {
+    successMessage = null;
+    errorMessage = null;
     if (model.portfolioNameExists(name)) {
       errorMessage = "Portfolio with this name already exists!";
       return;
@@ -225,7 +222,7 @@ public class StockControllerImplGUI implements Features  {
     LocalDate compositionDate = LocalDate.parse(date);
 
     try {
-      view.showComposition(model.portfolioComposition(input, compositionDate));
+//      view.showComposition(model.portfolioComposition(input, compositionDate));
     } catch (IllegalArgumentException e) {
       //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
@@ -261,7 +258,7 @@ public class StockControllerImplGUI implements Features  {
     try {
       StockData api = new StockData();
       double totalValue = model.portfolioValue(choice, year, month, day, api);
-      view.showTotalValue(totalValue);
+//      view.showTotalValue(totalValue);
     } catch (IllegalArgumentException e) {
       if (e.getMessage() != null) {
         //view.print("No price data found for " + e.getMessage() + " on the " + "date: " + day + "-" + month + "-" + year);
@@ -461,7 +458,7 @@ public class StockControllerImplGUI implements Features  {
     //LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
     try {
       double result = model.xDayMovingAvg(ticker, startDate, value, api);
-      view.showXDayMovingAvg(result);
+//      view.showXDayMovingAvg(result);
     } catch (IllegalArgumentException e) {
       errorMessage = e.getMessage();
       //view.displayError(e.getMessage());
@@ -520,7 +517,7 @@ public class StockControllerImplGUI implements Features  {
 
     try {
       TreeMap<String, String> result = model.crossoverOverPeriod(ticker, api, startDate, endDate);
-      view.printTreeMapEntries(result);
+//      view.printTreeMapEntries(result);
     } catch (IllegalArgumentException e) {
       //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
@@ -580,7 +577,7 @@ public class StockControllerImplGUI implements Features  {
     try {
       result = model.stockPerformance(ticker, api, startDate, endDate);
       int scale = model.scaleForStockPerformance(ticker, api, startDate, endDate);
-      view.barGraph(scale, result, ticker, startDate + "", endDate + "");
+//      view.barGraph(scale, result, ticker, startDate + "", endDate + "");
     } catch (IllegalArgumentException e) {
       //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
@@ -656,7 +653,7 @@ public class StockControllerImplGUI implements Features  {
     try {
       result = model.portfolioPerformance(choice, startDate, endDate);
       int scale = model.scaleForPortfolioPerformance(choice, startDate, endDate);
-      view.barGraph(scale, result, portfolioName, startDate + "", endDate + "");
+//      view.barGraph(scale, result, portfolioName, startDate + "", endDate + "");
     } catch (RuntimeException e) {
       //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
@@ -748,7 +745,7 @@ public class StockControllerImplGUI implements Features  {
     TreeMap<String, String> result;
     try {
       result = model.movingCrossOver(ticker, api, startDate, endDate, value, value1);
-      view.printTreeMapEntries(result);
+//      view.printTreeMapEntries(result);
     } catch (IllegalArgumentException e) {
       //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
@@ -756,6 +753,11 @@ public class StockControllerImplGUI implements Features  {
 
 
 
+  }
+
+  @Override
+  public String getErrorMessage() {
+    return this.errorMessage;
   }
 
 }
