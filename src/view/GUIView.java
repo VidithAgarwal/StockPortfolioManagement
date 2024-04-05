@@ -133,7 +133,7 @@ public class GUIView extends JFrame implements IViewGUI {
     JButton loadButton = createButton("Load a flexible portfolio");
     loadButton.addActionListener(evt -> loadPortfolio(features));
 
-    JButton stockAnalysisButton = createButton("Analyse a stock");
+    JButton stockAnalysisButton = createButton("Get stock statistics ");
     stockAnalysisButton.addActionListener(evt -> stockAnalysis(features));
 
 
@@ -159,6 +159,32 @@ public class GUIView extends JFrame implements IViewGUI {
   private void loadPortfolio(Features features) {
   }
 
+  private void portfolioPerform(Features features) {
+  }
+
+  private void buyStock(Features features) {
+  }
+
+  private void sellStock(Features features) {
+  }
+
+  private void costBasis(Features features) {
+  }
+
+  private void totalValue(Features features) {
+  }
+
+  private void save(Features features) {
+  }
+
+  private void dollarCostPortfolio(Features features) {
+  }
+
+  private void investmentPortfolio(Features features) {
+  }
+
+
+
   private void createPortfolio(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -168,7 +194,7 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.insets = new Insets(10, 10, 10, 10);
 
-    JLabel heading = createLabel("Create A new Flexible Portfolio");
+    JLabel heading = createLabel("Create New Flexible Portfolio");
     heading.setFont(new Font("Arial", Font.BOLD, 24));
     panel.add(heading, gbc);
 
@@ -180,23 +206,23 @@ public class GUIView extends JFrame implements IViewGUI {
     JButton submitButton = createButton("Submit");
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
-            String inputText = textBox.getText();
-            if (inputText != null) {
-              features.createFlexiblePortfolio(inputText);
-              if (features.getErrorMessage() != null) {
-                JOptionPane.showMessageDialog(panel, "Portfolio with this name already exists",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                textBox.setText("");
-                textBox.requestFocus();
-              } else {
-                JOptionPane.showMessageDialog(panel, "Portfolio created successfully",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
+      String inputText = textBox.getText();
+      if (inputText != null) {
+        features.createFlexiblePortfolio(inputText);
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(panel, "Portfolio with this name already exists",
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          textBox.setText("");
+          textBox.requestFocus();
+        } else {
+          JOptionPane.showMessageDialog(panel, "Portfolio created successfully",
+                  "Success",
+                  JOptionPane.INFORMATION_MESSAGE);
 
-                showSecondMenu(features);
-              }
-            }
+          showSecondMenu(features);
+        }
+      }
     });
 
     panel.add(label, gbc);
@@ -214,9 +240,95 @@ public class GUIView extends JFrame implements IViewGUI {
   private void showSecondMenu(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
-    JButton button = createButton("Create Portfolio");
+
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridwidth = GridBagConstraints.REMAINDER;
+    gbc.anchor = GridBagConstraints.NORTH;
+
+
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0; // Expand horizontally
+    gbc.weighty = 1.0; // Ex
+
+    JButton button = createButton("Create Flexible Portfolio");
+    button.setPreferredSize(new Dimension(500, 50));
     panel.add(button);
     button.addActionListener(evt -> createPortfolio(features));
+
+    JButton loadingButton = createButton("Load Flexible Portfolio");
+    loadingButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(loadingButton);
+    loadingButton.addActionListener(evt -> loadPortfolio(features));
+
+    JButton buyStockButton = createButton("Buy Stocks");
+    buyStockButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(buyStockButton);
+    buyStockButton.addActionListener(evt -> buyStock(features));
+
+    JButton sellStockButton = createButton("Sell Stocks");
+    sellStockButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(sellStockButton);
+    sellStockButton.addActionListener(evt -> sellStock(features));
+
+    JButton costBasisButton = createButton("Get Cost Basis for a Portfolio");
+    costBasisButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(costBasisButton);
+    costBasisButton.addActionListener(evt -> costBasis(features));
+
+    JButton totalValueButton = createButton("Get Total Value of a Portfolio");
+    totalValueButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(totalValueButton);
+    totalValueButton.addActionListener(evt -> totalValue(features));
+
+    JButton saveButton = createButton("Save Flexible Portfolio");
+    saveButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(saveButton);
+    saveButton.addActionListener(evt -> save(features));
+
+    JButton dollarCostButton = createButton("Create Portfolio Using Dollar-Cost Averaging");
+    dollarCostButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(dollarCostButton);
+    dollarCostButton.addActionListener(evt -> dollarCostPortfolio(features));
+
+    JButton investButton = createButton("Investment in a Portfolio");
+    investButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(investButton);
+    investButton.addActionListener(evt -> investmentPortfolio(features));
+
+    JButton stockAnalysis = createButton("Get Stock Analysis");
+    stockAnalysis.setPreferredSize(new Dimension(500, 50));
+    panel.add(stockAnalysis);
+    stockAnalysis.addActionListener(evt -> stockAnalysis(features));
+
+    JButton portfolioPerformanceButton = createButton("View Portfolio Performance");
+    portfolioPerformanceButton.setPreferredSize(new Dimension(500, 50));
+    panel.add(portfolioPerformanceButton);
+    portfolioPerformanceButton.addActionListener(evt -> portfolioPerform(features));
+
+    panel.add(button, gbc);
+    gbc.gridy = 1;
+    panel.add(loadingButton, gbc);
+    gbc.gridy = 2;
+    panel.add(buyStockButton, gbc);
+    gbc.gridy = 3;
+    panel.add(sellStockButton, gbc);
+    gbc.gridy = 4;
+    panel.add(costBasisButton, gbc);
+    gbc.gridy = 5;
+    panel.add(totalValueButton, gbc);
+    gbc.gridy = 6;
+    panel.add(saveButton, gbc);
+    gbc.gridy = 7;
+    panel.add(dollarCostButton, gbc);
+    gbc.gridy = 8;
+    panel.add(investButton, gbc);
+    gbc.gridy = 9;
+    panel.add(stockAnalysis, gbc);
+    gbc.gridy = 10;
+    panel.add(portfolioPerformanceButton, gbc);
+
     mainFrame.add(panel);
 
     revalidate();
