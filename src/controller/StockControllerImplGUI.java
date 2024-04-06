@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -14,16 +13,25 @@ import model.InvestmentManager;
 import view.IViewGUI;
 
 
+/**
+ * class implements Features interface and serves as controller.
+ * for managing investment manager related operations in graphical user interface (GUI) environment.
+ */
 public class StockControllerImplGUI implements Features  {
 
+  /**
+   * view component responsible for displaying information to user.
+   */
   private IViewGUI view;
 
+  /**
+   * investment manager representing the model object.
+   */
   private final InvestmentManager model;
 
   /**
    * Constructs a StockControllerImpl object with the specified view, input stream.
    * and portfolio directory.
-   *
    * @param view         The view component responsible for displaying information to the user.
    * @param portfolioDir The portfolio directory model component representing the model object.
    */
@@ -32,12 +40,18 @@ public class StockControllerImplGUI implements Features  {
     this.view = view;
   }
 
+  /**
+   * Sets the view component for the controller and adds features to the view.
+   * @param v the view component to set.
+   */
   public void setView(IViewGUI v) {
     view = v;
     //provide view with all the callbacks
     view.addFeatures(this);
   }
+
   private String errorMessage;
+
   private String successMessage;
 
   @Override
@@ -45,6 +59,7 @@ public class StockControllerImplGUI implements Features  {
     return successMessage;
   }
 
+  @Override
   public void createFlexiblePortfolio(String name) {
     successMessage = null;
     errorMessage = null;
@@ -57,6 +72,7 @@ public class StockControllerImplGUI implements Features  {
 
   }
 
+  @Override
   public void export(int input,String path) {
     // here in view we will provide drop down for selecting portfolio
     // THE DATA WILL BE DISPLAYED IN THAT ORDER OF INDEX OF PORTFOLIOS
@@ -73,6 +89,7 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
+  @Override
   public void buyStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
@@ -149,6 +166,7 @@ public class StockControllerImplGUI implements Features  {
     return year >= 0 && year <= 9999;
   }
 
+  @Override
   public void sellStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
@@ -198,6 +216,7 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
+  @Override
   public void examineComposition(int input, String date) {
     errorMessage = null;
     successMessage = null;
@@ -234,6 +253,7 @@ public class StockControllerImplGUI implements Features  {
     //examineComposition(choice,date);
   }
 
+  @Override
   public void getTotalValue(int choice, String date) {
     errorMessage = null;
     successMessage = null;
@@ -279,6 +299,7 @@ public class StockControllerImplGUI implements Features  {
     //getTotalValue(choice, date);
   }
 
+  @Override
   public void getCostBasis(int choice, String date) {
     errorMessage = null;
     successMessage = null;
@@ -315,315 +336,13 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
-//  public void gainOrLose(String date, String ticker) {
-//    StockData api = new StockData();
-//    errorMessage = null;
-//    successMessage = null;
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate date1 = LocalDate.parse(date);
-//
-//    //LocalDate date = LocalDate.of(dateArray[2], dateArray[1], dateArray[0]);
-//
-//    try {
-//      String result = model.gainOrLose(ticker, date1, api);
-//      //view.print(result);
-//      successMessage = result;
-//    } catch (IllegalArgumentException e) {
-//      //view.displayError(e.getMessage());
-//      errorMessage = e.getMessage();
-//    }
-//  }
-//
-//  public void gainOrLoseOverPeriod(String startDateArray, String endDateArray, String ticker) {
-//    StockData api = new StockData();
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid start date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
-//
-//    boolean validDate1 = false;
-//    int day1 = 0;
-//    int month1 = 0;
-//    int year1 = 0;
-//    if (isValidDateFormat(endDateArray)) {
-//      String[] dateParts1 = startDateArray.split("-");
-//      year1 = Integer.parseInt(dateParts1[0].trim());
-//      month1 = Integer.parseInt(dateParts1[1].trim());
-//      day1 = Integer.parseInt(dateParts1[2].trim());
-//
-//      if (validateDate(day1, month1, year1)) {
-//        validDate1 = true;
-//      } else {
-//        errorMessage = "Invalid end date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate endDate = LocalDate.parse(endDateArray);
-//
-//    try {
-//      String result = model.gainOrLoseOverAPeriod(ticker, startDate, endDate, api);
-//      //view.print(result);
-//      successMessage = result;
-//    } catch (IllegalArgumentException e) {
-//      //view.displayError(e.getMessage());
-//      errorMessage = e.getMessage();
-//    }
-//  }
-//
-//  public void xDayMovingAvg(String ticker, String x, String startDateArray) {
-//    errorMessage = null;
-//    successMessage = null;
-//    int value;
-//    try {
-//      value = Integer.parseInt(x);
-//      if (value <= 0) {
-//        //view.displayError("Share quantity must be a positive integer.");
-//        errorMessage = "X must be a positive integer.";
-//        return;
-//      }
-//    } catch (NumberFormatException e) {
-//      //view.displayError("Share quantity must be a positive integer.");
-//      errorMessage = "X must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return;
-//    }
-//
-//    StockData api = new StockData();
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
-//    //LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
-//    try {
-//      double result = model.xDayMovingAvg(ticker, startDate, value, api);
-////      view.showXDayMovingAvg(result);
-//    } catch (IllegalArgumentException e) {
-//      errorMessage = e.getMessage();
-//      //view.displayError(e.getMessage());
-//    }
-//  }
-//
-//  public void crossoverOverPeriod(String startDateArray, String endDateArray, String ticker) {
-//    StockData api = new StockData();
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid start date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
-//
-//    boolean validDate1 = false;
-//    int day1 = 0;
-//    int month1 = 0;
-//    int year1 = 0;
-//    if (isValidDateFormat(endDateArray)) {
-//      String[] dateParts1 = startDateArray.split("-");
-//      year1 = Integer.parseInt(dateParts1[0].trim());
-//      month1 = Integer.parseInt(dateParts1[1].trim());
-//      day1 = Integer.parseInt(dateParts1[2].trim());
-//
-//      if (validateDate(day1, month1, year1)) {
-//        validDate1 = true;
-//      } else {
-//        errorMessage = "Invalid end date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate endDate = LocalDate.parse(endDateArray);
-//
-//    try {
-//      TreeMap<String, String> result = model.crossoverOverPeriod(ticker, api, startDate, endDate);
-////      view.printTreeMapEntries(result);
-//    } catch (IllegalArgumentException e) {
-//      //view.displayError(e.getMessage());
-//      errorMessage = e.getMessage();
-//    }
-//  }
-//
-//
-//  @Override
-//  public void movingCrossoversOverPeriod(String startDateArray, String endDateArray,
-//                                         String x, String y, String ticker) {
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid start date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
-//
-//    boolean validDate1 = false;
-//    int day1 = 0;
-//    int month1 = 0;
-//    int year1 = 0;
-//    if (isValidDateFormat(endDateArray)) {
-//      String[] dateParts1 = startDateArray.split("-");
-//      year1 = Integer.parseInt(dateParts1[0].trim());
-//      month1 = Integer.parseInt(dateParts1[1].trim());
-//      day1 = Integer.parseInt(dateParts1[2].trim());
-//
-//      if (validateDate(day1, month1, year1)) {
-//        validDate1 = true;
-//      } else {
-//        errorMessage = "Invalid end date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate endDate = LocalDate.parse(endDateArray);
-//
-//    int value;
-//    try {
-//      value = Integer.parseInt(x);
-//      if (value <= 0) {
-//        //view.displayError("Share quantity must be a positive integer.");
-//        errorMessage = "X must be a positive integer.";
-//        return;
-//      }
-//    } catch (NumberFormatException e) {
-//      //view.displayError("Share quantity must be a positive integer.");
-//      errorMessage = "X must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return;
-//    }
-//
-//    int value1;
-//    try {
-//      value1 = Integer.parseInt(y);
-//      if (value1 <= 0) {
-//        //view.displayError("Share quantity must be a positive integer.");
-//        errorMessage = "Y must be a positive integer.";
-//        return;
-//      }
-//    } catch (NumberFormatException e) {
-//      //view.displayError("Share quantity must be a positive integer.");
-//      errorMessage = "Y must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return;
-//    }
-//    StockData api = new StockData();
-//    TreeMap<String, String> result;
-//    try {
-//      result = model.movingCrossOver(ticker, api, startDate, endDate, value, value1);
-////      view.printTreeMapEntries(result);
-//    } catch (IllegalArgumentException e) {
-//      //view.displayError(e.getMessage());
-//      errorMessage = e.getMessage();
-//    }
-//
-//  }
 
   @Override
   public String getErrorMessage() {
     return this.errorMessage;
   }
 
+  @Override
   public void gainOrLose(String date, String ticker) {
     StockData api = new StockData();
     errorMessage = null;
@@ -664,6 +383,7 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
+  @Override
   public void gainOrLoseOverPeriod(String startDateArray, String endDateArray, String ticker) {
     StockData api = new StockData();
     boolean validDate = false;
@@ -726,6 +446,7 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
+  @Override
   public void xDayMovingAvg(String ticker, String x, String startDateArray) {
     errorMessage = null;
     successMessage = null;
@@ -779,6 +500,7 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
+  @Override
   public TreeMap<String, String> crossoverOverPeriod(String startDateArray, String endDateArray, String ticker) {
     errorMessage = null;
     successMessage = null;
