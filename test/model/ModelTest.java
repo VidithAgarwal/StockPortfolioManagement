@@ -5,6 +5,7 @@ import org.junit.Test;
 
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.io.File;
@@ -3355,7 +3356,261 @@ public class ModelTest {
     assertEquals(expected, result.toString());
   }
 
+  @Test
+  public void testAddStrategy() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    double commissionFee = 10.0;
+    portfolioDir.addStrategy(input,buyingList,startDate,endDate,frequencyDays,amount,
+            commissionFee,api);
+    LocalDate date2 = LocalDate.of(2023, 12, 13);
+    Map<String, Integer> composition = portfolioDir.portfolioComposition(0, date2);
 
+    assertEquals(2, composition.size());
+    assertEquals(15, (int) composition.get("AAPL"));
+    assertEquals(15, (int) composition.get("GOOG"));
+    assertEquals(4978.95,
+            portfolioDir.portfolioValue(0, 13, 12, 2023, api), 0.001);
+
+    LocalDate date3 = LocalDate.of(2024, 1, 2);
+    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0, date3);
+
+    assertEquals(2, composition1.size());
+    assertEquals(41, (int) composition1.get("AAPL"));
+    assertEquals(50, (int) composition1.get("GOOG"));
+    assertEquals(14589.24,
+            portfolioDir.portfolioValue(0, 2, 1, 2024, api), 0.001);
+
+
+    LocalDate date4 = LocalDate.of(2024, 1, 12);
+    Map<String, Integer> composition2 = portfolioDir.portfolioComposition(0, date4);
+
+    assertEquals(2, composition2.size());
+    assertEquals(67, (int) composition2.get("AAPL"));
+    assertEquals(84, (int) composition2.get("GOOG"));
+    assertEquals(24572.8,
+            portfolioDir.portfolioValue(0, 12, 1, 2024, api), 0.001);
+
+
+    LocalDate date5 = LocalDate.of(2024, 1, 22);
+    Map<String, Integer> composition3 = portfolioDir.portfolioComposition(0, date5);
+
+    assertEquals(2, composition3.size());
+    assertEquals(92, (int) composition3.get("AAPL"));
+    assertEquals(117, (int) composition3.get("GOOG"));
+    assertEquals(35119.95,
+            portfolioDir.portfolioValue(0, 22, 1, 2024, api), 0.001);
+
+
+    LocalDate date6 = LocalDate.of(2024, 2, 1);
+    Map<String, Integer> composition4 = portfolioDir.portfolioComposition(0, date6);
+
+    assertEquals(2, composition4.size());
+    assertEquals(119, (int) composition4.get("AAPL"));
+    assertEquals(152, (int) composition4.get("GOOG"));
+    assertEquals(43928.26,
+            portfolioDir.portfolioValue(0, 1, 2, 2024, api), 0.001);
+
+
+    LocalDate date7 = LocalDate.of(2024, 2, 12);
+    Map<String, Integer> composition5 = portfolioDir.portfolioComposition(0, date7);
+
+    assertEquals(2, composition5.size());
+    assertEquals(119, (int) composition5.get("AAPL"));
+    assertEquals(152, (int) composition5.get("GOOG"));
+    assertEquals(44877.81,
+            portfolioDir.portfolioValue(0, 12, 2, 2024, api), 0.001);
+
+  }
+
+
+  @Test
+  public void testAddStrategyCommissionFeeNeg() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    double commissionFee = -10.0;
+    try {
+      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Commission fee cannot be negative.", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testAddStrategyTransactionFeeNeg() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = -10.0;
+    double commissionFee = 10.0;
+    try {
+      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Amount cannot be less than zero", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testAddStrategyFrequencyDaysNeg() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = -10;
+    double amount = 10000.0;
+    double commissionFee = 10.0;
+    try {
+      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Frequency day cannot be less than zero.", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testAddStrategyEndDate() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2023, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    double commissionFee = 10.0;
+    try {
+      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("endDate cannot be before startDate", e.getMessage());
+    }
+  }
+
+
+  @Test
+  public void testAddStrategyBuyListEmpty() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    double commissionFee = 10.0;
+    try {
+      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Stock buying list is empty", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testAddStrategySharePercentageNeg() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", -50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    double commissionFee = 10.0;
+    try {
+      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Share percentage cannot be less than zero", e.getMessage());
+    }
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void testInflexibleAddStrategy() {
+    InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
+            = new InflexiblePortfolioImpl.PortfolioBuilder("Test " + "Portfolio1");
+    StockData api = new StockData();
+    firstBuilder.addShare("Apple Inc", 10);
+    firstBuilder.addShare("GOOG", 10);
+    portfolioDir.addPortfolio(firstBuilder);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    double commissionFee = 10.0;
+    portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              commissionFee, api);
+  }
 
 
 
