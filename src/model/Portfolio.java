@@ -88,5 +88,13 @@ public interface Portfolio {
    */
   void load(List<String[]> lines, IStockData api);
 
+  /**
+   * this method executes dollar-cost averaging investment strategy.
+   * for provided schedule & current date.
+   * using given stock data API to fetch historical prices.
+   * @param today     current date.
+   * @param schedule  buying schedule defining the investment strategy.
+   * @param api       stock data API to fetch historical prices.
+   */
   void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api);
 }
