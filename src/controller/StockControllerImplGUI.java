@@ -60,6 +60,8 @@ public class StockControllerImplGUI implements Features  {
   public void export(int input,String path) {
     // here in view we will provide drop down for selecting portfolio
     // THE DATA WILL BE DISPLAYED IN THAT ORDER OF INDEX OF PORTFOLIOS
+    errorMessage = null;
+    successMessage = null;
     Persistence persistence = new Persistence();
     try {
       persistence.exportAsCSV(path, model.save(input));
@@ -69,26 +71,25 @@ public class StockControllerImplGUI implements Features  {
       errorMessage = e.getMessage();
       //view.displayError(e.getMessage());
     }
-
   }
 
   public void buyStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
     int shareQuantity;
-      try {
-        shareQuantity = Integer.parseInt(quantity);
-        if (shareQuantity <= 0) {
-          //view.displayError("Share quantity must be a positive integer.");
-          errorMessage = "Share quantity must be a positive integer.";
-          return;
-        }
-      } catch (NumberFormatException e) {
+    try {
+      shareQuantity = Integer.parseInt(quantity);
+      if (shareQuantity <= 0) {
         //view.displayError("Share quantity must be a positive integer.");
         errorMessage = "Share quantity must be a positive integer.";
-         // Set to negative to continue the loop
         return;
       }
+    } catch (NumberFormatException e) {
+      //view.displayError("Share quantity must be a positive integer.");
+      errorMessage = "Share quantity must be a positive integer.";
+      // Set to negative to continue the loop
+      return;
+    }
     boolean validDate = false;
     int day = 0;
     int month = 0;
@@ -842,7 +843,7 @@ public class StockControllerImplGUI implements Features  {
   }
   @Override
   public TreeMap<String, String> movingCrossoversOverPeriod(String startDateArray, String endDateArray,
-                                         String x, String y, String ticker) {
+                                                            String x, String y, String ticker) {
     errorMessage = null;
     successMessage = null;
     boolean validDate = false;
@@ -977,6 +978,6 @@ public class StockControllerImplGUI implements Features  {
       errorMessage = e.getMessage();
       return new ArrayList<>();
     }
-}
+  }
 
 }
