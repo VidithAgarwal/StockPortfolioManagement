@@ -1,6 +1,8 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import model.InflexiblePortfolioImpl;
 
@@ -20,9 +22,6 @@ public interface Features {
 
   void getCostBasis(int choice, String date);
 
-  void portfolioPerformance(String startDateArray, String endDateArray, int choice);
-
-  void stockPerformance(String startDateArray, String endDateArray, String ticker );
 
   void gainOrLose(String date, String ticker);
 
@@ -30,11 +29,18 @@ public interface Features {
 
   void xDayMovingAvg(String ticker, String x, String startDateArray);
 
-  void crossoverOverPeriod(String startDateArray, String endDateArray, String ticker);
+  TreeMap<String, String> crossoverOverPeriod(String startDateArray, String endDateArray, String ticker);
 
-  void movingCrossoversOverPeriod(String startDateArray, String endDateArray, String x,String y,
+  TreeMap<String, String> movingCrossoversOverPeriod(String startDateArray, String endDateArray, String x,String y,
                                   String ticker );
 
 
   String getErrorMessage();
+
+
+  ArrayList<String> getPortfolioNames();
+
+  String  getSuccessMessage();
+
+  void loadPortfolio(String name, String portfolioPath);
 }
