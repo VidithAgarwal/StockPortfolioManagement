@@ -245,7 +245,7 @@ public class InvestmentManagerImpl implements InvestmentManager {
 
   @Override
   public TreeMap<String, Integer> stockPerformance(String stock, IStockData api,
-                                                    LocalDate start, LocalDate end) {
+                                                   LocalDate start, LocalDate end) {
     Performance p = new Performance();
     TreeMap<String, Double> selectedData
             = getStockPerformance(end, start, stock, api, p);
@@ -291,7 +291,7 @@ public class InvestmentManagerImpl implements InvestmentManager {
 
   @Override
   public TreeMap<String, Integer> portfolioPerformance(int input,
-                                                        LocalDate start,  LocalDate end) {
+                                                       LocalDate start,  LocalDate end) {
     IPerformance performance = new Performance();
     TreeMap<String, Double> selectedData
             = getPortfolioPerformance(end, start, input, performance);
@@ -302,8 +302,18 @@ public class InvestmentManagerImpl implements InvestmentManager {
     return performance.sortTreeMapByMonthAndYear(portfolioPerfom);
   }
 
+  /**
+   * Calculates performance of a portfolio between specified start and end dates.
+   * using provided performance implementation.
+   * @param end         end date for the portfolio performance calculation.
+   * @param start       start date for the portfolio performance calculation.
+   * @param input       index of the portfolio in the portfolio directory.
+   * @param performance  performance implementation used to calculate portfolio performance.
+   * @return  TreeMap containing the performance metrics of the portfolio.
+   * @throws IllegalArgumentException if end date > current date/ if start date is after end date.
+   */
   private TreeMap<String, Double> getPortfolioPerformance(LocalDate end, LocalDate start, int input,
-                                                 IPerformance performance) {
+                                                          IPerformance performance) {
     LocalDate currentDate = LocalDate.now();
     if (end.isAfter(currentDate)) {
       throw new IllegalArgumentException("End Date should be less than current date");
@@ -314,6 +324,18 @@ public class InvestmentManagerImpl implements InvestmentManager {
     return performance.portfolioPerformance(portfolioDirectory.get(input),start,end);
   }
 
+  /**
+   * Calculates performance of stock between specified start & end dates.
+   * using provided stock data API and performance implementation.
+   * @param end   end date for stock performance calculation.
+   * @param start  start date for stock performance calculation.
+   * @param stock  ticker symbol of stock.
+   * @param api   stock data API used to fetch historical prices.
+   * @param p     performance implementation used to calculate stock performance.
+   * @return TreeMap containing performance metrics of stock.
+   * @throws IllegalArgumentException if ticker symbol is invalid, end date is after current date,
+   *                                  or if start date is after end date.
+   */
   private TreeMap<String, Double> getStockPerformance(LocalDate end, LocalDate start,
                                                       String stock, IStockData api,
                                                       IPerformance p) {
@@ -332,10 +354,12 @@ public class InvestmentManagerImpl implements InvestmentManager {
     return p.stockPerformance(api.fetchHistoricalData(tickerSymbol), start, end);
   }
 
-  void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate,
-                                   LocalDate endDate,
-                                   int frequencyDays, double amount, double commissionFee,
-                                   StockData api) {
+
+  @Override
+  public void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate,
+                   LocalDate endDate,
+                   int frequencyDays, double amount, double commissionFee,
+                   StockData api) {
     BuyingStrategy newStrategy = new BuySchedule(amount, frequencyDays, startDate, endDate,
             commissionFee, null, buyingList);
     portfolioDirectory.get(input).dollarCostAverage(LocalDate.now(), newStrategy, api);
