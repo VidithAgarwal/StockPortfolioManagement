@@ -1,15 +1,14 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 
 /**
- * DollarCostAverageSchedule implements BuySchedule. It stores the information of schedule stock to
- * buy, date to buy, amount of money and buying frequency days.
+ * BuySchedule implements BuyingStrategy. It stores the information of scheduled stocks to buy,
+ * date to buy, investment amount, and buying frequency days.
  */
 public class BuySchedule implements BuyingStrategy {
 
@@ -22,21 +21,20 @@ public class BuySchedule implements BuyingStrategy {
   private final Map<String, Double> buyingList;
 
   /**
-   * Construct BuySchedule object.
-   *
-   * @param amount         investment amount
-   * @param frequencyDays  number of days
-   * @param startDate      start date
-   * @param endDate        end date
-   * @param transactionFee commission fee
-   * @param lastRunDate    last schedule run date
-   * @param buyingList     buying stock list
-   * @throws IllegalArgumentException if input is not correct
+   * this construct BuySchedule object.
+   * @param amount         investment amount.
+   * @param frequencyDays  number of days.
+   * @param startDate      start date.
+   * @param endDate        end date.
+   * @param transactionFee commission fee.
+   * @param lastRunDate    last schedule run date.
+   * @param buyingList     buying stock list.
+   * @throws IllegalArgumentException if input is not correct.
    */
   public BuySchedule(double amount, int frequencyDays,
-                                   LocalDate startDate,
-                                   LocalDate endDate, double transactionFee, LocalDate lastRunDate,
-                                   Map<String, Double> buyingList) throws IllegalArgumentException {
+                     LocalDate startDate,
+                     LocalDate endDate, double transactionFee, LocalDate lastRunDate,
+                     Map<String, Double> buyingList) throws IllegalArgumentException {
     if (endDate != null && endDate.isBefore(startDate)) {
       throw new IllegalArgumentException("endDate cannot be before startDate");
     }
@@ -56,7 +54,20 @@ public class BuySchedule implements BuyingStrategy {
     this.buyingList = scaledBuyingList;
   }
 
-  private static Map<String, Double> getStringDoubleMap(double amount, Map<String, Double> buyingList) {
+  /**
+   * Scales buying percentages in provided buying list to ensure they sum up to 100%.
+   * Throws IllegalArgumentException if buying list is empty or if the total investment.
+   * amount is less than or equal to zero,
+   * or if any individual share percentage is less than or equal to zero.
+   * @param amount     total investment amount.
+   * @param buyingList  map of stocks to buy, along with their respective percentages.
+   * @return a new map with buying percentages scaled to sum up to 100%.
+   * @throws IllegalArgumentException if buying list is empty, or if total investment amount is less
+   *                                  than or equal to zero, or if any individual share percentage
+   *                                  is less than or equal to zero.
+   */
+  private static Map<String, Double> getStringDoubleMap(double amount, Map<String,
+          Double> buyingList) {
     if (buyingList == null || buyingList.isEmpty()) {
       throw new IllegalArgumentException("Stock buying list is empty");
     }
