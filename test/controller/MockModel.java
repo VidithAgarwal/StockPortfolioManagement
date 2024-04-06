@@ -410,4 +410,9 @@ public class MockModel implements InvestmentManager {
             + "lines to be appended are: ").append(lines).append("\n");
 
   }
+
+  @Override
+  public void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate, LocalDate endDate, int frequencyDays, double amount, double commissionFee, StockData api) {
+
+  }
 }
