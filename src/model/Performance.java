@@ -239,6 +239,13 @@ public class Performance implements IPerformance {
     }
   }
 
+  /**
+   * this method calculates portfolio performance when data is not available for current date.
+   * Retrieves portfolio value for previous available date and adds it to selected data map.
+   * @param currentDate   current date for which the performance is being calculated.
+   * @param portfolioName  portfolio for which the performance is being calculated.
+   * @param selectedData  map to store the selected performance data.
+   */
   private void portfolioPerformanceWhenDataNotAvailable(LocalDate currentDate,
                                                         Portfolio portfolioName,
                                                         TreeMap<String, Double> selectedData) {
@@ -248,7 +255,17 @@ public class Performance implements IPerformance {
     selectedData.put(formatDate, value);
   }
 
-  double getValue(String currentDateString, LocalDate currentDate, Portfolio portfolio) {
+  /**
+   * retrieves value of portfolio for specified date.
+   * If data for current date is not available, it tries previous dates until it finds valid value.
+   * Throws an IllegalArgumentException if share was not listed on any available date.
+   * @param currentDateString  current date string.
+   * @param currentDate       current date for which value is being retrieved.
+   * @param portfolio         portfolio for which value is being retrieved.
+   * @return value of portfolio for specified date.
+   * @throws IllegalArgumentException if share was not listed on any available date.
+   */
+  private double getValue(String currentDateString, LocalDate currentDate, Portfolio portfolio) {
     double value;
     while (true) {
       try {
@@ -270,7 +287,6 @@ public class Performance implements IPerformance {
 
   /**
    * this method computes performance of a portfolio within a specified time frame/ period.
-   *
    * @param portfolioName portfolio object, whose performance is to be determined.
    * @param start         start date of the performance analysis.
    * @param end           end date of the performance analysis.
