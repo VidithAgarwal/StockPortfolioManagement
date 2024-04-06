@@ -620,12 +620,10 @@ public class StockControllerImplGUI implements Features  {
     try {
       value = Integer.parseInt(x);
       if (value <= 0) {
-        //view.displayError("Share quantity must be a positive integer.");
         errorMessage = "X must be a positive integer.";
         return null;
       }
     } catch (NumberFormatException e) {
-      //view.displayError("Share quantity must be a positive integer.");
       errorMessage = "X must be a positive integer.";
       // Set to negative to continue the loop
       return null;
@@ -635,12 +633,10 @@ public class StockControllerImplGUI implements Features  {
     try {
       value1 = Integer.parseInt(y);
       if (value1 <= 0) {
-        //view.displayError("Share quantity must be a positive integer.");
         errorMessage = "Y must be a positive integer.";
         return null;
       }
     } catch (NumberFormatException e) {
-      //view.displayError("Share quantity must be a positive integer.");
       errorMessage = "Y must be a positive integer.";
       // Set to negative to continue the loop
       return null;
@@ -650,9 +646,7 @@ public class StockControllerImplGUI implements Features  {
     try {
       return model.movingCrossOver(ticker, api, startDate, endDate, value, value1);
 
-//      view.printTreeMapEntries(result);
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
       return null;
     }

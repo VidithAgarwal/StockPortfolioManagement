@@ -195,7 +195,7 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.gridy++;
     panel.add(createLabel("Enter the date of the purchase"), gbc);
 
-    JDataePanelImpl datePanel = createDatePanel();
+    JDatePanelImpl datePanel = createDatePanel();
     JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
     gbc.gridy++;
     panel.add(datePanel, gbc);
@@ -851,7 +851,7 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.insets = new Insets(10, 10, 10, 10);
 
-    JLabel heading = createLabel("Get Moving Crossover days if any for a Stock.");
+    JLabel heading = createLabel("Get Moving Crossover days for a Stock.");
     heading.setFont(new Font("Arial", Font.BOLD, 24));
     panel.add(heading, gbc);
 
@@ -859,12 +859,25 @@ public class GUIView extends JFrame implements IViewGUI {
     JLabel label = createLabel("Enter stock name or ticker symbol");
     JTextField textBox = createTextField(15);
     label.setLabelFor(textBox);
-    JLabel dateLabel = createLabel("Enter start date in the format YYYY-MM-DD, for time-period");
-    JTextField textBox1 = createTextField(15);
-    dateLabel.setLabelFor(textBox1);
-    JLabel dateLabel1 = createLabel("Enter end date in the format YYYY-MM-DD, for time-period");
-    JTextField textBox2 = createTextField(15);
-    dateLabel1.setLabelFor(textBox2);
+    JLabel dateLabel = createLabel("Select start date:");
+    JDatePanelImpl datePanel1 = createDatePanel();
+    JDatePicker datePicker1 = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
+    final String[] date1 = {datePicker1.getModel().getValue().toString()};
+
+    datePicker1.addActionListener(e -> {
+      date1[0] = getDate(datePicker1);
+    });
+    JLabel dateLabel1 = createLabel("Select end date");
+
+    JDatePanelImpl datePanel2 = createDatePanel();
+    JDatePicker datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+    final String[] date2 = {datePicker2.getModel().getValue().toString()};
+
+    datePicker2.addActionListener(e -> {
+      date2[0] = getDate(datePicker2);
+    });
+
+    dateLabel1.setLabelFor(datePanel1);
     JLabel xLabel = createLabel("Enter X number of days (shorter days) for moving average.");
     JTextField textBox3 = createTextField(15);
     xLabel.setLabelFor(textBox3);
@@ -875,45 +888,16 @@ public class GUIView extends JFrame implements IViewGUI {
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
-      String startDate = textBox1.getText();
-      String endDate = textBox2.getText();
+      String startDate = date1[0];
+      String endDate = date2[0];
       String xValue = textBox3.getText();
       String yValue = textBox4.getText();
       if (inputText != null && startDate != null && endDate != null
               && xValue != null && yValue != null) {
         TreeMap<String, String> result = features.movingCrossoversOverPeriod(startDate, endDate,
                 xValue, yValue, inputText);
-        if (Objects.equals(features.getErrorMessage(), "Invalid start date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid start date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid start date entered, enter "
-                          + "a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox1.setText("");
-          textBox1.requestFocus();
-        } else if (Objects.equals(features.getErrorMessage(), "Invalid end date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid end date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid end date entered,"
-                          + " enter a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox2.setText("");
-          textBox2.requestFocus();
 
-        } else if (Objects.equals(features.getErrorMessage(), "X must be a positive integer.")) {
-          JOptionPane.showMessageDialog(panel, "Enter valid number of X positive days!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox3.setText("");
-          textBox3.requestFocus();
-
-        } else if (Objects.equals(features.getErrorMessage(), "Y must be a positive integer.")) {
-          JOptionPane.showMessageDialog(panel, "Enter valid number of Y positive days!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox4.setText("");
-          textBox4.requestFocus();
-        } else if (features.getErrorMessage() != null) {
+        if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
           JOptionPane.showMessageDialog(panel, error,
                   "Error",
@@ -938,17 +922,20 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(label, gbc);
     panel.add(textBox, gbc);
     panel.add(dateLabel, gbc);
-    panel.add(textBox1, gbc);
+    panel.add(datePanel1, gbc);
     panel.add(dateLabel1, gbc);
-    panel.add(textBox2, gbc);
+    panel.add(datePanel2, gbc);
     panel.add(xLabel, gbc);
     panel.add(textBox3, gbc);
     panel.add(xLabel1, gbc);
     panel.add(textBox4, gbc);
     panel.add(submitButton, gbc);
 
+    JScrollPane scrollPane = new JScrollPane(panel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
     // Add the panel to the frame
-    mainFrame.add(panel);
+    mainFrame.add(scrollPane);
     mainFrame.repaint();
     mainFrame.revalidate();
 
@@ -972,38 +959,32 @@ public class GUIView extends JFrame implements IViewGUI {
     JLabel label = createLabel("Enter stock name or ticker symbol");
     JTextField textBox = createTextField(15);
     label.setLabelFor(textBox);
-    JLabel dateLabel = createLabel("Enter start date in the format YYYY-MM-DD, for time-period");
-    JTextField textBox1 = createTextField(15);
-    dateLabel.setLabelFor(textBox1);
-    JLabel dateLabel1 = createLabel("Enter end date in the format YYYY-MM-DD, for time-period");
-    JTextField textBox2 = createTextField(15);
-    dateLabel1.setLabelFor(textBox2);
+    JLabel dateLabel = createLabel("Select start date:");
+    JDatePanelImpl datePanel1 = createDatePanel();
+    JDatePicker datePicker1 = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
+    final String[] date1 = {datePicker1.getModel().getValue().toString()};
+
+    datePicker1.addActionListener(e -> {
+      date1[0] = getDate(datePicker1);
+    });
+    JLabel dateLabel1 = createLabel("Select end date:");
+
+    JDatePanelImpl datePanel2 = createDatePanel();
+    JDatePicker datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+    final String[] date2 = {datePicker2.getModel().getValue().toString()};
+
+    datePicker2.addActionListener(e -> {
+      date2[0] = getDate(datePicker2);
+    });
     JButton submitButton = createButton("Submit");
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
-      String startDate = textBox1.getText();
-      String endDate = textBox2.getText();
+      String startDate = date1[0];
+      String endDate = date2[0];
       if (inputText != null && startDate != null && endDate != null) {
         TreeMap<String, String> result = features.crossoverOverPeriod(startDate, endDate, inputText);
-        if (Objects.equals(features.getErrorMessage(), "Invalid start date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid start date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid start date entered, enter "
-                          + "a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox1.setText("");
-          textBox1.requestFocus();
-        } else if (Objects.equals(features.getErrorMessage(), "Invalid end date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid end date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid end date entered,"
-                          + " enter a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox2.setText("");
-          textBox2.requestFocus();
-
-        } else if (features.getErrorMessage() != null) {
+        if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
           JOptionPane.showMessageDialog(panel, error,
                   "Error",
@@ -1029,13 +1010,16 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(label, gbc);
     panel.add(textBox, gbc);
     panel.add(dateLabel, gbc);
-    panel.add(textBox1, gbc);
+    panel.add(datePanel1, gbc);
     panel.add(dateLabel1, gbc);
-    panel.add(textBox2, gbc);
+    panel.add(datePanel2, gbc);
     panel.add(submitButton, gbc);
 
+    JScrollPane scrollPane = new JScrollPane(panel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
     // Add the panel to the frame
-    mainFrame.add(panel);
+    mainFrame.add(scrollPane);
     mainFrame.repaint();
     mainFrame.revalidate();
 
@@ -1062,31 +1046,24 @@ public class GUIView extends JFrame implements IViewGUI {
     JLabel xLabel = createLabel("Enter x number of day for getting average:");
     JTextField textBox2 = createTextField(15);
     xLabel.setLabelFor(textBox2);
-    JLabel dateLabel = createLabel("Enter date in the format YYYY-MM-DD:");
-    JTextField textBox1 = createTextField(15);
-    dateLabel.setLabelFor(textBox1);
+    JLabel dateLabel = createLabel("Select start date:");
+    JDatePanelImpl datePanel = createDatePanel();
+    JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+    final String[] date = {datePicker.getModel().getValue().toString()};
+
+    datePicker.addActionListener(e -> {
+      date[0] = getDate(datePicker);
+    });
     JButton submitButton = createButton("Submit");
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
       String xValue = textBox2.getText();
-      String inputDate = textBox1.getText();
+      String inputDate = date[0];
       if (inputText != null && inputDate != null && xValue != null) {
         features.xDayMovingAvg(inputText, xValue, inputDate);
-        if (Objects.equals(features.getErrorMessage(), "X must be a positive integer.")) {
-          JOptionPane.showMessageDialog(panel, "Enter valid number of positive days!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox2.setText("");
-          textBox2.requestFocus();
-        } else if (Objects.equals(features.getErrorMessage(), "Invalid date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid date entered, enter a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox1.setText("");
-          textBox1.requestFocus();
-        } else if (features.getErrorMessage() != null) {
+
+        if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
           JOptionPane.showMessageDialog(panel, error,
                   "Error",
@@ -1108,11 +1085,14 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(xLabel, gbc);
     panel.add(textBox2, gbc);
     panel.add(dateLabel, gbc);
-    panel.add(textBox1, gbc);
+    panel.add(datePanel, gbc);
     panel.add(submitButton, gbc);
 
+    JScrollPane scrollPane = new JScrollPane(panel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
     // Add the panel to the frame
-    mainFrame.add(panel);
+    mainFrame.add(scrollPane);
     mainFrame.repaint();
     mainFrame.revalidate();
 
@@ -1137,36 +1117,33 @@ public class GUIView extends JFrame implements IViewGUI {
     JLabel label = createLabel("Enter stock name or ticker symbol");
     JTextField textBox = createTextField(15);
     label.setLabelFor(textBox);
-    JLabel dateLabel = createLabel("Enter start date in the format YYYY-MM-DD, for time-period");
-    JTextField textBox1 = createTextField(15);
-    dateLabel.setLabelFor(textBox1);
-    JLabel dateLabel1 = createLabel("Enter end date in the format YYYY-MM-DD, for time-period");
-    JTextField textBox2 = createTextField(15);
-    dateLabel1.setLabelFor(textBox2);
+    JLabel dateLabel = createLabel("Select start date:");
+    JDatePanelImpl datePanel1 = createDatePanel();
+    JDatePicker datePicker1 = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
+    final String[] date1 = {datePicker1.getModel().getValue().toString()};
+
+    datePicker1.addActionListener(e -> {
+      date1[0] = getDate(datePicker1);
+    });
+    JLabel dateLabel1 = createLabel("Select end date");
+
+    JDatePanelImpl datePanel2 = createDatePanel();
+    JDatePicker datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+    final String[] date2 = {datePicker2.getModel().getValue().toString()};
+
+    datePicker2.addActionListener(e -> {
+      date2[0] = getDate(datePicker2);
+    });
     JButton submitButton = createButton("Submit");
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
-      String startDate = textBox1.getText();
-      String endDate = textBox2.getText();
+      String startDate = date1[0];
+      String endDate = date2[0];
       if (inputText != null && startDate != null && endDate != null) {
         features.gainOrLoseOverPeriod(startDate, endDate, inputText);
-        if (Objects.equals(features.getErrorMessage(), "Invalid start date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid start date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid start date entered, enter a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox1.setText("");
-          textBox1.requestFocus();
-        } else if (Objects.equals(features.getErrorMessage(), "Invalid end date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid end date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid end date entered, enter a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox2.setText("");
-          textBox2.requestFocus();
 
-        } else if (features.getErrorMessage() != null) {
+        if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
           JOptionPane.showMessageDialog(panel, error,
                   "Error",
@@ -1186,13 +1163,16 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(label, gbc);
     panel.add(textBox, gbc);
     panel.add(dateLabel, gbc);
-    panel.add(textBox1, gbc);
+    panel.add(datePanel1, gbc);
     panel.add(dateLabel1, gbc);
-    panel.add(textBox2, gbc);
+    panel.add(datePanel2, gbc);
     panel.add(submitButton, gbc);
 
+    JScrollPane scrollPane = new JScrollPane(panel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
     // Add the panel to the frame
-    mainFrame.add(panel);
+    mainFrame.add(scrollPane);
     mainFrame.repaint();
     mainFrame.revalidate();
 
@@ -1216,24 +1196,23 @@ public class GUIView extends JFrame implements IViewGUI {
     JLabel label = createLabel("Enter stock name or ticker symbol");
     JTextField textBox = createTextField(15);
     label.setLabelFor(textBox);
-    JLabel dateLabel = createLabel("Enter date in the format YYYY-MM-DD");
-    JTextField textBox1 = createTextField(15);
-    dateLabel.setLabelFor(textBox1);
+    JLabel dateLabel = createLabel("Select the date:");
+    JDatePanelImpl datePanel = createDatePanel();
+    JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+    final String[] date = {datePicker.getModel().getValue().toString()};
+
+    datePicker.addActionListener(e -> {
+      date[0] = getDate(datePicker);
+    });
+
     JButton submitButton = createButton("Submit");
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
-      String inputDate = textBox1.getText();
+      String inputDate = date[0];
       if (inputText != null && inputDate != null) {
         features.gainOrLose(inputDate, inputText);
-        if (Objects.equals(features.getErrorMessage(), "Invalid date!")
-                || Objects.equals(features.getErrorMessage(), "Invalid date format.")) {
-          JOptionPane.showMessageDialog(panel, "Invalid date entered, enter a valid date!",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          textBox1.setText("");
-          textBox1.requestFocus();
-        } else if (features.getErrorMessage() != null) {
+        if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
           JOptionPane.showMessageDialog(panel, error,
                   "Error",
@@ -1253,11 +1232,14 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(label, gbc);
     panel.add(textBox, gbc);
     panel.add(dateLabel, gbc);
-    panel.add(textBox1, gbc);
+    panel.add(datePanel, gbc);
     panel.add(submitButton, gbc);
 
+    JScrollPane scrollPane = new JScrollPane(panel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
     // Add the panel to the frame
-    mainFrame.add(panel);
+    mainFrame.add(scrollPane);
     mainFrame.repaint();
     mainFrame.revalidate();
 
