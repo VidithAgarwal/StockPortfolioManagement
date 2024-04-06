@@ -338,6 +338,15 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   }
 
 
+  /**
+   * this method executes dollar-cost averaging investment strategy.
+   * based on the provided schedule and current date,
+   * using the given stock data API to fetch historical prices.
+   * @param today    current date.
+   * @param schedule  buying schedule defining investment strategy.
+   * @param api      stock data API to fetch historical prices.
+   */
+  @Override
   public void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api) {
     LocalDate current = schedule.getLastRunDate() == null ? schedule.getStartDate()
             .minusDays(schedule.getFrequencyDays()) : schedule.getLastRunDate();
