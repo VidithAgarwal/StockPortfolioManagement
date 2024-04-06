@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import controller.IStockData;
+import controller.StockData;
 
 /**
  * The InvestmentManager interface represents a portfolio manager.
@@ -221,5 +222,23 @@ public interface InvestmentManager {
    * @param api StockData object used for fetching stock data.
    */
   void loadPortfolio(String portfolioName, List<String[]> lines, IStockData api);
+
+
+  /**
+   * Adds a new investment strategy to portfolio in portfolio directory.
+   * executes dollar-cost averaging investment strategy for the given portfolio.
+   * @param input          index of the portfolio in the portfolio directory.
+   * @param buyingList     map of stocks to buy, along with their respective percentages.
+   * @param startDate      start date of the investment strategy.
+   * @param endDate        end date of the investment strategy.
+   * @param frequencyDays  number of days between each investment.
+   * @param amount        total investment amount.
+   * @param commissionFee  transaction fee associated with each investment.
+   * @param api           stock data API to fetch historical prices.
+   */
+  void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate,
+                   LocalDate endDate,
+                   int frequencyDays, double amount, double commissionFee,
+                   StockData api);
 
 }
