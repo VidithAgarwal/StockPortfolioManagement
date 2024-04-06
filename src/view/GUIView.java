@@ -195,7 +195,7 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.gridy++;
     panel.add(createLabel("Enter the date of the purchase"), gbc);
 
-    JDatePanelImpl datePanel = createDatePanel();
+    JDataePanelImpl datePanel = createDatePanel();
     JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
     gbc.gridy++;
     panel.add(datePanel, gbc);
@@ -374,6 +374,92 @@ public class GUIView extends JFrame implements IViewGUI {
   }
 
   private void save(Features features) {
+    mainFrame.getContentPane().removeAll();
+    mainFrame.setSize(new Dimension(600, 600));
+    JPanel panel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+
+    panel.add(createLabel("Select portfolio to save:"), gbc);
+    JComboBox<String> dropdown =
+            createDropdown(features.getPortfolioNames().toArray(new String[0]));
+    gbc.gridy++;
+    panel.add(dropdown, gbc);
+    gbc.gridy++;
+
+    final int[] choice = {0};
+
+    dropdown.addActionListener(e -> {
+      choice[0] = getDropdownChoice(e);
+    });
+
+    JLabel csvLabel = createLabel("Select CSV file to save portfolio:");
+    gbc.gridy++;
+    panel.add(csvLabel, gbc);
+
+    JButton browseButton = createButton("Browse Files");
+    gbc.gridy++;
+    panel.add(browseButton, gbc);
+
+    JTextField filePathField = createTextField(20);
+    filePathField.setEditable(false);
+    gbc.gridy++;
+    //panel.add(filePathField, gbc);
+
+    browseButton.addActionListener(e -> {
+      JFileChooser fileChooser = new JFileChooser();
+      fileChooser.setDialogTitle("Enter CSV file name to save portfolio at particular location");
+      int userSelection = fileChooser.showSaveDialog(mainFrame);
+
+      if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        String filePath = fileToSave.getAbsolutePath();
+        if (!filePath.endsWith(".csv")) {
+          filePath += ".csv"; // Ensuring the file extension is .csv
+        }
+        filePathField.setText(filePath);
+      }
+    });
+
+    JButton submitButton = createButton("Save Portfolio");
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    panel.add(submitButton, gbc);
+    submitButton.addActionListener(e -> {
+      String selectedPortfolio = (String) dropdown.getSelectedItem();
+      String filePath = filePathField.getText();
+      if (selectedPortfolio != null && !filePath.isEmpty()) {
+        features.export(choice[0], filePath);
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          dropdown.setSelectedIndex(0);
+          filePathField.setText("");
+        } else {
+          JOptionPane.showMessageDialog(panel, "Portfolio saved successfully",
+                  "Success",
+                  JOptionPane.INFORMATION_MESSAGE);
+          showSecondMenu(features);
+        }
+      } else {
+        JOptionPane.showMessageDialog(panel, "Please select a portfolio and CSV file",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+      }
+    });
+
+    mainFrame.add(panel);
+    mainFrame.repaint();
+    mainFrame.revalidate();
+
+    mainFrame.setVisible(true);
   }
 
   private void dollarCostPortfolio(Features features) {
@@ -654,62 +740,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
     mainFrame.setVisible(true);
   }
-
-  private void showAdditionalButtons() {
-    if (additionalButtonPanel == null) {
-      additionalButtonPanel = new JPanel();
-      additionalButtonPanel.setLayout(new GridLayout(5, 1));
-
-      gainOrLoseButton = new JButton("Gain or Lose");
-      gainOrLoseButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Handle Gain or Lose button clickSa@090701
-        }
-      });
-      additionalButtonPanel.add(gainOrLoseButton);
-
-      gainOrLoseOverPeriodButton = new JButton("Gain or Lose Over Period");
-      gainOrLoseOverPeriodButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Handle Gain or Lose Over Period button click
-        }
-      });
-      additionalButtonPanel.add(gainOrLoseOverPeriodButton);
-
-      xdaymovingavgButton = new JButton("X-Day Moving Average");
-      xdaymovingavgButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Handle X-Day Moving Average button click
-        }
-      });
-      additionalButtonPanel.add(xdaymovingavgButton);
-
-      crossoverperiodButton = new JButton("Crossover Period");
-      crossoverperiodButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Handle Crossover Period button click
-        }
-      });
-      additionalButtonPanel.add(crossoverperiodButton);
-
-      movingcrossoverperiodButton = new JButton("Moving Crossover Period");
-      movingcrossoverperiodButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Handle Moving Crossover Period button click
-        }
-      });
-      additionalButtonPanel.add(movingcrossoverperiodButton);
-
-      add(additionalButtonPanel, BorderLayout.CENTER);
-      revalidate();
-      repaint();
-    } else {
-      remove(additionalButtonPanel);
-      additionalButtonPanel = null;
-      revalidate();
-      repaint();
-    }
-  }
+  
 
   @Override
   public void displayError(String error) {
@@ -1320,5 +1351,5 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.revalidate();
 
     mainFrame.setVisible(true);
-}
+  }
 }
