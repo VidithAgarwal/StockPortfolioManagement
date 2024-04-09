@@ -78,10 +78,10 @@ public class ModelTest {
     portfolioDir.addPortfolio(newBuilder);
     assertEquals(1, portfolioDir.getSize());
     LocalDate date = LocalDate.of(2020, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0, date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0, date);
 
     assertEquals(1, composition.size());
-    assertEquals(20, (int) composition.get("AAPL"));
+    assertEquals(20d, composition.get("AAPL"), 0.1);
   }
 
 
@@ -157,11 +157,11 @@ public class ModelTest {
     firstBuilder.addShare("Advanced Battery Technologies Inc", 20);
     portfolioDir.addPortfolio(firstBuilder);
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date);
 
     assertEquals(2, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
-    assertEquals(20, (int) composition.get("ABAT"));
+    assertEquals(10d, composition.get("AAPL"), 0.1);
+    assertEquals(20d, composition.get("ABAT"), 0.1);
 
 
     InflexiblePortfolioImpl.PortfolioBuilder secondBuilder
@@ -171,14 +171,14 @@ public class ModelTest {
     secondBuilder.addShare("ABEO", 20);
     secondBuilder.addShare("CAN", 30);
     portfolioDir.addPortfolio(secondBuilder);
-    Map<String, Integer> composition2 = portfolioDir.portfolioComposition(1,date);
+    Map<String, Double> composition2 = portfolioDir.portfolioComposition(1,date);
 
     assertEquals(2, portfolioDir.getSize());
 
     assertEquals(3, composition2.size());
-    assertEquals(10, (int) composition2.get("AAON"));
-    assertEquals(20, (int) composition2.get("ABEO"));
-    assertEquals(30, (int) composition2.get("CAN"));
+    assertEquals(10d,  composition2.get("AAON"), 0.1);
+    assertEquals(20d,  composition2.get("ABEO"),0.1);
+    assertEquals(30d,  composition2.get("CAN"),0.1);
 
     Map<String, String> listOfPortfolios = portfolioDir.getListOfPortfoliosName();
 
@@ -453,7 +453,7 @@ public class ModelTest {
     firstBuilder.addShare("Advanced Battery Technologies Inc", 20);
     portfolioDir.addPortfolio(firstBuilder);
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(-1,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(-1,date);
 
   }
 
@@ -467,7 +467,7 @@ public class ModelTest {
     firstBuilder.addShare("Advanced Battery Technologies Inc", 20);
     portfolioDir.addPortfolio(firstBuilder);
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(2,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(2,date);
   }
 
   @Test
@@ -752,35 +752,35 @@ public class ModelTest {
 
     portfolioDir.addPortfolio(firstBuilder);
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date);
 
     assertEquals(10663.179,
             portfolioDir.portfolioValue(0, 1, 3, 2024,api), 0.001);
 
     assertEquals(23, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
-    assertEquals(10, (int) composition.get("GOOG"));
-    assertEquals(10, (int) composition.get("CAR"));
-    assertEquals(10, (int) composition.get("CART"));
-    assertEquals(10, (int) composition.get("CARV"));
-    assertEquals(10, (int) composition.get("CASA"));
-    assertEquals(10, (int) composition.get("CASH"));
-    assertEquals(10, (int) composition.get("CASI"));
-    assertEquals(10, (int) composition.get("CATC"));
-    assertEquals(10, (int) composition.get("CAUD"));
-    assertEquals(10, (int) composition.get("CBAT"));
-    assertEquals(10, (int) composition.get("FBNC"));
-    assertEquals(10, (int) composition.get("FBRX"));
-    assertEquals(10, (int) composition.get("FCCO"));
-    assertEquals(10, (int) composition.get("FORM"));
-    assertEquals(10, (int) composition.get("GEG"));
-    assertEquals(10, (int) composition.get("GERN"));
-    assertEquals(10, (int) composition.get("GEVO"));
-    assertEquals(10, (int) composition.get("GLPG"));
-    assertEquals(10, (int) composition.get("GMDA"));
-    assertEquals(10, (int) composition.get("CASY"));
-    assertEquals(10, (int) composition.get("CCB"));
-    assertEquals(10, (int) composition.get("BOF"));
+    assertEquals(10d,  composition.get("AAPL"), 0.1);
+    assertEquals(10d,  composition.get("GOOG"), 0.1);
+    assertEquals(10d,  composition.get("CAR"), 0.1);
+    assertEquals(10d,  composition.get("CART"), 0.1);
+    assertEquals(10d,  composition.get("CARV"), 0.1);
+    assertEquals(10d,  composition.get("CASA"), 0.1);
+    assertEquals(10d,  composition.get("CASH"), 0.1);
+    assertEquals(10d,  composition.get("CASI"), 0.1);
+    assertEquals(10d,  composition.get("CATC"), 0.1);
+    assertEquals(10d,  composition.get("CAUD"), 0.1);
+    assertEquals(10d,  composition.get("CBAT"), 0.1);
+    assertEquals(10d,  composition.get("FBNC"), 0.1);
+    assertEquals(10d,  composition.get("FBRX"), 0.1);
+    assertEquals(10d,  composition.get("FCCO"), 0.1);
+    assertEquals(10d,  composition.get("FORM"), 0.1);
+    assertEquals(10d,  composition.get("GEG"), 0.1);
+    assertEquals(10d,  composition.get("GERN"), 0.1);
+    assertEquals(10d,  composition.get("GEVO"), 0.1);
+    assertEquals(10d,  composition.get("GLPG"), 0.1);
+    assertEquals(10d,  composition.get("GMDA"), 0.1);
+    assertEquals(10d,  composition.get("CASY"), 0.1);
+    assertEquals(10d,  composition.get("CCB"), 0.1);
+    assertEquals(10d,  composition.get("BOF"), 0.1);
 
   }
 
@@ -817,7 +817,7 @@ public class ModelTest {
     }
     portfolioDir.addPortfolio(portfolioBuilder);
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date);
     assertEquals(2, composition.size());
     assertNotNull(portfolioBuilder);
     assertEquals(1, portfolioDir.getSize());
@@ -835,10 +835,10 @@ public class ModelTest {
     portfolioDir.addPortfolio(portfolioBuilder);
     assertEquals(1, portfolioDir.getSize());
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date);
     assertEquals(2, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
-    assertEquals(5, (int) composition.get("GOOG"));
+    assertEquals(10,  composition.get("AAPL"), 0.1);
+    assertEquals(5,  composition.get("GOOG"), 0.1);
     assertNotNull(portfolioBuilder);
 
     InflexiblePortfolioImpl.PortfolioBuilder emptyPortfolioBuilder
@@ -866,10 +866,10 @@ public class ModelTest {
 
     portfolioDir.addPortfolio(portfolioBuilder);
     LocalDate date = LocalDate.of(2024, 3, 20);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date);
     assertEquals(2, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
-    assertEquals(5, (int) composition.get("GOOG"));
+    assertEquals(10,  composition.get("AAPL"), 0.1);
+    assertEquals(5,  composition.get("GOOG"), 0.1);
 
     assertEquals(2487.0,
             portfolioDir.portfolioValue(0, 1, 3, 2024,api), 0.001);
@@ -1067,20 +1067,20 @@ public class ModelTest {
     portfolioDir.buyStock(0, "goog", 20, date1, api);
     LocalDate date3 = LocalDate.of(2020, 3, 22);
     portfolioDir.portfolioComposition(0,date3);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date3);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
+    assertEquals(10,  composition.get("AAPL"), 0.1);
 
     LocalDate date4 = LocalDate.of(2023, 3, 22);
-    Map<String, Integer> composition2 = portfolioDir.portfolioComposition(0,date4);
+    Map<String, Double> composition2 = portfolioDir.portfolioComposition(0,date4);
     assertEquals(1, composition2.size());
-    assertEquals(25, (int) composition2.get("AAPL"));
+    assertEquals(25,  composition2.get("AAPL"), 0.1);
 
     LocalDate date5 = LocalDate.of(2024, 3, 25);
-    Map<String, Integer> composition3 = portfolioDir.portfolioComposition(0,date5);
+    Map<String, Double> composition3 = portfolioDir.portfolioComposition(0,date5);
     assertEquals(2, composition3.size());
-    assertEquals(45, (int) composition3.get("AAPL"));
-    assertEquals(20, (int) composition3.get("GOOG"));
+    assertEquals(45,  composition3.get("AAPL"), 0.1);
+    assertEquals(20,  composition3.get("GOOG"), 0.1);
 
     LocalDate date6 = LocalDate.of(2020, 4, 20);
     LocalDate date7 = LocalDate.of(2020, 4, 23);
@@ -1088,12 +1088,12 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 5, date7, api);
 
     LocalDate date9 = LocalDate.of(2020, 4, 22);
-    Map<String, Integer> composition4 = portfolioDir.portfolioComposition(0,date9);
+    Map<String, Double> composition4 = portfolioDir.portfolioComposition(0,date9);
     assertEquals(1, composition4.size());
-    assertEquals(5, (int) composition4.get("AAPL"));
+    assertEquals(5,  composition4.get("AAPL"), 0.1);
 
     LocalDate date10 = LocalDate.of(2020, 4, 24);
-    Map<String, Integer> composition5 = portfolioDir.portfolioComposition(0,date10);
+    Map<String, Double> composition5 = portfolioDir.portfolioComposition(0,date10);
     assertEquals(0, composition5.size());
     //all sold out
 
@@ -1101,10 +1101,10 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 10, date12, api);
     portfolioDir.sellStock(0, "goog", 10, date12, api);
     LocalDate date13 = LocalDate.of(2024, 4, 24);
-    Map<String, Integer> composition6 = portfolioDir.portfolioComposition(0,date13);
+    Map<String, Double> composition6 = portfolioDir.portfolioComposition(0,date13);
     assertEquals(2, composition6.size());
-    assertEquals(25, (int) composition6.get("AAPL"));
-    assertEquals(10, (int) composition6.get("GOOG"));
+    assertEquals(25,  composition6.get("AAPL"), 0.1);
+    assertEquals(10,  composition6.get("GOOG"), 0.1);
 
   }
 
@@ -1122,19 +1122,19 @@ public class ModelTest {
     //portfolioDir.buyStock(0, "goog", 20, date1, api);
     LocalDate date3 = LocalDate.of(2015, 3, 22);
     portfolioDir.portfolioComposition(0,date3);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date3);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
+    assertEquals(10,  composition.get("AAPL"), 0.1);
 
     LocalDate date4 = LocalDate.of(2016, 4, 22);
-    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0,date4);
+    Map<String, Double> composition1 = portfolioDir.portfolioComposition(0,date4);
     assertEquals(1, composition1.size());
-    assertEquals(15, (int) composition1.get("AAPL"));
+    assertEquals(15,  composition1.get("AAPL"), 0.1);
 
     LocalDate date5 = LocalDate.of(2017, 4, 22);
-    Map<String, Integer> composition2 = portfolioDir.portfolioComposition(0,date5);
+    Map<String, Double> composition2 = portfolioDir.portfolioComposition(0,date5);
     assertEquals(1, composition2.size());
-    assertEquals(16, (int) composition2.get("AAPL"));
+    assertEquals(16,  composition2.get("AAPL"), 0.1);
 
     LocalDate date6 = LocalDate.of(2017, 5, 22);
     LocalDate date7 = LocalDate.of(2018, 4, 23);
@@ -1146,9 +1146,9 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 3, date9, api);
 
     LocalDate date10 = LocalDate.of(2021, 4, 22);
-    Map<String, Integer> composition3 = portfolioDir.portfolioComposition(0,date10);
+    Map<String, Double> composition3 = portfolioDir.portfolioComposition(0,date10);
     assertEquals(1, composition3.size());
-    assertEquals(10, (int) composition3.get("AAPL"));
+    assertEquals(10,  composition3.get("AAPL"), 0.1);
 
     try {
       portfolioDir.sellStock(0, "aapl", 12, date4, api);
@@ -1159,9 +1159,9 @@ public class ModelTest {
     LocalDate date11 = LocalDate.of(2024, 3, 20);
     portfolioDir.buyStock(0, "aapl", 10, date11, api);
     LocalDate date12 = LocalDate.of(2024, 4, 22);
-    Map<String, Integer> composition4 = portfolioDir.portfolioComposition(0,date12);
+    Map<String, Double> composition4 = portfolioDir.portfolioComposition(0,date12);
     assertEquals(1, composition4.size());
-    assertEquals(20, (int) composition4.get("AAPL"));
+    assertEquals(20,  composition4.get("AAPL"), 0.1);
 
     try {
       portfolioDir.sellStock(0, "aapl", 12, date4, api);
@@ -1316,30 +1316,30 @@ public class ModelTest {
     portfolioDir.buyStock(0, "aapl", 15, date, api);
     portfolioDir.buyStock(0, "goog", 10, date, api);
     LocalDate date1 = LocalDate.of(2024, 3, 23);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date1);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date1);
     assertEquals(2, composition.size());
-    assertEquals(15, (int) composition.get("AAPL"));
-    assertEquals(10, (int) composition.get("GOOG"));
+    assertEquals(15,  composition.get("AAPL"), 0.1);
+    assertEquals(10,  composition.get("GOOG"), 0.1);
 
     LocalDate date2 = LocalDate.of(2016, 3, 10);
     portfolioDir.buyStock(0, "aapl", 10, date2, api);
     LocalDate date3 = LocalDate.of(2016, 3, 23);
-    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0,date3);
+    Map<String, Double> composition1 = portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition1.size());
-    assertEquals(10, (int) composition1.get("AAPL"));
+    assertEquals(10,  composition1.get("AAPL"), 0.1);
 
     LocalDate date4 = LocalDate.of(2024, 3, 23); //saturday
-    Map<String, Integer> composition2 = portfolioDir.portfolioComposition(0,date4);
+    Map<String, Double> composition2 = portfolioDir.portfolioComposition(0,date4);
     assertEquals(2, composition2.size());
-    assertEquals(25, (int) composition2.get("AAPL"));
-    assertEquals(10, (int) composition2.get("GOOG"));
+    assertEquals(25,  composition2.get("AAPL"), 0.1);
+    assertEquals(10,  composition2.get("GOOG"), 0.1);
 
     LocalDate date5 = LocalDate.of(2024, 3, 21);
     portfolioDir.sellStock(0, "goog", 10, date5, api);
     portfolioDir.sellStock(0, "aapl", 11, date5, api);
-    Map<String, Integer> composition3 = portfolioDir.portfolioComposition(0,date5);
+    Map<String, Double> composition3 = portfolioDir.portfolioComposition(0,date5);
     assertEquals(1, composition3.size());
-    assertEquals(14, (int) composition3.get("AAPL"));
+    assertEquals(14,  composition3.get("AAPL"), 0.1);
   }
 
   @Test
@@ -2989,10 +2989,10 @@ public class ModelTest {
     LocalDate date2 = LocalDate.of(2023, 5, 12);
     portfolioDir.sellStock(0, "aapl", 15, date2, api);
     LocalDate date3 = LocalDate.of(2024, 3, 13);
-    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0,date3);
+    Map<String, Double> composition1 = portfolioDir.portfolioComposition(0,date3);
     assertEquals(1, composition1.size());
-    assertEquals(15, (int) composition1.get("GOOG"));
-    //assertNull((int) composition1.get("aapl"));
+    assertEquals(15,  composition1.get("GOOG"), 0.1);
+    //assertNull( composition1.get("aapl"));
   }
 
   @Test
@@ -3233,10 +3233,10 @@ public class ModelTest {
     validLines.add(new String[]{"sell", "GOOG", "5", "2024-03-20"});
     portfolioDir.loadPortfolio("new portfolio", validLines,api );
     LocalDate date = LocalDate.of(2024, 3, 22);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0,date);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0,date);
     assertEquals(2, composition.size());
-    assertEquals(10, (int) composition.get("AAPL"));
-    assertEquals(5, (int) composition.get("GOOG"));
+    assertEquals(10,  composition.get("AAPL"), 0.1);
+    assertEquals(5,  composition.get("GOOG"), 0.1);
 
     assertEquals(1380.8000000000002,
             portfolioDir.portfolioValue(0, 1, 3, 2024,api), 0.001);
@@ -3333,9 +3333,9 @@ public class ModelTest {
     portfolioDir.sellStock(0, "aapl", 15, date2, api);
 
     String expected = "Transaction Type,Symbol,Quantity,Date" + System.lineSeparator()
-            + "buy,AAPL,15,2023-03-13" + System.lineSeparator()
-            + "buy,GOOG,15,2024-03-12" + System.lineSeparator()
-            + "sell,AAPL,15,2023-05-12" + System.lineSeparator();
+            + "buy,AAPL,15.0,2023-03-13" + System.lineSeparator()
+            + "buy,GOOG,15.0,2024-03-12" + System.lineSeparator()
+            + "sell,AAPL,15.0,2023-05-12" + System.lineSeparator();
 
     StringBuilder result = portfolioDir.save(0);
     assertEquals(expected, result.toString());
@@ -3350,8 +3350,8 @@ public class ModelTest {
     portfolioDir.addPortfolio(firstBuilder);
 
     String expected = "Symbol,Quantity" + System.lineSeparator()
-            + "GOOG,10" + System.lineSeparator()
-            + "AAPL,10" + System.lineSeparator();
+            + "GOOG,10.0" + System.lineSeparator()
+            + "AAPL,10.0" + System.lineSeparator();
     StringBuilder result = portfolioDir.save(0);
     assertEquals(expected, result.toString());
   }
@@ -3372,64 +3372,63 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = 10;
     double amount = 10000.0;
-    double commissionFee = 10.0;
-    portfolioDir.addStrategy(input,buyingList,startDate,endDate,frequencyDays,amount,
-            commissionFee,api);
+    portfolioDir.createDollarCostAverageStrategy(input,buyingList,startDate,endDate,frequencyDays,amount,
+            api);
     LocalDate date2 = LocalDate.of(2023, 12, 13);
-    Map<String, Integer> composition = portfolioDir.portfolioComposition(0, date2);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0, date2);
 
     assertEquals(2, composition.size());
-    assertEquals(15, (int) composition.get("AAPL"));
-    assertEquals(15, (int) composition.get("GOOG"));
+    assertEquals(15,  composition.get("AAPL"), 0.1);
+    assertEquals(15,  composition.get("GOOG"), 0.1);
     assertEquals(4978.95,
             portfolioDir.portfolioValue(0, 13, 12, 2023, api), 0.001);
 
     LocalDate date3 = LocalDate.of(2024, 1, 2);
-    Map<String, Integer> composition1 = portfolioDir.portfolioComposition(0, date3);
+    Map<String, Double> composition1 = portfolioDir.portfolioComposition(0, date3);
 
     assertEquals(2, composition1.size());
-    assertEquals(41, (int) composition1.get("AAPL"));
-    assertEquals(50, (int) composition1.get("GOOG"));
+    assertEquals(41,  composition1.get("AAPL"), 0.1);
+    assertEquals(50,  composition1.get("GOOG"), 0.1);
     assertEquals(14589.24,
             portfolioDir.portfolioValue(0, 2, 1, 2024, api), 0.001);
 
 
     LocalDate date4 = LocalDate.of(2024, 1, 12);
-    Map<String, Integer> composition2 = portfolioDir.portfolioComposition(0, date4);
+    Map<String, Double> composition2 = portfolioDir.portfolioComposition(0, date4);
 
     assertEquals(2, composition2.size());
-    assertEquals(67, (int) composition2.get("AAPL"));
-    assertEquals(84, (int) composition2.get("GOOG"));
+    assertEquals(67,  composition2.get("AAPL"), 0.1);
+    assertEquals(84,  composition2.get("GOOG"), 0.1);
     assertEquals(24572.8,
             portfolioDir.portfolioValue(0, 12, 1, 2024, api), 0.001);
 
 
     LocalDate date5 = LocalDate.of(2024, 1, 22);
-    Map<String, Integer> composition3 = portfolioDir.portfolioComposition(0, date5);
+    Map<String, Double> composition3 = portfolioDir.portfolioComposition(0, date5);
 
     assertEquals(2, composition3.size());
-    assertEquals(92, (int) composition3.get("AAPL"));
-    assertEquals(117, (int) composition3.get("GOOG"));
+    assertEquals(92,  composition3.get("AAPL"), 0.1);
+    assertEquals(117,  composition3.get("GOOG"), 0.1);
     assertEquals(35119.95,
             portfolioDir.portfolioValue(0, 22, 1, 2024, api), 0.001);
 
 
     LocalDate date6 = LocalDate.of(2024, 2, 1);
-    Map<String, Integer> composition4 = portfolioDir.portfolioComposition(0, date6);
+    Map<String, Double> composition4 = portfolioDir.portfolioComposition(0, date6);
 
     assertEquals(2, composition4.size());
-    assertEquals(119, (int) composition4.get("AAPL"));
-    assertEquals(152, (int) composition4.get("GOOG"));
+    assertEquals(119,  composition4.get("AAPL"), 0.1);
+    assertEquals(152,  composition4.get("GOOG"), 0.1);
     assertEquals(43928.26,
             portfolioDir.portfolioValue(0, 1, 2, 2024, api), 0.001);
 
 
     LocalDate date7 = LocalDate.of(2024, 2, 12);
-    Map<String, Integer> composition5 = portfolioDir.portfolioComposition(0, date7);
+    Map<String, Double> composition5 = portfolioDir.portfolioComposition(0, date7);
 
     assertEquals(2, composition5.size());
-    assertEquals(119, (int) composition5.get("AAPL"));
-    assertEquals(152, (int) composition5.get("GOOG"));
+    assertEquals(119,  composition5.get("AAPL"), 0.1);
+    assertEquals(152,  composition5.get("GOOG"), 0.1);
     assertEquals(44877.81,
             portfolioDir.portfolioValue(0, 12, 2, 2024, api), 0.001);
 
@@ -3452,10 +3451,8 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = 10;
     double amount = 10000.0;
-    double commissionFee = -10.0;
     try {
-      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount, api);
     }
     catch (IllegalArgumentException e) {
       assertEquals("Commission fee cannot be negative.", e.getMessage());
@@ -3478,10 +3475,9 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = 10;
     double amount = -10.0;
-    double commissionFee = 10.0;
     try {
-      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount
+              ,api);
     }
     catch (IllegalArgumentException e) {
       assertEquals("Amount cannot be less than zero", e.getMessage());
@@ -3504,10 +3500,9 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = -10;
     double amount = 10000.0;
-    double commissionFee = 10.0;
     try {
-      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate,
+              frequencyDays, amount, api);
     }
     catch (IllegalArgumentException e) {
       assertEquals("Frequency day cannot be less than zero.", e.getMessage());
@@ -3532,8 +3527,8 @@ public class ModelTest {
     double amount = 10000.0;
     double commissionFee = 10.0;
     try {
-      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate,
+              frequencyDays, amount, api);
     }
     catch (IllegalArgumentException e) {
       assertEquals("endDate cannot be before startDate", e.getMessage());
@@ -3557,8 +3552,8 @@ public class ModelTest {
     double amount = 10000.0;
     double commissionFee = 10.0;
     try {
-      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate,
+              frequencyDays, amount,  api);
     }
     catch (IllegalArgumentException e) {
       assertEquals("Stock buying list is empty", e.getMessage());
@@ -3581,10 +3576,9 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = 10;
     double amount = 10000.0;
-    double commissionFee = 10.0;
     try {
-      portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              api);
     }
     catch (IllegalArgumentException e) {
       assertEquals("Share percentage cannot be less than zero", e.getMessage());
@@ -3607,13 +3601,7 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = 10;
     double amount = 10000.0;
-    double commissionFee = 10.0;
-    portfolioDir.addStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              commissionFee, api);
+    portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              api);
   }
-
-
-
-
-
 }

@@ -16,7 +16,6 @@ public class BuySchedule implements BuyingStrategy {
   private final LocalDate startDate;
   private final LocalDate endDate;
   private final double amount;
-  private final double transactionFee;
   private final LocalDate lastRunDate;
   private final Map<String, Double> buyingList;
 
@@ -26,20 +25,16 @@ public class BuySchedule implements BuyingStrategy {
    * @param frequencyDays  number of days.
    * @param startDate      start date.
    * @param endDate        end date.
-   * @param transactionFee commission fee.
    * @param lastRunDate    last schedule run date.
    * @param buyingList     buying stock list.
    * @throws IllegalArgumentException if input is not correct.
    */
   public BuySchedule(double amount, int frequencyDays,
                      LocalDate startDate,
-                     LocalDate endDate, double transactionFee, LocalDate lastRunDate,
+                     LocalDate endDate, LocalDate lastRunDate,
                      Map<String, Double> buyingList) throws IllegalArgumentException {
     if (endDate != null && endDate.isBefore(startDate)) {
       throw new IllegalArgumentException("endDate cannot be before startDate");
-    }
-    if (transactionFee < 0) {
-      throw new IllegalArgumentException("Commission fee cannot be negative.");
     }
     if (frequencyDays <= 0) {
       throw new IllegalArgumentException("Frequency day cannot be less than zero.");
@@ -49,7 +44,6 @@ public class BuySchedule implements BuyingStrategy {
     this.frequencyDays = frequencyDays;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.transactionFee = transactionFee;
     this.lastRunDate = lastRunDate;
     this.buyingList = scaledBuyingList;
   }
@@ -108,10 +102,6 @@ public class BuySchedule implements BuyingStrategy {
     return endDate;
   }
 
-  @Override
-  public double getTransactionFee() {
-    return transactionFee;
-  }
 
   @Override
   public LocalDate getLastRunDate() {

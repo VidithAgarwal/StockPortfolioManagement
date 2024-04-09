@@ -21,7 +21,7 @@ public class Transaction {
   /**
    * The quantity of shares involved in the transaction.
    */
-  private final int quantity;
+  private final double quantity;
 
   /**
    * The date of the transaction.
@@ -40,7 +40,7 @@ public class Transaction {
    */
   public Transaction(String txType,
                      String symbol,
-                     int quantity,
+                     double quantity,
                      LocalDate date) {
     this.txType = txType;
     this.ticker = symbol;
@@ -68,7 +68,7 @@ public class Transaction {
    * This is the method that return the shares of a stock.
    * @return the shares of a stock
    */
-  public int getQuantity() {
+  public double getQuantity() {
     return quantity;
   }
 

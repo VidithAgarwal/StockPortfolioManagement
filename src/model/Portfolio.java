@@ -45,7 +45,7 @@ public interface Portfolio {
    * @param api IStockData object used for fetching stock data.
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
-  void buyStock(String ticker, int quantity, LocalDate date, IStockData api);
+  void buyStock(String ticker, double quantity, LocalDate date, IStockData api);
 
   /**
    * this method sells stock from the portfolio is implemented in flexible portfolio.
@@ -56,14 +56,14 @@ public interface Portfolio {
    * @param api IStockData object used for fetching stock data.
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
-  void sellStock(String ticker, int quantity, LocalDate date, IStockData api);
+  void sellStock(String ticker, double quantity, LocalDate date, IStockData api);
 
   /**
    * portfolio composition method is used to get the composition of a portfolio.
    * The stock name and its quantity is returned for the composition.
    * @return the map of stock name and the quantity of stock.
    */
-  Map<String, Integer> portfolioComposition(LocalDate date);
+  Map<String, Double> portfolioComposition(LocalDate date);
 
   /**
    * this method calculates the cost basis of the portfolio, for flexible portfolio.

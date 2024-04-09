@@ -24,7 +24,7 @@ public interface IView {
    * Displays the composition of a portfolio.
    * @param composition Map containing stock names and quantities.
    */
-  void showComposition(Map<String, Integer> composition);
+  void showComposition(Map<String, Double> composition);
 
   /**
    * this method displays the total value of a portfolio.

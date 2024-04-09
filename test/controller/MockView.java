@@ -46,8 +46,8 @@ public class MockView implements IView {
    *                   (stock names and quantities).
    */
   @Override
-  public void showComposition(Map<String, Integer> composition) {
-    for (Map.Entry<String, Integer> entry : composition.entrySet()) {
+  public void showComposition(Map<String, Double> composition) {
+    for (Map.Entry<String, Double> entry : composition.entrySet()) {
       printedOutput.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
     }
   }

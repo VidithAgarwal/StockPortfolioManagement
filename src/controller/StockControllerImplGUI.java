@@ -217,43 +217,6 @@ public class StockControllerImplGUI implements Features  {
   }
 
   @Override
-  public void examineComposition(int input, String date) {
-    errorMessage = null;
-    successMessage = null;
-    boolean validDate = false;
-    int day = 0;
-    int month = 0;
-    int year = 0;
-    if (isValidDateFormat(date)) {
-      String[] dateParts = date.split("-");
-      year = Integer.parseInt(dateParts[0].trim());
-      month = Integer.parseInt(dateParts[1].trim());
-      day = Integer.parseInt(dateParts[2].trim());
-
-      if (validateDate(day, month, year)) {
-        validDate = true;
-      } else {
-        errorMessage = "Invalid date!";
-        return;
-        //view.displayError("Invalid date!");
-      }
-    } else {
-      errorMessage = "Invalid date format.";
-      return;
-      //view.displayError("Invalid date format.");
-    }
-    LocalDate compositionDate = LocalDate.parse(date);
-
-    try {
-//      view.showComposition(model.portfolioComposition(input, compositionDate));
-    } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
-      errorMessage = e.getMessage();
-    }
-    //examineComposition(choice,date);
-  }
-
-  @Override
   public void getTotalValue(int choice, String date) {
     errorMessage = null;
     successMessage = null;
@@ -684,6 +647,38 @@ public class StockControllerImplGUI implements Features  {
     //view.print("File loaded successfully");
   }
 
+  @Override
+  public void createPortfolioWithStrategy(String portfolioName, String startDate, String endDate,
+                                          int frequency,
+                                          Double amount, Map<String, Double> shareDetails) {
+    this.errorMessage = null;
+    this.successMessage = null;
+
+    try {
+
+      model.createDollarCostAverageStrategy(model.getSize() - 1, shareDetails, LocalDate.parse(startDate),
+              LocalDate.parse(endDate), frequency, amount, new StockData());
+      this.successMessage = "Portfolio with the provided strategy created successfully";
+    } catch (RuntimeException e) {
+      this.errorMessage = e.getMessage();
+    }
+  }
+
+  @Override
+  public void investWithDCAStrategy(int input, String date,
+                                          Double amount, Map<String, Double> shareDetails) {
+    this.errorMessage = null;
+    this.successMessage = null;
+
+    try {
+      model.investWithDCAStrategy(model.getSize() - 1, shareDetails, LocalDate.parse(date),
+              amount, new StockData());
+      this.successMessage = amount + " invested in portfolio successfully";
+    } catch (RuntimeException e) {
+      this.errorMessage = e.getMessage();
+    }
+  }
+
   private List<String[]> inputPath(String path) {
     errorMessage = null;
     Persistence persistence = new Persistence();
@@ -695,5 +690,43 @@ public class StockControllerImplGUI implements Features  {
       return new ArrayList<>();
     }
   }
+
+  @Override
+  public Map<String, Double> examineComposition(int input, String date) {
+    errorMessage = null;
+    successMessage = null;
+    boolean validDate = false;
+    int day = 0;
+    int month = 0;
+    int year = 0;
+    if (isValidDateFormat(date)) {
+      String[] dateParts = date.split("-");
+      year = Integer.parseInt(dateParts[0].trim());
+      month = Integer.parseInt(dateParts[1].trim());
+      day = Integer.parseInt(dateParts[2].trim());
+
+      if (validateDate(day, month, year)) {
+        validDate = true;
+      } else {
+        errorMessage = "Invalid date!";
+        return null;
+        //view.displayError("Invalid date!");
+      }
+    } else {
+      errorMessage = "Invalid date format.";
+      return null;
+      //view.displayError("Invalid date format.");
+    }
+    LocalDate compositionDate = LocalDate.parse(date);
+
+    try {
+      return model.portfolioComposition(input, compositionDate);
+    } catch (IllegalArgumentException e) {
+      //view.displayError(e.getMessage());
+      errorMessage = e.getMessage();
+      return null;
+    }
+    //examineComposition(choice,date);
+}
 
 }

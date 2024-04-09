@@ -1,22 +1,24 @@
 package view;
 
-import org.jdatepicker.JDatePanel;
 import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -24,18 +26,10 @@ import controller.Features;
 
 public class GUIView extends JFrame implements IViewGUI {
 
-  private JTextArea outputArea;
-  private JFrame mainFrame;
-  private JButton createPortfolioButton;
-  private JButton loadPortfolioButton;
-  private JButton stockStatisticsButton;
 
-  private JButton gainOrLoseButton;
-  private JButton gainOrLoseOverPeriodButton;
-  private JButton xdaymovingavgButton;
-  private JButton crossoverperiodButton;
-  private JButton movingcrossoverperiodButton;
-  private JPanel additionalButtonPanel;
+  private Map<String, Double> shareDetails = new HashMap<>();
+  private JFrame mainFrame;
+
 
   public GUIView() {
     mainFrame = new JFrame();
@@ -137,7 +131,7 @@ public class GUIView extends JFrame implements IViewGUI {
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridwidth = GridBagConstraints.REMAINDER;
-    gbc.anchor = GridBagConstraints.NORTH;
+    gbc.anchor = GridBagConstraints.CENTER;
 
 
     gbc.gridx = 0;
@@ -147,6 +141,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
     JButton portfolioButton = createButton("Create a flexible portfolio");
     portfolioButton.addActionListener(evt -> createPortfolio(features));
+
+    JButton createStrategyButton = createButton("Create Portfolio with dollar-cost average " +
+            "strategy");
+    createStrategyButton.addActionListener(evt -> new CreateStrategyPage(mainFrame, this,
+            features));
 
     JButton loadButton = createButton("Load a flexible portfolio");
     loadButton.addActionListener(evt -> loadPortfolio(features));
@@ -159,6 +158,8 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.gridy = 1;
     panel.add(loadButton, gbc);
     gbc.gridy = 2;
+    panel.add(createStrategyButton, gbc);
+    gbc.gridy = 3;
     panel.add(stockAnalysisButton, gbc);
 
 
@@ -350,7 +351,7 @@ public class GUIView extends JFrame implements IViewGUI {
     return sdf.format(selectedDate);
   }
 
-  private JDatePanelImpl createDatePanel() {
+  JDatePanelImpl createDatePanel() {
     UtilDateModel model = new UtilDateModel();
     Calendar calendar = Calendar.getInstance();
     model.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -519,7 +520,7 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
-  private void showSecondMenu(Features features) {
+  void showSecondMenu(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
 
@@ -531,41 +532,43 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.weightx = 1.0; // Expand horizontally
-    gbc.weighty = 1.0; // Ex
+    gbc.weighty = 2.0; // Ex
 
     JButton button = createButton("Create Flexible Portfolio");
     button.setPreferredSize(new Dimension(500, 50));
-    panel.add(button);
     button.addActionListener(evt -> createPortfolio(features));
+
+    JButton createStrategyButton = createButton("Create Portfolio with dollar-cost average " +
+            "strategy");
+    button.setPreferredSize(new Dimension(500, 50));
+    createStrategyButton.addActionListener(evt -> new CreateStrategyPage(mainFrame, this, features));
 
     JButton loadingButton = createButton("Load Flexible Portfolio");
     loadingButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(loadingButton);
     loadingButton.addActionListener(evt -> loadPortfolio(features));
+
+    JButton compositionButton = createButton("Get composition of the portfolio");
+    compositionButton.setPreferredSize(new Dimension(500, 50));
+    compositionButton.addActionListener(evt -> composition(features));
 
     JButton buyStockButton = createButton("Buy Stocks");
     buyStockButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(buyStockButton);
     buyStockButton.addActionListener(evt -> showBuyPage(features));
 
     JButton sellStockButton = createButton("Sell Stocks");
     sellStockButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(sellStockButton);
     sellStockButton.addActionListener(evt -> showSellPage(features));
 
     JButton costBasisButton = createButton("Get Cost Basis for a Portfolio");
     costBasisButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(costBasisButton);
     costBasisButton.addActionListener(evt -> showCostBasisPage(features));
 
     JButton totalValueButton = createButton("Get Total Value of a Portfolio");
     totalValueButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(totalValueButton);
     totalValueButton.addActionListener(evt -> showTotalValuePage(features));
 
     JButton saveButton = createButton("Save Flexible Portfolio");
     saveButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(saveButton);
     saveButton.addActionListener(evt -> save(features));
 
 //    JButton dollarCostButton = createButton("Create Portfolio Using Dollar-Cost Averaging");
@@ -573,47 +576,204 @@ public class GUIView extends JFrame implements IViewGUI {
 //    panel.add(dollarCostButton);
 //    dollarCostButton.addActionListener(evt -> dollarCostPortfolio(features));
 
-    JButton investButton = createButton("Investment in a Portfolio");
+    JButton investButton = createButton("Investment in a Portfolio with Dollar cost Average " +
+            "Strategy");
     investButton.setPreferredSize(new Dimension(500, 50));
-    panel.add(investButton);
-    investButton.addActionListener(evt -> investmentPortfolio(features));
+    investButton.addActionListener(evt -> DCAInvestment(features));
 
     JButton stockAnalysis = createButton("Get Stock Analysis");
     stockAnalysis.setPreferredSize(new Dimension(500, 50));
-    panel.add(stockAnalysis);
     stockAnalysis.addActionListener(evt -> stockAnalysis(features));
 
 
     panel.add(button, gbc);
     gbc.gridy = 1;
     panel.add(loadingButton, gbc);
-    gbc.gridy = 2;
+    gbc.gridy++;
+    panel.add(createStrategyButton, gbc);
+    gbc.gridy++;
+    panel.add(compositionButton);
+    gbc.gridy++;
     panel.add(buyStockButton, gbc);
-    gbc.gridy = 3;
+    gbc.gridy++;
     panel.add(sellStockButton, gbc);
-    gbc.gridy = 4;
+    gbc.gridy++;
     panel.add(costBasisButton, gbc);
-    gbc.gridy = 5;
+    gbc.gridy++;
     panel.add(totalValueButton, gbc);
-    gbc.gridy = 6;
+    gbc.gridy++;
     panel.add(saveButton, gbc);
-//    gbc.gridy = 7;
-//    panel.add(dollarCostButton, gbc);
-    gbc.gridy = 7;
+
+    gbc.gridy++;
     panel.add(investButton, gbc);
-    gbc.gridy = 8;
+    gbc.gridy++;
     panel.add(stockAnalysis, gbc);
 
-    mainFrame.add(panel);
+    JScrollPane scrollPane = new JScrollPane(panel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+    mainFrame.add(scrollPane);
 
     revalidate();
     repaint();
     mainFrame.setVisible(true);
   }
 
+  private void DCAInvestment(Features features) {
+    mainFrame.getContentPane().removeAll();
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    JPanel choicePanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.anchor = GridBagConstraints.WEST;
+
+    // Add components to choice panel
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    choicePanel.add(createLabel("Select portfolio to invest in:"), gbc);
+    JComboBox<String> dropdown = createDropdown(features.getPortfolioNames().toArray(new String[0]));
+    gbc.gridy++;
+    dropdown.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXX");
+    choicePanel.add(dropdown, gbc);
+    gbc.gridy++;
+    choicePanel.add(createLabel("Select the date of investment:"), gbc);
+
+    // Date picker
+    JDatePanelImpl datePanel = createDatePanel();
+    JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+    gbc.gridy++;
+    choicePanel.add(datePanel, gbc);
+
+    final String[] date = {LocalDate.now().minusDays(1) + ""};
+    JPanel formPanel = new JPanel(new GridBagLayout());
+
+    datePicker.addActionListener(e -> {
+      date[0] = getDate(datePicker);
+      Map<String, Double> composition = features.examineComposition(dropdown.getSelectedIndex(),
+             date[0]);
+      if (features.getErrorMessage() != null) {
+        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        DCAInvestment(features);
+      } else {
+        updateForm(composition, formPanel);
+      }
+    });
+
+    // Add choice panel to main panel
+    mainPanel.add(choicePanel, BorderLayout.NORTH);
+
+    // Form panel
+
+
+    // Create submit button
+    JButton submitButton = createButton("Submit");
+
+    // Add action listener to the dropdown
+    dropdown.addActionListener(e -> {
+      Map<String, Double> composition = features.examineComposition(dropdown.getSelectedIndex(),
+               date[0]);
+      if (features.getErrorMessage() != null) {
+        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        showSecondMenu(features);
+        return;
+      } else {
+        updateForm(composition, formPanel);
+      }
+    });
+
+    if (dropdown.getItemCount() > 0) {
+      dropdown.setSelectedIndex(0); // Select the first item by default
+      Map<String, Double> composition = features.examineComposition(0,
+              LocalDate.now().minusDays(1) + "");
+      if (features.getErrorMessage() != null) {
+        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        showSecondMenu(features);
+        return;
+      } else {
+        updateForm(composition, formPanel);
+      }
+    }
+
+    // Add components to the main panel
+    JScrollPane scrollPane = new JScrollPane(formPanel);
+    mainPanel.add(scrollPane, BorderLayout.CENTER);
+    mainPanel.add(submitButton, BorderLayout.SOUTH);
+
+    mainFrame.add(mainPanel);
+    mainFrame.revalidate();
+    mainFrame.repaint();
+    mainFrame.setVisible(true);
+
+  }
+
+  private void updateForm(Map<String, Double> stringDoubleMap, JPanel formPanel) {
+    formPanel.removeAll();
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+
+    for (Map.Entry<String, Double> entry: stringDoubleMap.entrySet()) {
+
+
+      JPanel rowPanel = new JPanel(new GridBagLayout());
+
+      JLabel quantityLabel = new JLabel("Enter the weight for " + entry.getKey());
+      JTextField quantity = new JTextField(10);
+
+      quantity.addKeyListener(new KeyAdapter() {
+
+        int flag = 0;
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+          char c = e.getKeyChar();
+          if (!(Character.isDigit(c) || c == '.'
+                  || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE)) {
+            e.consume();
+          } else {
+            if (c == '.') {
+              if (flag >= 1) {
+                e.consume();
+              }
+              flag++;
+            }
+          }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+          String quantityText = quantity.getText();
+          if (!quantityText.isEmpty()) {
+            double quantity = Double.parseDouble(quantityText);
+            shareDetails.put(entry.getKey(), quantity);
+          }
+        }
+      });
+
+      rowPanel.add(quantityLabel, gbc);
+      gbc.gridx = 1;
+      rowPanel.add(quantity, gbc);
+
+      gbc.gridy++;
+
+      formPanel.add(rowPanel, gbc);
+      gbc.gridx = 0;
+    }
+    formPanel.revalidate();
+    formPanel.repaint();
+  }
+
+
   private void showCostBasisPage(Features features) {
     mainFrame.getContentPane().removeAll();
-    mainFrame.setSize(new Dimension(600, 600));
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
@@ -654,7 +814,6 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(submitButton, gbc);
 
     submitButton.addActionListener(e -> {
-      System.out.println(date[0]);
       features.getCostBasis(choice[0], date[0]);
       if (features.getErrorMessage() != null) {
         JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
@@ -1334,4 +1493,111 @@ public class GUIView extends JFrame implements IViewGUI {
 
     mainFrame.setVisible(true);
   }
+
+  private void composition(Features features) {
+    mainFrame.getContentPane().removeAll();
+    JPanel panel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+
+    panel.add(createLabel("Select portfolio for which you want to get composition:"), gbc);
+    JComboBox<String> dropdown =
+            createDropdown(features.getPortfolioNames().toArray(new String[0]));
+    gbc.gridy++;
+    panel.add(dropdown, gbc);
+    gbc.gridy++;
+    panel.add(createLabel("Select the date for which you want to get composition"), gbc);
+
+    JDatePanelImpl datePanel = createDatePanel();
+    JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+    gbc.gridy++;
+    panel.add(datePanel, gbc);
+    final String[] date = {datePicker.getModel().getValue().toString()};
+
+    datePicker.addActionListener(e -> {
+      date[0] = getDate(datePicker);
+    });
+    final int[] choice = {0};
+
+    dropdown.addActionListener(e -> {
+      choice[0] = getDropdownChoice(e);
+    });
+
+    JButton submitButton = createButton("Submit");
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    panel.add(submitButton, gbc);
+
+    submitButton.addActionListener(e -> {
+      if(date[0] != null) { //date[0] != null
+        Map<String, Double> compositionResult = features.examineComposition(choice[0], date[0]);
+
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          dropdown.setSelectedIndex(0);
+          showSecondMenu(features);
+        } else {
+//          JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
+//                  "Success",
+//                  JOptionPane.INFORMATION_MESSAGE);
+//          showSecondMenu(features);
+          displayCompositionResult(features, compositionResult);
+        }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please select portfolio and date",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+      }
+    });
+
+    mainFrame.add(panel);
+    mainFrame.repaint();
+    mainFrame.revalidate();
+
+    mainFrame.setVisible(true);
+  }
+
+  private void displayCompositionResult(Features features, Map<String, Double> compositionResult) {
+    mainFrame.getContentPane().removeAll();
+    JPanel panel = new JPanel(new BorderLayout());
+
+    JTable table = createCompositionTable(compositionResult);
+    JScrollPane scrollPane = new JScrollPane(table);
+    panel.add(scrollPane, BorderLayout.CENTER);
+
+    JButton backButton = createButton("Go Back to Main Menu");
+    panel.add(backButton, BorderLayout.SOUTH);
+
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    mainFrame.add(panel);
+    mainFrame.repaint();
+    mainFrame.revalidate();
+    mainFrame.setVisible(true);
+  }
+
+  private JTable createCompositionTable(Map<String, Double> compositionResult) {
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("Ticker Symbol");
+    model.addColumn("Quantity");
+
+    for (Map.Entry<String, Double> entry : compositionResult.entrySet()) {
+      model.addRow(new Object[]{entry.getKey(), entry.getValue()});
+    }
+
+    JTable table = new JTable(model);
+    table.setFillsViewportHeight(true);
+    return table;
+}
 }

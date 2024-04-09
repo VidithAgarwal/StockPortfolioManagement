@@ -31,7 +31,7 @@ public class MockModel implements InvestmentManager {
    * Represents a mock composition map for testing purposes.
    * map stores stock names as keys and their quantities as values.
    */
-  private Map<String, Integer> mockComposition = new HashMap<>();
+  private Map<String, Double> mockComposition = new HashMap<>();
 
 
   private StringBuilder mockOutputFormat = new StringBuilder();
@@ -70,7 +70,7 @@ public class MockModel implements InvestmentManager {
    * @param mockTreeMap The TreeMap for the mock, treemap of strings.
    * @param mockIntMap The integer TreeMap for the mock, treemap of string,integer.
    */
-  public MockModel(Map<String, Integer> map, String mockName, double mockValue, int intMockValue,
+  public MockModel(Map<String, Double> map, String mockName, double mockValue, int intMockValue,
                    TreeMap<String,String> mockTreeMap, TreeMap<String,Integer> mockIntMap,
                    StringBuilder mockSave) {
     mockComposition = map;
@@ -136,7 +136,7 @@ public class MockModel implements InvestmentManager {
    * @return A map containing the composition of the mock portfolio.
    */
   @Override
-  public Map<String, Integer> portfolioComposition(int input, LocalDate date) {
+  public Map<String, Double> portfolioComposition(int input, LocalDate date) {
     logger.append("Retrieving composition for portfolio at index: ").append(input)
             .append(" on date: ").append(date.toString()).append('\n');
     return mockComposition;
@@ -412,7 +412,12 @@ public class MockModel implements InvestmentManager {
   }
 
   @Override
-  public void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate, LocalDate endDate, int frequencyDays, double amount, double commissionFee, StockData api) {
+  public void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList, LocalDate startDate, LocalDate endDate, int frequencyDays, double amount, StockData api) {
+
+  }
+
+  @Override
+  public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date, double amount, StockData api) {
 
   }
 }

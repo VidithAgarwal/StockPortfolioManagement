@@ -41,7 +41,7 @@ public interface InvestmentManager {
    * @param date  date for which composition is to be retrieved.
    * @return Map containing the composition of the portfolio (share name and quantity).
    */
-  Map<String, Integer> portfolioComposition(int input, LocalDate date);
+  Map<String, Double> portfolioComposition(int input, LocalDate date);
 
   /**
    * Retrieves the number of portfolios in the directory.
@@ -233,12 +233,15 @@ public interface InvestmentManager {
    * @param endDate        end date of the investment strategy.
    * @param frequencyDays  number of days between each investment.
    * @param amount        total investment amount.
-   * @param commissionFee  transaction fee associated with each investment.
    * @param api           stock data API to fetch historical prices.
    */
-  void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate,
+  void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList,
+                                      LocalDate startDate,
                    LocalDate endDate,
-                   int frequencyDays, double amount, double commissionFee,
+                   int frequencyDays, double amount,
                    StockData api);
+
+  void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
+                             double amount, StockData api);
 
 }

@@ -68,10 +68,10 @@ public class IViewImpl implements IView {
    * @param composition Map containing stock names and quantities.
    */
   @Override
-  public void showComposition(Map<String, Integer> composition) {
+  public void showComposition(Map<String, Double> composition) {
     out.println("Composition of Portfolio");
     out.println("Stock Name\tStock Quantity");
-    for (Map.Entry<String, Integer> entry : composition.entrySet()) {
+    for (Map.Entry<String, Double> entry : composition.entrySet()) {
       out.printf("%-20s %d\n", entry.getKey(), entry.getValue());
     }
   }

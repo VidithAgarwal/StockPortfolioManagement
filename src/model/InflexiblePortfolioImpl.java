@@ -21,14 +21,14 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    * Map to store stock impl object that has ticker symbol and price data.
    * along with their quantities.
    */
-  private final Map<String, Integer> sharesList;
+  private final Map<String, Double> sharesList;
 
   /**
    * Constructs a InflexiblePortfolioImpl object with the given portfolio name and share list.
    * @param portfolioName The name of the portfolio.
    * @param list The map containing ticker symbols and quantities of shares.
    */
-  private InflexiblePortfolioImpl(String portfolioName, Map<String , Integer> list) {
+  private InflexiblePortfolioImpl(String portfolioName, Map<String , Double> list) {
     super(portfolioName);
     this.sharesList = deepCopy(list);
   }
@@ -37,7 +37,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    * Returns a deep copy of the portfolio composition.
    * @return A map containing ticker symbols and quantities of shares.
    */
-  private Map<String, Integer> portfolioComposition() {
+  private Map<String, Double> portfolioComposition() {
     return deepCopy(this.sharesList);
   }
 
@@ -48,7 +48,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    * @return map containing ticker symbols and quantities of shares.
    */
   @Override
-  public Map<String, Integer> portfolioComposition(LocalDate date) {
+  public Map<String, Double> portfolioComposition(LocalDate date) {
     return portfolioComposition();
   }
 
@@ -62,7 +62,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
   public StringBuilder save() {
     StringBuilder sb = new StringBuilder();
     sb.append("Symbol,Quantity").append(System.lineSeparator());
-    for (Map.Entry<String, Integer> entry : sharesList.entrySet()) {
+    for (Map.Entry<String, Double> entry : sharesList.entrySet()) {
       sb.append(entry.getKey()).append(",").append(entry.getValue());
       sb.append(System.lineSeparator());
     }
@@ -89,7 +89,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    */
   @Override
   public double portfolioValue(String date, IStockData api) {
-    Map<String , Integer> composition = portfolioComposition();
+    Map<String , Double> composition = portfolioComposition();
     return computeValue(date, composition, api);
   }
 
@@ -102,7 +102,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
   @Override
-  public void buyStock(String ticker, int quantity, LocalDate date, IStockData api) {
+  public void buyStock(String ticker, double quantity, LocalDate date, IStockData api) {
     throw new IllegalArgumentException();
   }
 
@@ -115,7 +115,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
    * @throws IllegalArgumentException if the method is called by inflexible portfolio.
    */
   @Override
-  public void sellStock(String ticker, int quantity, LocalDate date, IStockData api) {
+  public void sellStock(String ticker, double quantity, LocalDate date, IStockData api) {
     throw new IllegalArgumentException();
   }
 
@@ -166,7 +166,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
     /**
      * Map to store shares data and their quantities.
      */
-    private Map<String , Integer> shareList;
+    private Map<String , Double> shareList;
 
     /**
      * Constructor for PortfolioBuilder, that takes in the portfolio name.
@@ -184,7 +184,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
      * @param quantity  The quantity of the share to be added.
      * @throws IllegalArgumentException If the share name is not found in the stocks.csv file.
      */
-    public void addShare(String shareName, int quantity) {
+    public void addShare(String shareName, double quantity) {
       String tickerSymbol = validateStockName(shareName);
 
       if (tickerSymbol == null) {
@@ -196,9 +196,9 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
       }
 
       boolean flag = false;
-      for (Map.Entry<String , Integer> entry : this.shareList.entrySet()) {
+      for (Map.Entry<String , Double> entry : this.shareList.entrySet()) {
         if (entry.getKey().equals(tickerSymbol)) {
-          int existingQuantity = this.shareList.get(entry.getKey());
+          double existingQuantity = this.shareList.get(entry.getKey());
           this.shareList.put(entry.getKey(), existingQuantity + quantity);
           flag = true;
         }
@@ -234,7 +234,7 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
           } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
           }
-          this.shareList.put(tickerSymbol, Integer.parseInt(value));
+          this.shareList.put(tickerSymbol, Double.parseDouble(value));
         } else {
           // Handle invalid line
           throw new IllegalArgumentException();

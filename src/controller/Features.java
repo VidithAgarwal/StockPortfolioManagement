@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import model.InflexiblePortfolioImpl;
@@ -44,13 +45,16 @@ public interface Features {
    */
   void sellStock(String date, String quantity, String shareName, int choice);
 
+  void investWithDCAStrategy(int input, String date,
+                             Double amount, Map<String, Double> shareDetails);
+
   /**
    * this method examines composition of a portfolio on a specified date, for this it gets input.
    * from the gui and further uses model methods and delegate this input to examine composition.
    * @param input index of the portfolio to examine.
    * @param date  date for examining the portfolio composition.
    */
-  void examineComposition(int input, String date);
+  Map<String, Double> examineComposition(int input, String date);
 
   /**
    * this method retrieves total value of a portfolio on a specified date,for this it gets input.
@@ -150,4 +154,7 @@ public interface Features {
    * @param portfolioPath  file path from which to load the portfolio data.
    */
   void loadPortfolio(String name, String portfolioPath);
+
+  void createPortfolioWithStrategy(String portfolioName, String s, String s1, int frequency,
+                                   Double amount, Map<String, Double> shareDetails);
 }

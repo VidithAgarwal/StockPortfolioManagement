@@ -60,11 +60,11 @@ abstract class AbstractPortfolio implements Portfolio {
    * @param api StockData object used to fetch historical data.
    * @return total value of the portfolio on the specified date.
    */
-  protected double computeValue(String date, Map<String, Integer> composition, IStockData api) {
+  protected double computeValue(String date, Map<String, Double> composition, IStockData api) {
     double totalValue = 0;
-    for (Map.Entry<String, Integer> entry : composition.entrySet()) {
+    for (Map.Entry<String, Double> entry : composition.entrySet()) {
       String ticker = entry.getKey();
-      Integer quantity = entry.getValue();
+      Double quantity = entry.getValue();
       try {
         Double closingPrice = getClosingPriceOnDate(ticker, api, date);
         totalValue += closingPrice * quantity;
@@ -103,9 +103,9 @@ abstract class AbstractPortfolio implements Portfolio {
    * @param map1 the map to be copied.
    * @return new map containing same key-value pairs as input map.
    */
-  protected Map<String, Integer> deepCopy(Map<String, Integer> map1) {
-    Map<String, Integer> map2 = new HashMap<>();
-    for (Map.Entry<String, Integer> entry : map1.entrySet()) {
+  protected Map<String, Double> deepCopy(Map<String, Double> map1) {
+    Map<String, Double> map2 = new HashMap<>();
+    for (Map.Entry<String, Double> entry : map1.entrySet()) {
       map2.put(entry.getKey(), entry.getValue());
     }
     return map2;

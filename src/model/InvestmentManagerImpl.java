@@ -63,7 +63,7 @@ public class InvestmentManagerImpl implements InvestmentManager {
   }
 
   @Override
-  public Map<String, Integer> portfolioComposition(int input, LocalDate date) {
+  public Map<String, Double> portfolioComposition(int input, LocalDate date) {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
@@ -356,13 +356,23 @@ public class InvestmentManagerImpl implements InvestmentManager {
 
 
   @Override
-  public void addStrategy(int input, Map<String, Double> buyingList, LocalDate startDate,
+  public void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList,
+                                      LocalDate startDate,
                    LocalDate endDate,
-                   int frequencyDays, double amount, double commissionFee,
+                   int frequencyDays, double amount,
                    StockData api) {
     BuyingStrategy newStrategy = new BuySchedule(amount, frequencyDays, startDate, endDate,
-            commissionFee, null, buyingList);
+             null, buyingList);
     portfolioDirectory.get(input).dollarCostAverage(LocalDate.now(), newStrategy, api);
+  }
+
+  @Override
+  public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
+                                    double amount, StockData api) {
+    BuyingStrategy newStrategy = new BuySchedule(amount, 0, date, date,
+            null, investingList);
+    portfolioDirectory.get(input).dollarCostAverage(LocalDate.now(), newStrategy, api);
+
   }
 
 

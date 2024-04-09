@@ -36,12 +36,6 @@ public interface BuyingStrategy {
   LocalDate getEndDate();
 
   /**
-   * the method returns transaction fee associated with each transaction.
-   * @return transaction fee.
-   */
-  double getTransactionFee();
-
-  /**
    * the method returns date when the strategy was last executed.
    * @return last execution date.
    */

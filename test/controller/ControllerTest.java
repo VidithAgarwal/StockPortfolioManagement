@@ -53,13 +53,13 @@ public class ControllerTest {
    */
   @Before
   public void setUp() {
-    Map<String, Integer> mockComposition = new HashMap<>();
+    Map<String, Double> mockComposition = new HashMap<>();
     TreeMap<String,String> mockTreeMap = new TreeMap<>();
     mockTreeMap.put("date", "buy/sell");
     TreeMap<String,Integer> mockStringInt = new TreeMap<>();
     mockStringInt.put("date", 10);
-    mockComposition.put("AAPL", 20);
-    mockComposition.put("Goog", 10);
+    mockComposition.put("AAPL", 20d);
+    mockComposition.put("Goog", 10d);
     mockName = "Test Portfolio";
     mockValue = 17.5;
     StringBuilder mockSaveInflexible = new StringBuilder();
