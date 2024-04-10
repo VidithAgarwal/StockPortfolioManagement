@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import model.InflexiblePortfolioImpl;
+import view.GUIView;
+import view.IViewGUI;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -2016,5 +2018,16 @@ public class ControllerTest {
     for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
+  }
+
+  @Test
+  public void testCreate() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.createFlexiblePortfolio("Portfolio 1");
+    StringBuilder inputLog = mockModel.getLogger();
+    String[] logChecker = inputLog.toString().split("\n");
+    assertEquals("Creating flexible portfolio with name: Portfolio 1",
+            logChecker[logChecker.length - 1]);
   }
 }

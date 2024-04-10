@@ -5,12 +5,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static model.AbstractPortfolio.validateStockName;
+
 
 /**
- * BuySchedule implements BuyingStrategy. It stores the information of scheduled stocks to buy,
+ * BuySchedule implements Schedule. It stores the information of scheduled stocks to buy,
  * date to buy, investment amount, and buying frequency days.
  */
-public class BuySchedule implements BuyingStrategy {
+public class BuySchedule implements Schedule {
 
   private final int frequencyDays;
   private final LocalDate startDate;
@@ -39,13 +41,13 @@ public class BuySchedule implements BuyingStrategy {
     if (frequencyDays <= 0) {
       throw new IllegalArgumentException("Frequency day cannot be less than zero.");
     }
-    Map<String, Double> scaledBuyingList = getStringDoubleMap(amount, buyingList);
+    Map<String, Double> correctBuyingList = getStringDoubleMap(amount, buyingList);
     this.amount = amount;
     this.frequencyDays = frequencyDays;
     this.startDate = startDate;
     this.endDate = endDate;
     this.lastRunDate = lastRunDate;
-    this.buyingList = scaledBuyingList;
+    this.buyingList = correctBuyingList;
   }
 
   /**
@@ -73,13 +75,18 @@ public class BuySchedule implements BuyingStrategy {
       if (entry.getValue() <= 0) {
         throw new IllegalArgumentException("Share percentage cannot be less than zero");
       }
+      String ticker = validateStockName(entry.getKey());
+      if (ticker == null) {
+        throw new IllegalArgumentException(entry.getKey() + " share name doesn't exists");
+      }
+
       total += entry.getValue();
     }
-    Map<String, Double> scaledBuyingList = new HashMap<>();
-    for (Map.Entry<String, Double> entry : buyingList.entrySet()) {
-      scaledBuyingList.put(entry.getKey(), entry.getValue() * 100/total);
+
+    if (total > 100) {
+      throw new IllegalArgumentException("Total percentage cannot be more than 100%");
     }
-    return scaledBuyingList;
+    return buyingList;
   }
 
   @Override

@@ -9,7 +9,7 @@ import java.util.Map;
  * a specific date by specifying the weights of how that money should be invested in each stock.
  * inside that portfolio.
  */
-public interface BuyingStrategy {
+public interface Schedule {
 
   /**
    * this method returns amount of money to be invested in each transaction.

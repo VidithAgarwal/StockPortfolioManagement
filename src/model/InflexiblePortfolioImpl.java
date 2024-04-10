@@ -141,16 +141,9 @@ public class InflexiblePortfolioImpl extends AbstractPortfolio {
     throw new IllegalArgumentException();
   }
 
-  /**
-   * method is overridden to throw IllegalArgumentException, when called by inflexible portfolio.
-   * @param today     current date.
-   * @param schedule buying schedule defining the investment strategy.
-   * @param api       stock data API to fetch historical prices.
-   * @throws IllegalArgumentException as this method is not to be implemented in this class.
-   */
   @Override
-  public void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api) {
-    throw new IllegalArgumentException();
+  public void strategicalInvestment(Schedule schedule, Strategy strategy, IStockData api) {
+    throw new IllegalArgumentException("Cannot add strategy to Inflexible portfolio");
   }
 
   /**

@@ -654,10 +654,73 @@ public class StockControllerImplGUI implements Features  {
     this.errorMessage = null;
     this.successMessage = null;
 
-    try {
+    int day = 0;
+    int month = 0;
+    int year = 0;
+    if (isValidDateFormat(startDate)) {
+      String[] dateParts = startDate.split("-");
+      year = Integer.parseInt(dateParts[0].trim());
+      month = Integer.parseInt(dateParts[1].trim());
+      day = Integer.parseInt(dateParts[2].trim());
 
-      model.createDollarCostAverageStrategy(model.getSize() - 1, shareDetails, LocalDate.parse(startDate),
-              LocalDate.parse(endDate), frequency, amount, new StockData());
+      if (!validateDate(day, month, year)) {
+        errorMessage = "Invalid start date!";
+        return;
+      }
+    } else {
+      errorMessage = "Invalid start date format.";
+      return;
+    }
+    LocalDate strategyStartDate = LocalDate.parse(startDate);
+    if (isValidDateFormat(endDate)) {
+      String[] dateParts = endDate.split("-");
+      year = Integer.parseInt(dateParts[0].trim());
+      month = Integer.parseInt(dateParts[1].trim());
+      day = Integer.parseInt(dateParts[2].trim());
+
+      if (!validateDate(day, month, year)) {
+        errorMessage = "Invalid end date!";
+        return;
+      }
+    } else {
+      errorMessage = "Invalid end date format.";
+      return;
+    }
+    LocalDate strategyEndDate = LocalDate.parse(endDate);
+
+    int sum = 0;
+
+    for (Map.Entry<String, Double> entry: shareDetails.entrySet()) {
+      if (entry.getValue() < 0) {
+        errorMessage = "The weight cannot be negative";
+        return;
+      }
+
+      if (entry.getValue() > 100) {
+        errorMessage = "The weight cannot be greater than 100%";
+        return;
+      }
+      sum += entry.getValue();
+    }
+
+    if (sum != 100) {
+      errorMessage = "The combined sum of weights must be 100%";
+    }
+
+    if (frequency <= 0) {
+      errorMessage = "Frequency of investment must be a positive integer.";
+      return;
+    }
+
+
+    if (amount <= 0) {
+      errorMessage = "Amount must be a positive integer.";
+      return;
+    }
+
+    try {
+      model.createDollarCostAverageStrategy(model.getSize() - 1, shareDetails, strategyStartDate,
+              strategyEndDate, frequency, amount, new StockData());
       this.successMessage = "Portfolio with the provided strategy created successfully";
     } catch (RuntimeException e) {
       this.errorMessage = e.getMessage();
@@ -670,8 +733,58 @@ public class StockControllerImplGUI implements Features  {
     this.errorMessage = null;
     this.successMessage = null;
 
+    boolean validDate = false;
+    int day = 0;
+    int month = 0;
+    int year = 0;
+    if (isValidDateFormat(date)) {
+      String[] dateParts = date.split("-");
+      year = Integer.parseInt(dateParts[0].trim());
+      month = Integer.parseInt(dateParts[1].trim());
+      day = Integer.parseInt(dateParts[2].trim());
+
+      if (!validateDate(day, month, year)) {
+        errorMessage = "Invalid date!";
+        return;
+      }
+    } else {
+      errorMessage = "Invalid date format.";
+      return;
+    }
+    LocalDate investmentDate = LocalDate.parse(date);
+
+    if (input < 0 || input >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
+
+
+    if (amount <= 0) {
+      errorMessage = "Amount must be a positive integer.";
+      return;
+    }
+
+    int sum = 0;
+
+    for (Map.Entry<String, Double> entry: shareDetails.entrySet()) {
+      if (entry.getValue() < 0) {
+        errorMessage = "The weight cannot be negative";
+        return;
+      }
+
+      if (entry.getValue() > 100) {
+        errorMessage = "The weight cannot be greater than 100%";
+        return;
+      }
+      sum += entry.getValue();
+    }
+
+    if (sum != 100) {
+      errorMessage = "The combined sum of weights must be 100%";
+    }
+
     try {
-      model.investWithDCAStrategy(model.getSize() - 1, shareDetails, LocalDate.parse(date),
+      model.investWithDCAStrategy(model.getSize() - 1, shareDetails, investmentDate,
               amount, new StockData());
       this.successMessage = amount + " invested in portfolio successfully";
     } catch (RuntimeException e) {
@@ -722,7 +835,6 @@ public class StockControllerImplGUI implements Features  {
     try {
       return model.portfolioComposition(input, compositionDate);
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
       return null;
     }

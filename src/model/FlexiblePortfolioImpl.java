@@ -347,38 +347,10 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    * @param api      stock data API to fetch historical prices.
    */
   @Override
-  public void dollarCostAverage(LocalDate today, BuyingStrategy schedule, StockData api) {
-    LocalDate current = schedule.getLastRunDate() == null ? schedule.getStartDate()
-            .minusDays(schedule.getFrequencyDays()) : schedule.getLastRunDate();
-
-    today = schedule.getEndDate() != null && today.isAfter(schedule.getEndDate())
-            ? schedule.getEndDate() : today;
-    while (today.isAfter(current)) {
-      LocalDate newBuy = current.plusDays(schedule.getFrequencyDays());
-      current = current.plusDays(schedule.getFrequencyDays());
-      for (Map.Entry<String, Double> entry : schedule.getBuyingList().entrySet()) {
-        String ticker = validateStockName(entry.getKey());
-        if (ticker == null) {
-          throw new IllegalArgumentException("Share name " + entry.getKey() + " doesn't exists");
-        }
-        int tryNextDay = 0;
-        Map<String, ArrayList<Double>> prices = api.fetchHistoricalData(ticker);
-        Double buyPrice = null;
-        while (tryNextDay < 7 && tryNextDay < schedule.getFrequencyDays()) {
-          try {
-            buyPrice = prices.get(newBuy.plusDays(tryNextDay) + "").get(3);
-            break;
-          } catch (Exception ignored) {
-            tryNextDay += 1;
-          }
-        }
-        if (buyPrice == null) {
-          continue;
-        }
-        double quantity =
-                ((entry.getValue() / 100) * schedule.getAmount()) / buyPrice;
-        this.buyStock(ticker, (int) quantity, newBuy.plusDays(tryNextDay), api);
-      }
+  public void strategicalInvestment(Schedule schedule, Strategy strategy, IStockData api) {
+    List<Transaction> buyTransactions = strategy.applyStrategy(LocalDate.now(), schedule, api);
+    for (Transaction transaction: buyTransactions) {
+      buyStock(transaction.getStock(), transaction.getQuantity(), transaction.getDate(), api);
     }
   }
 }

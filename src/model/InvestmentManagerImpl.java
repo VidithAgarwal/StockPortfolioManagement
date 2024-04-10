@@ -361,17 +361,19 @@ public class InvestmentManagerImpl implements InvestmentManager {
                    LocalDate endDate,
                    int frequencyDays, double amount,
                    StockData api) {
-    BuyingStrategy newStrategy = new BuySchedule(amount, frequencyDays, startDate, endDate,
+    Schedule schedule = new BuySchedule(amount, frequencyDays, startDate, endDate,
              null, buyingList);
-    portfolioDirectory.get(input).dollarCostAverage(LocalDate.now(), newStrategy, api);
+    Strategy newStrategy = new DollarCostAverageStrategy();
+    portfolioDirectory.get(input).strategicalInvestment(schedule, newStrategy, api);
   }
 
   @Override
   public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
                                     double amount, StockData api) {
-    BuyingStrategy newStrategy = new BuySchedule(amount, 0, date, date,
+    Schedule schedule = new BuySchedule(amount, 1, date, date,
             null, investingList);
-    portfolioDirectory.get(input).dollarCostAverage(LocalDate.now(), newStrategy, api);
+    Strategy newStrategy = new DollarCostAverageStrategy();
+    portfolioDirectory.get(input).strategicalInvestment(schedule, newStrategy, api);
 
   }
 

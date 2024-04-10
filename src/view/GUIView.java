@@ -10,11 +10,13 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,58 +40,6 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     mainFrame.setLayout(new BorderLayout());
     mainFrame.setLocationRelativeTo(null);
-//    // Image label
-//    ImageIcon icon = new ImageIcon("ass6.png");
-//    JLabel imageLabel = new JLabel(icon);
-//    add(imageLabel, BorderLayout.WEST);
-//
-//    // Button panel
-//    JPanel buttonPanel = new JPanel();
-//    buttonPanel.setLayout(new GridLayout(5, 1));
-//
-//    createPortfolioButton = new JButton("Create Portfolio");
-//    createPortfolioButton.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent e) {
-//        // Create and display a custom dialog for entering the portfolio name
-//        JTextField portfolioNameField = new JTextField();
-//        JPanel dialogPanel = new JPanel(new GridLayout(2, 1));
-//        dialogPanel.add(new JLabel("Enter Portfolio Name:"));
-//        dialogPanel.add(portfolioNameField);
-//
-//        JLabel statusLabel = new JLabel(""); // JLabel to display status message
-//        dialogPanel.add(statusLabel);
-//
-//        int result = JOptionPane.showConfirmDialog(null, dialogPanel,
-//                "Create Portfolio", JOptionPane.OK_CANCEL_OPTION);
-//        if (result == JOptionPane.OK_OPTION) {
-//          String portfolioName = portfolioNameField.getText();
-//              // Call the method to create flexible portfolio
-//              stockGUI.createFlexiblePortfolioV(portfolioName);
-//
-//          if (stockGUI.getErrorMessage() != null) {
-//            statusLabel.setText("<html><font color='red'>" + stockGUI.getErrorMessage() + "</font></html>");
-//          } else {
-//            statusLabel.setText("<html><font color='green'>" + stockGUI.getSuccessMessage() + "</font></html>");
-//          }
-//
-//
-//        }
-//      }
-//    });
-//    buttonPanel.add(createPortfolioButton);
-//
-//    loadPortfolioButton = new JButton("Load Portfolio");
-//    buttonPanel.add(loadPortfolioButton);
-//
-//    stockStatisticsButton = new JButton("Stock Statistics");
-//    stockStatisticsButton.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent e) {
-//        showAdditionalButtons();
-//      }
-//    });
-//    buttonPanel.add(stockStatisticsButton);
-//
-//    add(buttonPanel, BorderLayout.NORTH);
   }
 
   public static void main(String[] args) {
@@ -177,7 +127,6 @@ public class GUIView extends JFrame implements IViewGUI {
 
   private void showBuyPage(Features features) {
     mainFrame.getContentPane().removeAll();
-    mainFrame.setSize(new Dimension(600, 600));
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
@@ -260,7 +209,6 @@ public class GUIView extends JFrame implements IViewGUI {
 
   private void showSellPage(Features features) {
     mainFrame.getContentPane().removeAll();
-    mainFrame.setSize(new Dimension(600, 600));
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
@@ -353,6 +301,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   JDatePanelImpl createDatePanel() {
     UtilDateModel model = new UtilDateModel();
+    model.setValue(null);
     Calendar calendar = Calendar.getInstance();
     model.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     model.setSelected(true);
@@ -376,7 +325,6 @@ public class GUIView extends JFrame implements IViewGUI {
 
   private void save(Features features) {
     mainFrame.getContentPane().removeAll();
-    mainFrame.setSize(new Dimension(600, 600));
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
@@ -627,18 +575,18 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.insets = new Insets(5, 5, 5, 5);
     gbc.anchor = GridBagConstraints.WEST;
 
-    // Add components to choice panel
     gbc.gridx = 0;
     gbc.gridy = 0;
     choicePanel.add(createLabel("Select portfolio to invest in:"), gbc);
-    JComboBox<String> dropdown = createDropdown(features.getPortfolioNames().toArray(new String[0]));
+    ArrayList<String> options = features.getPortfolioNames();
+    options.add(0, "Select a portfolio");
+    JComboBox<String> dropdown = createDropdown(options.toArray(new String[0]));
     gbc.gridy++;
     dropdown.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXX");
     choicePanel.add(dropdown, gbc);
     gbc.gridy++;
     choicePanel.add(createLabel("Select the date of investment:"), gbc);
 
-    // Date picker
     JDatePanelImpl datePanel = createDatePanel();
     JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
     gbc.gridy++;
@@ -647,63 +595,42 @@ public class GUIView extends JFrame implements IViewGUI {
     final String[] date = {LocalDate.now().minusDays(1) + ""};
     JPanel formPanel = new JPanel(new GridBagLayout());
 
+    final int[] choice = {0};
+    dropdown.addActionListener(e -> {
+      Map<String, Double> composition = features.examineComposition( dropdown.getSelectedIndex() - 1,
+              date[0]);
+      if (features.getErrorMessage() != null) {
+        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        showSecondMenu(features);
+        return;
+      } else {
+        choice[0] = dropdown.getSelectedIndex() - 1;
+        updateForm(composition, formPanel, features, date[0], choice[0]);
+      }
+    });
+
     datePicker.addActionListener(e -> {
       date[0] = getDate(datePicker);
-      Map<String, Double> composition = features.examineComposition(dropdown.getSelectedIndex(),
-             date[0]);
+      Map<String, Double> composition = features.examineComposition(choice[0],
+              date[0]);
       if (features.getErrorMessage() != null) {
         JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         DCAInvestment(features);
       } else {
-        updateForm(composition, formPanel);
+        updateForm(composition, formPanel, features, date[0], choice[0]);
       }
     });
 
-    // Add choice panel to main panel
     mainPanel.add(choicePanel, BorderLayout.NORTH);
 
-    // Form panel
-
-
-    // Create submit button
-    JButton submitButton = createButton("Submit");
-
-    // Add action listener to the dropdown
-    dropdown.addActionListener(e -> {
-      Map<String, Double> composition = features.examineComposition(dropdown.getSelectedIndex(),
-               date[0]);
-      if (features.getErrorMessage() != null) {
-        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        showSecondMenu(features);
-        return;
-      } else {
-        updateForm(composition, formPanel);
-      }
-    });
-
-    if (dropdown.getItemCount() > 0) {
-      dropdown.setSelectedIndex(0); // Select the first item by default
-      Map<String, Double> composition = features.examineComposition(0,
-              LocalDate.now().minusDays(1) + "");
-      if (features.getErrorMessage() != null) {
-        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        showSecondMenu(features);
-        return;
-      } else {
-        updateForm(composition, formPanel);
-      }
-    }
 
     // Add components to the main panel
     JScrollPane scrollPane = new JScrollPane(formPanel);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
-    mainPanel.add(submitButton, BorderLayout.SOUTH);
 
     mainFrame.add(mainPanel);
     mainFrame.revalidate();
@@ -712,21 +639,24 @@ public class GUIView extends JFrame implements IViewGUI {
 
   }
 
-  private void updateForm(Map<String, Double> stringDoubleMap, JPanel formPanel) {
+  private void updateForm(Map<String, Double> stringDoubleMap, JPanel formPanel,
+                          Features features, String date, int choice) {
     formPanel.removeAll();
+    formPanel.setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
-    gbc.anchor = GridBagConstraints.CENTER;
+//    gbc.anchor = GridBagConstraints.CENTER;
     gbc.gridx = 0;
     gbc.gridy = 0;
 
-    for (Map.Entry<String, Double> entry: stringDoubleMap.entrySet()) {
+    for (Map.Entry<String, Double> entry : stringDoubleMap.entrySet()) {
 
 
       JPanel rowPanel = new JPanel(new GridBagLayout());
+      gbc.gridwidth = 1;
 
-      JLabel quantityLabel = new JLabel("Enter the weight for " + entry.getKey());
-      JTextField quantity = new JTextField(10);
+      JLabel quantityLabel = createLabel("Enter the weight for " + entry.getKey());
+      JTextField quantity = createTextField(10);
 
       quantity.addKeyListener(new KeyAdapter() {
 
@@ -757,16 +687,78 @@ public class GUIView extends JFrame implements IViewGUI {
           }
         }
       });
-
       rowPanel.add(quantityLabel, gbc);
       gbc.gridx = 1;
       rowPanel.add(quantity, gbc);
 
       gbc.gridy++;
 
-      formPanel.add(rowPanel, gbc);
       gbc.gridx = 0;
+      gbc.gridwidth = 2;
+      formPanel.add(rowPanel, gbc);
     }
+    JLabel totalAmountLabel = createLabel("Total Investment Amount:");
+    JTextField totalAmountField = createTextField(10);
+    totalAmountField.addKeyListener(new KeyAdapter() {
+      int flag = 0;
+      @Override
+      public void keyTyped(KeyEvent e) {
+        char c = e.getKeyChar();
+        if (!(Character.isDigit(c) || c == '.'
+                || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE)) {
+          e.consume();
+        } else {
+          if (c == '.') {
+            if (flag >= 1) {
+              e.consume();
+            }
+            flag++;
+          }
+        }
+      }
+    });
+
+    JButton submitButton = new JButton("Confirm");
+    submitButton.setPreferredSize(new Dimension(250, 50));
+
+
+    submitButton.addActionListener(e -> {
+      if (totalAmountField.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(formPanel, "Amount cannot be blank",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        DCAInvestment(features);
+      }
+      Double amount = Double.parseDouble(totalAmountField.getText());
+      features.investWithDCAStrategy(choice, date,
+              amount, shareDetails);
+
+      if (features.getErrorMessage() != null) {
+        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        shareDetails = new HashMap<>();
+      } else {
+        JOptionPane.showMessageDialog(formPanel, features.getSuccessMessage(),
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        showSecondMenu(features);
+
+      }
+    });
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 1;
+    formPanel.add(totalAmountLabel, gbc);
+
+    gbc.gridx = 1;
+    formPanel.add(totalAmountField, gbc);
+    gbc.gridy++;
+    gbc.gridx = 0;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    formPanel.add(submitButton, gbc);
     formPanel.revalidate();
     formPanel.repaint();
   }
@@ -837,7 +829,6 @@ public class GUIView extends JFrame implements IViewGUI {
 
   private void showTotalValuePage(Features features) {
     mainFrame.getContentPane().removeAll();
-    mainFrame.setSize(new Dimension(600, 600));
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
@@ -899,7 +890,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
     mainFrame.setVisible(true);
   }
-  
+
 
   @Override
   public void displayError(String error) {
@@ -1405,23 +1396,6 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
-  static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
-
-    @Override
-    public Object stringToValue(String text) {
-      return null; // Not used
-    }
-
-    @Override
-    public String valueToString(Object value) {
-      if (value instanceof Date) {
-        String dateFormat = "yyyy-MM-dd";
-        return new java.text.SimpleDateFormat(dateFormat).format(value);
-      } else {
-        return ""; // Or return any appropriate default value
-      }
-    }
-  }
   private void loadPortfolio(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1535,7 +1509,7 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(submitButton, gbc);
 
     submitButton.addActionListener(e -> {
-      if(date[0] != null) { //date[0] != null
+      if (date[0] != null) { //date[0] != null
         Map<String, Double> compositionResult = features.examineComposition(choice[0], date[0]);
 
         if (features.getErrorMessage() != null) {
@@ -1551,8 +1525,7 @@ public class GUIView extends JFrame implements IViewGUI {
 //          showSecondMenu(features);
           displayCompositionResult(features, compositionResult);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please select portfolio and date",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
@@ -1599,5 +1572,23 @@ public class GUIView extends JFrame implements IViewGUI {
     JTable table = new JTable(model);
     table.setFillsViewportHeight(true);
     return table;
-}
+  }
+
+  static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+
+    @Override
+    public Object stringToValue(String text) {
+      return null; // Not used
+    }
+
+    @Override
+    public String valueToString(Object value) {
+      if (value instanceof Date) {
+        String dateFormat = "yyyy-MM-dd";
+        return new java.text.SimpleDateFormat(dateFormat).format(value);
+      } else {
+        return ""; // Or return any appropriate default value
+      }
+    }
+  }
 }
