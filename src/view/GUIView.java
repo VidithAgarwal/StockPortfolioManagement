@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -26,13 +25,22 @@ import java.util.TreeMap;
 
 import controller.Features;
 
+/**
+ * The GUIView class represents the graphical user interface for the investment application.
+ * It provides methods to interact with the user interface, such as creating buttons, text fields,
+ * labels, and handling various actions like buying stocks, selling stocks, saving portfolio, etc.
+ * it implements the IViewGUI interface and provides methods to interact with.
+ * graphical user interface of the investment application.
+ */
 public class GUIView extends JFrame implements IViewGUI {
 
 
   private Map<String, Double> shareDetails = new HashMap<>();
   private JFrame mainFrame;
 
-
+  /**
+   * this constructs a new GUIView object.
+   */
   public GUIView() {
     mainFrame = new JFrame();
     mainFrame.setTitle("Investment Application");
@@ -50,6 +58,11 @@ public class GUIView extends JFrame implements IViewGUI {
     });
   }
 
+  /**
+   * this method creates a JButton with specified label and customizes its appearance.
+   * @param s the label text for button.
+   * @return a customized JButton object.
+   */
   private JButton createButton(String s) {
     JButton button = new JButton(s);
     button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
@@ -58,6 +71,11 @@ public class GUIView extends JFrame implements IViewGUI {
     return button;
   }
 
+  /**
+   * this method creates a JTextField with specified number of columns & customizes its appearance.
+   * @param columns number of columns for the text field.
+   * @return a customized JTextField object.
+   */
   private JTextField createTextField(int columns) {
     JTextField textField = new JTextField(columns);
     textField.setFont(new Font("Arial", Font.BOLD, 14));
@@ -70,12 +88,21 @@ public class GUIView extends JFrame implements IViewGUI {
     return textField;
   }
 
+  /**
+   * this method creates a JLabel with specified text and customizes its appearance.
+   * @param s  text for the label.
+   * @return a customized JLabel object.
+   */
   private JLabel createLabel(String s) {
     JLabel label = new JLabel(s);
     label.setFont(new Font("Arial", Font.BOLD, 16));
     return label;
   }
 
+  /**
+   * this method adds features to the GUI interface.
+   * @param features is the Features object containing the features to be added.
+   */
   @Override
   public void addFeatures(Features features) {
     JPanel panel = new JPanel(new GridBagLayout());
@@ -121,6 +148,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
   }
 
+  /**
+   * Creates a JComboBox (dropdown) with the specified list of portfolio names.
+   * @param listOfPortfolioNames an array of portfolio names to be displayed in the dropdown
+   * @return a JComboBox object with the provided list of portfolio names
+   */
   private JComboBox<String> createDropdown(String[] listOfPortfolioNames) {
     return new JComboBox<String>(listOfPortfolioNames);
   }
@@ -902,35 +934,7 @@ public class GUIView extends JFrame implements IViewGUI {
     System.out.println(message);
   }
 
-  @Override
-  public String getPortfolioName() {
-    return null;
-  }
 
-  @Override
-  public String getPositiveInput() {
-    return null;
-  }
-
-  @Override
-  public int[] inputDate() {
-    return new int[0];
-  }
-
-  @Override
-  public int selectPortfolio(Map<String, String> listOfPortfolios) {
-    return 0;
-  }
-
-  @Override
-  public String getPath() {
-    return null;
-  }
-
-  @Override
-  public String getShareName() {
-    return null;
-  }
 
 //  @Override
 //  public void addFeatures(Features.java features) {
