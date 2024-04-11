@@ -552,7 +552,9 @@ public class StockControllerImplGUI implements Features  {
       }
     }
 
-    if (validateBuyingList(shareDetails)) return;
+    if (validateBuyingList(shareDetails)) {
+      return;
+    }
 
     if (frequency <= 0) {
       errorMessage = "Frequency of investment must be a positive integer.";
@@ -623,7 +625,9 @@ public class StockControllerImplGUI implements Features  {
       return;
     }
 
-    if (validateBuyingList(shareDetails)) return;
+    if (validateBuyingList(shareDetails)) {
+      return;
+    }
 
     try {
       model.investWithDCAStrategy(model.getSize() - 1, shareDetails, investmentDate,
