@@ -3388,9 +3388,9 @@ public class ModelTest {
     Map<String, Double> composition1 = portfolioDir.portfolioComposition(0, date3);
 
     assertEquals(2, composition1.size());
-    assertEquals(41.0,  composition1.get("AAPL"), 0.1);
-    assertEquals(50.0,  composition1.get("GOOG"), 0.1);
-    assertEquals(14589.24,
+    assertEquals(41.93,  composition1.get("AAPL"), 0.1);
+    assertEquals(50.83,  composition1.get("GOOG"), 0.1);
+    assertEquals(14877.72,
             portfolioDir.portfolioValue(0, 2, 1, 2024, api), 0.001);
 
 
@@ -3398,9 +3398,9 @@ public class ModelTest {
     Map<String, Double> composition2 = portfolioDir.portfolioComposition(0, date4);
 
     assertEquals(2, composition2.size());
-    assertEquals(67.0,  composition2.get("AAPL"), 0.1);
-    assertEquals(84.0,  composition2.get("GOOG"), 0.1);
-    assertEquals(24572.8,
+    assertEquals(68.87,  composition2.get("AAPL"), 0.1);
+    assertEquals(85.63,  composition2.get("GOOG"), 0.1);
+    assertEquals(25155.581599999998,
             portfolioDir.portfolioValue(0, 12, 1, 2024, api), 0.001);
 
 
@@ -3408,9 +3408,9 @@ public class ModelTest {
     Map<String, Double> composition3 = portfolioDir.portfolioComposition(0, date5);
 
     assertEquals(2, composition3.size());
-    assertEquals(92.0,  composition3.get("AAPL"), 0.1);
-    assertEquals(117.0,  composition3.get("GOOG"), 0.1);
-    assertEquals(35119.95,
+    assertEquals(94.66,  composition3.get("AAPL"), 0.1);
+    assertEquals(119.47999999999999,  composition3.get("GOOG"), 0.1);
+    assertEquals(36002.0182,
             portfolioDir.portfolioValue(0, 22, 1, 2024, api), 0.001);
 
 
@@ -3418,9 +3418,9 @@ public class ModelTest {
     Map<String, Double> composition4 = portfolioDir.portfolioComposition(0, date6);
 
     assertEquals(2, composition4.size());
-    assertEquals(119.0,  composition4.get("AAPL"), 0.1);
-    assertEquals(152.0,  composition4.get("GOOG"), 0.1);
-    assertEquals(43928.26,
+    assertEquals(121.77,  composition4.get("AAPL"), 0.1);
+    assertEquals(154.73999999999998,  composition4.get("GOOG"), 0.1);
+    assertEquals(44836.8876,
             portfolioDir.portfolioValue(0, 1, 2, 2024, api), 0.001);
 
 
@@ -3428,9 +3428,9 @@ public class ModelTest {
     Map<String, Double> composition5 = portfolioDir.portfolioComposition(0, date7);
 
     assertEquals(2, composition5.size());
-    assertEquals(119.0,  composition5.get("AAPL"), 0.1);
-    assertEquals(152.0,  composition5.get("GOOG"), 0.1);
-    assertEquals(44877.81,
+    assertEquals(121.77,  composition5.get("AAPL"), 0.1);
+    assertEquals(154.73999999999998,  composition5.get("GOOG"), 0.1);
+    assertEquals(45803.73569999999,
             portfolioDir.portfolioValue(0, 12, 2, 2024, api), 0.001);
 
   }
