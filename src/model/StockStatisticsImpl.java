@@ -122,7 +122,8 @@ public class StockStatisticsImpl implements StockStatistic {
 
   @Override
   public TreeMap<String, String> crossoverOverPeriod(String tickerSymbol,
-                 TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate) {
+                                                     TreeMap<String, ArrayList<Double>> priceData,
+                                                     String startDate, String endDate) {
     TreeMap<String, String> crossoverInfo = new TreeMap<>();
     String currentDate;
     ArrayList<Double> checkStartDate = priceData.get(startDate);
