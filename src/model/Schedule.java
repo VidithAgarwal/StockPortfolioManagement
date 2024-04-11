@@ -48,7 +48,15 @@ interface Schedule {
    */
   Map<String, Double> getBuyingList();
 
+  /**
+   * this method retrieves the name associated with the schedule.
+   * @return The name of the schedule.
+   */
   String getName();
 
+  /**
+   * sets the last run date of the schedule to the specified date.
+   * @param date LocalDate representing the last run date.
+   */
   void setLastRunDate(LocalDate date);
 }
