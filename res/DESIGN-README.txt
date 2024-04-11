@@ -6,7 +6,20 @@ My design follows the MVC pattern in which the work of the controller is taking 
 the user and passes the input to the model for processing and, the controller sends the processed
 data received from the model to the view to show that processed data to the user.
 
-Here my model is the PortfolioDir interface and my model represents an Agent/ manager, that manages
+For, the GUI based view creation, there is an addition of new features interface class in the controller.
+The features interface contains of all the methods that are shown in the GUI based view. This interface 
+is implemented by the new StockControllerImplGUI. The methods in the controller get the input from the 
+view and further pass the inputs to the model for getting further output. The StockControllerImplGUI
+uses setView method to provide view with all the callbacks using the add features method of the view.
+The add features method further represents the primary menu which is shown when no portfolio is created. 
+The user can select any choice based on the options shown on the home page. Based on the user's choice 
+respective private methods are called. This methods delegate the input from the view to the controller 
+and controller further processes it to the model. If the model produces an output message then that is
+stored in the error message string and further shown in the view, and if the model successfully processes 
+the output then that is represented on the screen through the use of success message.
+
+
+Here my model is the InvestmentManager interface and my model represents an Agent/ manager, that manages
 the user's portfolios, which is creating an Inflexible or flexible portfolio and storing a list,
 providing the user with portfolio statistics like totalValue at a given date, cost basis, buys and
 sells the specific amount of a specific stock on a specified date. Just like a manager it also gives
@@ -62,7 +75,7 @@ Transaction Type(Buy/Sell), Ticker Symbol, Quantity of the share, the Transactio
 file doesn't have this format or any data is invalid the model throws error to the controller and
 the controller shows this error to the user.
 
-The builder used to create a new portfolio is a static method inside the portfolioImpl class which is
+The builder used to create a new portfolio is a static method inside the InflexiblePortfolioImpl class which is
 packaged private class.
 
 Now if the user wants to see the composition of the portfolio, it provides that choice to the
@@ -71,8 +84,8 @@ controller and the date on which he wants the composition of the portfolio and t
 the user's choice of which portfolio it wants to see the composition of. This method calls the
 getComposition method of my model and that delegates it to either FlexiblePortfolioImpl class or
 PortfolioImpl class based on the portfolio selected by the user and it uses dynamic dispatch to do
-so. This method in the classreturns a hashmap of the stock ticker symbol and quantity present in
-that particular portfolio. Thecontroller sends this map from the model through the showComposition
+so. This method in the class returns a hashmap of the stock ticker symbol and quantity present in
+that particular portfolio. The controller sends this map from the model through the showComposition
 method of view, and it displays it to the user.
 
 If the user wants to get the total value of the portfolio he asks the controller to get the total
@@ -638,13 +651,13 @@ These methods delegate user input to model methods for performing the correspond
 
 6. StockControllerImplGUI :
 The StockControllerImplGUI class implements the Features interface and serves as a controller for
- managing investment manager-related operations in a graphical user interface (GUI) environment. 
+ managing investment manager-related operations in a graphical user interface (GUI) environment.
  It handles tasks such as creating flexible portfolios, exporting portfolio data, buying and selling
-  stocks, retrieving total portfolio value and cost basis, analyzing gains or losses for stocks, 
-  calculating moving averages and crossover points, handling error and success messages, 
-  loading portfolios from files, and creating portfolios with specified investment strategies. It 
-  interacts with the model (InvestmentManager) to perform these operations and communicates with 
-  the view component (IViewGUI) to display information and receive user input. Additionally, 
+  stocks, retrieving total portfolio value and cost basis, analyzing gains or losses for stocks,
+  calculating moving averages and crossover points, handling error and success messages,
+  loading portfolios from files, and creating portfolios with specified investment strategies. It
+  interacts with the model (InvestmentManager) to perform these operations and communicates with
+  the view component (IViewGUI) to display information and receive user input. Additionally,
   it contains methods for validating user input, managing error messages, and setting the view component.
 
 
