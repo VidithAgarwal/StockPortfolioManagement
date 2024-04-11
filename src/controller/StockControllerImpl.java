@@ -197,7 +197,7 @@ public class StockControllerImpl implements StockController {
     }
     if (exit) {
       String currentDirectory = System.getProperty("user.dir") + "/Data";
-     //deleteCSVFilesFromStocklist(currentDirectory);
+      //deleteCSVFilesFromStocklist(currentDirectory);
     }
     return exit;
   }
