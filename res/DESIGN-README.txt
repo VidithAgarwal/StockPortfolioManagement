@@ -14,7 +14,8 @@ uses setView method to provide view with all the callbacks using the add feature
 The add features method further represents the primary menu which is shown when no portfolio is created.
 The user can select any choice based on the options shown on the home page. Based on the user's choice
 respective private methods are called. This methods delegate the input from the view to the controller
-and controller further processes it to the model. If the model produces an output message then that is
+and controller further processes it to the model. If the model produces an error message then that
+is
 stored in the error message string and further shown in the view, and if the model successfully processes
 the output then that is represented on the screen through the use of success message.
 
@@ -153,6 +154,31 @@ is sent to the controller and the controller uses the view to print the performa
 On exit of the program, all the folders inside the Data folder are deleted other than the folder
 containing the historical data of different stocks that were fetched today. As the date changes the
 folder is deleted upon exit as a new folder with that date's name will be created.
+
+To implement the Dollar cost average strategy we provide two methods in the model, one to create a
+portfolio form beginning with a DCA strategy where we take the inputs from the user like start date,
+ end date, the list of stocks we need to add with their weights, the total amount the user wants to
+ invest and the frequency of days he wants to invest it in. We call the model
+ createDollarCostAverageStrategy with all these parameters and in the method we create a
+ DollarCostAverageStrategy object and create a schedule object which takes all these parameters and
+ pass the schedule, the strategy object along with today's date to the strategicalInvestment method of
+ portfolio interface. There it calls the applyStrategy method of the strategy interface object
+ passed to it and it returns the list of transactions based on the schedule and dates. We use the
+ transactions to apply it to the portfolio and update the composition using buyStock method. Then I
+ update the lastRunDate and store the schedule to the portfolio. If the strategy is ongoing then it
+ means that the end date is not specified and the lastRunDate is today's date and if user saves the
+ portfolio and comes back later and loads it, then the strategy is saved to the csv file and when he
+  loads it the strategy is loaded and applied using the strategicalInvestmentMethod. We can use the
+  same strategicalInvestment method for newStrategy as we just pass the strategy object to the
+  method and based on the object the applyStrategy method will be called.
+
+  Also for one time DCA investment, we use the same strategicalInvestment method, we have a
+  investWithDCAStrategy method in model which takes in date of investment amount of investment and
+  weights of the stocks present in the portfolio. This creates the schedule object with frequency
+  days as 1 and start date and end date as same because it is one time investment and now create the
+  DollarCostAverageStrategy strategy object and pass this schedule object and strategy object to the
+   strategicalInvestment method of Portfolio and this way the investment is made using the same
+   method even if it is one time investment.
 
 Our program supports all stocks in NYSE and NASDAQ, and it supports all the dates.
 
