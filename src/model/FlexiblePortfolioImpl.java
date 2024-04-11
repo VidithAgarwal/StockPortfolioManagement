@@ -24,6 +24,8 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    */
   private final TreeMap<LocalDate, Map<String, Double>> compositionOnDate;
 
+  private Schedule buySchedule = null;
+
   /**
    * ArrayList to store transaction history of the portfolio.
    */
@@ -261,12 +263,35 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   public StringBuilder save() {
     StringBuilder sb = new StringBuilder();
     sb.append("Transaction Type,Symbol,Quantity,Date").append(System.lineSeparator());
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
     for (Transaction transaction : transactions) {
       sb.append(transaction.getType()).append(",");
       sb.append(transaction.getStock()).append(",");
       sb.append(transaction.getQuantity()).append(",");
       sb.append(transaction.getDate().format(formatter)).append(System.lineSeparator());
+    }
+
+    if (buySchedule != null) {
+
+      String endDate = buySchedule.getEndDate() == null ? null :
+              buySchedule.getEndDate().format(formatter);
+      String lastRunDate = buySchedule.getLastRunDate() == null ? null :
+              buySchedule.getLastRunDate().format(formatter);
+      String startDate = buySchedule.getStartDate() == null ? null :
+              buySchedule.getStartDate().format(formatter);
+
+      sb.append("Strategy").append(",");
+      sb.append(buySchedule.getName()).append(",");
+      sb.append(startDate).append(",");
+      sb.append(endDate).append(",");
+      sb.append(lastRunDate).append(",");
+      sb.append(buySchedule.getAmount()).append(",");
+      sb.append(buySchedule.getFrequencyDays()).append(",");
+
+      for (Map.Entry<String, Double> entry: buySchedule.getBuyingList().entrySet()) {
+        sb.append(entry.getKey()).append(":").append(entry.getValue())
+                .append(";");
+      }
     }
     return sb;
   }
@@ -292,21 +317,74 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    */
   @Override
   public void load(List<String[]> line, IStockData api) {
-    for (String[] parts : line) {
-      if (validateLine(parts)) {
-        try {
-          if (parts[0].equalsIgnoreCase("buy")) {
-            buyStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
-          } else {
-            sellStock(parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]), api);
-          }
-        } catch (DateTimeParseException e) {
-          throw new IllegalArgumentException("Format of date in the file is incorrect!");
-        }
+    boolean flag = false;
+    String[] strategyPart = new String[0];
 
+    for (String[] parts : line) {
+      if (!parts[0].equalsIgnoreCase("Strategy")) {
+        if (validateLine(parts)) {
+          try {
+            if (parts[0].equalsIgnoreCase("buy")) {
+              buyStock(parts[1], Double.parseDouble(parts[2]), LocalDate.parse(parts[3]), api);
+            } else {
+              sellStock(parts[1], Double.parseDouble(parts[2]), LocalDate.parse(parts[3]), api);
+            }
+          } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Format of date in the file is incorrect!");
+          }
+
+        } else {
+          throw new IllegalArgumentException("Invalid data in given file!");
+        }
       } else {
-        throw new IllegalArgumentException("Invalid data in given file!");
+        flag = true;
+        strategyPart = parts;
+        break;
       }
+    }
+    if (flag) {
+      loadStrategy(strategyPart, api);
+    }
+
+  }
+
+  private void loadStrategy(String[] parts, IStockData api) {
+    if (parts.length != 8) {
+      throw new IllegalArgumentException("Invalid strategy format!");
+    }
+
+    String name = parts[1];
+    Schedule schedule = getSchedule(parts, name);
+    Strategy strategy = null;
+    if (name.equalsIgnoreCase("DCA")) {
+      strategy = new DollarCostAverageStrategy();
+    }
+
+    if (strategy != null) {
+      strategicalInvestment(schedule, strategy, api);
+    }
+  }
+
+  private Schedule getSchedule(String[] parts, String name) {
+    try {
+      LocalDate startDate = LocalDate.parse(parts[2]);
+      LocalDate endDate = parts[3].equals("null") ? null : LocalDate.parse(parts[4]);
+      LocalDate lastRunDate = parts[4].equals("null") ? null : LocalDate.parse(parts[4]);
+      double amount = Double.parseDouble(parts[5]);
+      int frequency = Integer.parseInt(parts[6]);
+
+      Map<String, Double> buyingList = new HashMap<>();
+      String[] pairs = parts[7].split(";");
+      for (String pair : pairs) {
+        String[] keyValue = pair.split(":");
+        String stock = keyValue[0].trim();
+        Double percentage = Double.parseDouble(keyValue[1].trim());
+        buyingList.put(stock, percentage);
+      }
+      return new BuySchedule(name, amount, frequency, startDate, endDate, lastRunDate,
+              buyingList);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Incorrect strategy data");
     }
   }
 
@@ -317,21 +395,20 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
    * @return true if lines are valid or else false if any entry is invalid.
    */
   private boolean validateLine(String[] parts) {
-    return parts.length == 4 && isInteger(parts[2].trim())
+    return parts.length == 4 && isPositiveNumber(parts[2].trim())
             && (parts[0].equalsIgnoreCase("buy")
             || parts[0].equalsIgnoreCase("sell"));
   }
 
   /**
-   * this checks if a string represents an integer.
+   * this checks if a string represents a positive number.
    *
    * @param str string to be checked.
-   * @return true if string represents an integer, otherwise false.
+   * @return true if string represents a number, otherwise false.
    */
-  private boolean isInteger(String str) {
+  private boolean isPositiveNumber(String str) {
     try {
-      Integer.parseInt(str);
-      return true;
+      return Double.parseDouble(str) > 0;
     } catch (NumberFormatException e) {
       return false;
     }
@@ -346,6 +423,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   @Override
   public void strategicalInvestment(Schedule schedule, Strategy strategy, IStockData api) {
     List<Transaction> buyTransactions = strategy.applyStrategy(LocalDate.now(), schedule, api);
+    this.buySchedule = schedule;
     for (Transaction transaction: buyTransactions) {
       buyStock(transaction.getStock(), transaction.getQuantity(), transaction.getDate(), api);
     }

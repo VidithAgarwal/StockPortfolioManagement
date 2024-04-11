@@ -9,7 +9,7 @@ import java.util.Map;
  * a specific date by specifying the weights of how that money should be invested in each stock.
  * inside that portfolio.
  */
-public interface Schedule {
+interface Schedule {
 
   /**
    * this method returns amount of money to be invested in each transaction.
@@ -36,15 +36,19 @@ public interface Schedule {
   LocalDate getEndDate();
 
   /**
-   * the method returns date when the strategy was last executed.
+   * the method returns the date when the strategy was last executed.
    * @return last execution date.
    */
   LocalDate getLastRunDate();
 
   /**
-   * the method returns a map representing buying list, where keys are symbols of assets to buy.
-   * and values are corresponding amounts to invest in each asset.
+   * the method returns a map representing buying list, where keys are symbols of assets to buy
+   * and values are corresponding weights to invest in each asset.
    * @return buying list as a map.
    */
   Map<String, Double> getBuyingList();
+
+  String getName();
+
+  void setLastRunDate(LocalDate date);
 }

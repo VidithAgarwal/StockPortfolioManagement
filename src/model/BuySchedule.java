@@ -2,7 +2,6 @@ package model;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static model.AbstractPortfolio.validateStockName;
@@ -12,13 +11,21 @@ import static model.AbstractPortfolio.validateStockName;
  * BuySchedule implements Schedule. It stores the information of scheduled stocks to buy,
  * date to buy, investment amount, and buying frequency days.
  */
-public class BuySchedule implements Schedule {
+class BuySchedule implements Schedule {
 
   private final int frequencyDays;
+
+  private final String name;
   private final LocalDate startDate;
   private final LocalDate endDate;
   private final double amount;
-  private final LocalDate lastRunDate;
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  private LocalDate lastRunDate;
   private final Map<String, Double> buyingList;
 
   /**
@@ -31,7 +38,7 @@ public class BuySchedule implements Schedule {
    * @param buyingList     buying stock list.
    * @throws IllegalArgumentException if input is not correct.
    */
-  public BuySchedule(double amount, int frequencyDays,
+  public BuySchedule(String name, double amount, int frequencyDays,
                      LocalDate startDate,
                      LocalDate endDate, LocalDate lastRunDate,
                      Map<String, Double> buyingList) throws IllegalArgumentException {
@@ -42,6 +49,7 @@ public class BuySchedule implements Schedule {
       throw new IllegalArgumentException("Frequency day cannot be less than zero.");
     }
     Map<String, Double> correctBuyingList = getStringDoubleMap(amount, buyingList);
+    this.name = name;
     this.amount = amount;
     this.frequencyDays = frequencyDays;
     this.startDate = startDate;
@@ -119,4 +127,7 @@ public class BuySchedule implements Schedule {
   public Map<String, Double> getBuyingList() {
     return Collections.unmodifiableMap(buyingList);
   }
+
+  @Override
+  public void setLastRunDate(LocalDate date) {this.lastRunDate = date;}
 }

@@ -127,10 +127,8 @@ public class StockControllerImplGUI implements Features  {
     try {
       model.buyStock(choice, shareName, shareQuantity, buyDate, new StockData());
       successMessage = quantity + " " + shareName + " bought successfully";
-      //view.print(quantity + " " + shareName + " bought successfully");
     } catch (RuntimeException e) {
       errorMessage = e.getMessage();
-      //view.displayError(e.getMessage());
     }
 
   }
@@ -226,10 +224,8 @@ public class StockControllerImplGUI implements Features  {
     try {
       model.sellStock(choice, shareName, shareQuantity, sellDate, new StockData());
       successMessage = quantity + " " + shareName + " sold successfully";
-      //view.print(quantity + " " + shareName + " sold successfully");
     } catch (RuntimeException e) {
       errorMessage = e.getMessage();
-      //view.displayError(e.getMessage());
     }
   }
 
@@ -261,9 +257,7 @@ public class StockControllerImplGUI implements Features  {
     } else {
       errorMessage = "Invalid date format.";
       return;
-      //view.displayError("Invalid date format.");
     }
-    //validateDateMessage(date);
     try {
       StockData api = new StockData();
       double totalValue = model.portfolioValue(choice, day, month, year, api);
@@ -273,14 +267,11 @@ public class StockControllerImplGUI implements Features  {
         errorMessage = "No price data found for " + e.getMessage() + " on the "
                 + "date: " + day + "-" + month + "-" + year;
       } else {
-        //view.print("Invalid date!");
         errorMessage = "Invalid date!";
       }
     } catch (RuntimeException e) {
-      //view.print("The data could not be fetched today, try again later!");
       errorMessage = "The data could not be fetched today, try again later!";
     }
-    //getTotalValue(choice, date);
   }
 
   @Override
@@ -297,7 +288,6 @@ public class StockControllerImplGUI implements Features  {
     if (costBasisDate == null) {
       return;
     }
-    //LocalDate costBasisDate = LocalDate.of(date[2], date[1], date[0]);
 
     try {
       double costBasis = model.costBasis(choice, costBasisDate, new StockData());
@@ -323,14 +313,11 @@ public class StockControllerImplGUI implements Features  {
     if (date1 == null) {
       return;
     }
-    //LocalDate date = LocalDate.of(dateArray[2], dateArray[1], dateArray[0]);
 
     try {
       String result = model.gainOrLose(ticker, date1, api);
-      //view.print(result);
       successMessage = result;
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
     }
   }
@@ -338,7 +325,6 @@ public class StockControllerImplGUI implements Features  {
   @Override
   public void gainOrLoseOverPeriod(String startDateArray, String endDateArray, String ticker) {
     StockData api = new StockData();
-//    boolean validDate = false;
     errorMessage = null;
     successMessage = null;
 
@@ -355,10 +341,8 @@ public class StockControllerImplGUI implements Features  {
 
     try {
       String result = model.gainOrLoseOverAPeriod(ticker, startDate, endDate, api);
-      //view.print(result);
       successMessage = result;
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
     }
   }
@@ -400,14 +384,11 @@ public class StockControllerImplGUI implements Features  {
     if (startDate == null) {
       return;
     }
-    //LocalDate startDate = LocalDate.of(startDateArray[2], startDateArray[1], startDateArray[0]);
     try {
       double result = model.xDayMovingAvg(ticker, startDate, value, api);
       successMessage = "The X-day moving average is: $" + result;
-//      view.showXDayMovingAvg(result);
     } catch (IllegalArgumentException e) {
       errorMessage = e.getMessage();
-      //view.displayError(e.getMessage());
     }
   }
 
@@ -429,11 +410,9 @@ public class StockControllerImplGUI implements Features  {
     }
 
     try {
-      //view.printTreeMapEntries(result);
       return model.crossoverOverPeriod(ticker, api, startDate, endDate);
 
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
       return null;
     }
@@ -501,12 +480,10 @@ public class StockControllerImplGUI implements Features  {
     try {
       model.loadPortfolio(name, output, new StockData());
     } catch (IllegalArgumentException e) {
-      //view.displayError("The values provided in the file is invalid");
       errorMessage = "The values provided in the file is invalid";
       return;
     }
     successMessage = "File loaded successfully";
-    //view.print("File loaded successfully");
   }
 
 
@@ -521,7 +498,6 @@ public class StockControllerImplGUI implements Features  {
     try {
       return persistence.loadFromCSV(path);
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
       return new ArrayList<>();
     }
@@ -544,11 +520,9 @@ public class StockControllerImplGUI implements Features  {
     try {
       return model.portfolioComposition(input, compositionDate);
     } catch (IllegalArgumentException e) {
-      //view.displayError(e.getMessage());
       errorMessage = e.getMessage();
       return null;
     }
-    //examineComposition(choice,date);
   }
 
 
@@ -563,30 +537,15 @@ public class StockControllerImplGUI implements Features  {
     if (strategyStartDate == null) {
       return;
     }
-
-    LocalDate strategyEndDate = validateDateMessage(endDate, "Invalid end date!");
-    if (strategyEndDate == null) {
-      return;
-    }
-
-    int sum = 0;
-
-    for (Map.Entry<String, Double> entry: shareDetails.entrySet()) {
-      if (entry.getValue() < 0) {
-        errorMessage = "The weight cannot be negative";
+    LocalDate strategyEndDate = null;
+    if (endDate != null) {
+      strategyEndDate = validateDateMessage(endDate, "Invalid end date!");
+      if (strategyEndDate == null) {
         return;
       }
-
-      if (entry.getValue() > 100) {
-        errorMessage = "The weight cannot be greater than 100%";
-        return;
-      }
-      sum += entry.getValue();
     }
 
-    if (sum != 100) {
-      errorMessage = "The combined sum of weights must be 100%";
-    }
+    if (validateBuyingList(shareDetails)) return;
 
     if (frequency <= 0) {
       errorMessage = "Frequency of investment must be a positive integer.";
@@ -606,6 +565,28 @@ public class StockControllerImplGUI implements Features  {
     } catch (RuntimeException e) {
       this.errorMessage = e.getMessage();
     }
+  }
+
+  private boolean validateBuyingList(Map<String, Double> shareDetails) {
+    int sum = 0;
+
+    for (Map.Entry<String, Double> entry: shareDetails.entrySet()) {
+      if (entry.getValue() < 0) {
+        errorMessage = "The weight cannot be negative";
+        return true;
+      }
+
+      if (entry.getValue() > 100) {
+        errorMessage = "The weight cannot be greater than 100%";
+        return true;
+      }
+      sum += entry.getValue();
+    }
+
+    if (sum != 100) {
+      errorMessage = "The combined sum of weights must be 100%";
+    }
+    return false;
   }
 
   @Override
@@ -634,24 +615,7 @@ public class StockControllerImplGUI implements Features  {
       return;
     }
 
-    int sum = 0;
-
-    for (Map.Entry<String, Double> entry: shareDetails.entrySet()) {
-      if (entry.getValue() < 0) {
-        errorMessage = "The weight cannot be negative";
-        return;
-      }
-
-      if (entry.getValue() > 100) {
-        errorMessage = "The weight cannot be greater than 100%";
-        return;
-      }
-      sum += entry.getValue();
-    }
-
-    if (sum != 100) {
-      errorMessage = "The combined sum of weights must be 100%";
-    }
+    if (validateBuyingList(shareDetails)) return;
 
     try {
       model.investWithDCAStrategy(model.getSize() - 1, shareDetails, investmentDate,

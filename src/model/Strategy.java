@@ -6,11 +6,11 @@ import java.util.List;
 import controller.IStockData;
 
 /**
- * this class Strategy interface defines methods for applying investment strategies.
- * this implementation of this interface provides logic for generating transactions.
+ * this Strategy interface defines methods for applying investment strategies.
+ * this implementation of this interface provides logic for generating transactions
  * based on specific investment strategies.
  */
-public interface Strategy {
+interface Strategy {
 
   /**
    * Applies investment strategy to generate transactions.

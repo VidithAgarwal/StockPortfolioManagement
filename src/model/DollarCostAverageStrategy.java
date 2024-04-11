@@ -17,8 +17,8 @@ import static model.AbstractPortfolio.validateStockName;
 class DollarCostAverageStrategy implements Strategy {
 
   /**
-   * this method applies Dollar Cost Averaging strategy to generate transactions.
-   * based on given parameters.
+   * this method applies Dollar Cost Averaging strategy to generate transactions
+   * based on the given weights of stocks and the start and the end date.
    * @param today   current date when the scheduling for strategy should end.
    * @param schedule schedule for executing the strategy.
    * @param api       interface for accessing stock data.
@@ -59,12 +59,14 @@ class DollarCostAverageStrategy implements Strategy {
         double quantity =
                 ((entry.getValue() / 100) * schedule.getAmount()) / buyPrice;
         quantity = Math.round(quantity * 100.0) / 100.0;
+        System.out.println(quantity);
 
         Transaction transaction = new Transaction("Buy", ticker, quantity,
                 newBuy.plusDays(tryNextDay));
         transactions.add(transaction);
       }
     }
+    schedule.setLastRunDate(LocalDate.now());
     return transactions;
   }
 }

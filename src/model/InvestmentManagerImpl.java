@@ -364,7 +364,7 @@ public class InvestmentManagerImpl implements InvestmentManager {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
-    Schedule schedule = new BuySchedule(amount, frequencyDays, startDate, endDate,
+    Schedule schedule = new BuySchedule("DCA",amount, frequencyDays, startDate, endDate,
              null, buyingList);
     Strategy newStrategy = new DollarCostAverageStrategy();
     portfolioDirectory.get(input).strategicalInvestment(schedule, newStrategy, api);
@@ -376,7 +376,7 @@ public class InvestmentManagerImpl implements InvestmentManager {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
-    Schedule schedule = new BuySchedule(amount, 1, date, date,
+    Schedule schedule = new BuySchedule("DCA", amount, 1, date, date,
             null, investingList);
     Strategy newStrategy = new DollarCostAverageStrategy();
     portfolioDirectory.get(input).strategicalInvestment(schedule, newStrategy, api);
