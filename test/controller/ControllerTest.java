@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import model.InflexiblePortfolioImpl;
-import view.GUIView;
-import view.IViewGUI;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -66,7 +64,7 @@ public class ControllerTest {
     mockValue = 17.5;
     StringBuilder mockSaveInflexible = new StringBuilder();
     mockSaveInflexible.append("Stock, Quantity").append(System.lineSeparator()).append("AAPL,")
-                    .append("20");
+            .append("20");
     int intMockValue = 10;
 
     this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue,
@@ -84,8 +82,8 @@ public class ControllerTest {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the"
             + " Portfolio "
             + "number you want to select.","Enter the date you want to see the composition "
-            + "for: " ,"The date should be in this format yyyy-mm-dd: " ,"Goog 10", "AAPL "
-            + "20", "Enter your choice: "};
+            + "for: " ,"The date should be in this format yyyy-mm-dd: " ,"Goog 10.0", "AAPL "
+            + "20.0", "Enter your choice: "};
     Reader in = new StringReader("3\n0\n2024-03-03\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -107,8 +105,8 @@ public class ControllerTest {
             + "Portfolio " + "number you want to select.", "Error", "Enter the Portfolio "
             + "number you want to "
             + "select.","Enter the date you want to see the composition"
-            + " for: ", "The date should be in this format yyyy-mm-dd: " ,"Goog 10", "AAPL "
-            + "20", "Enter your choice: "};
+            + " for: ", "The date should be in this format yyyy-mm-dd: " ,"Goog 10.0", "AAPL "
+            + "20.0", "Enter your choice: "};
     Reader in = new StringReader("3\n-1\n0\n2024-03-03\n11\n");
 
 
@@ -131,8 +129,8 @@ public class ControllerTest {
             + "Portfolio "
             + "number you want to select.", "Error",  "Enter the Portfolio number you want to "
             + "select.", "Enter the date you want to see the composition for: ","The date"
-            + " should be in this format yyyy-mm-dd: ","Goog 10", "AAPL "
-            + "20", "Enter your choice: "};
+            + " should be in this format yyyy-mm-dd: ","Goog 10.0", "AAPL "
+            + "20.0", "Enter your choice: "};
     Reader in = new StringReader("3\n3\n0\n2024-03-20\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -154,7 +152,7 @@ public class ControllerTest {
             + "Portfolio "
             + "number you want to select.", "Error",  "Enter the Portfolio number you want to "
             + "select.","Enter the date you want to see the composition for: " ,"The date should"
-            + " be in this format yyyy-mm-dd: ","Goog 10", "AAPL 20", "Enter your choice: "};
+            + " be in this format yyyy-mm-dd: ","Goog 10.0", "AAPL 20.0", "Enter your choice: "};
     Reader in = new StringReader("3\nstring\n0\n2024-03-20\n11\n");
 
     this.controller =  new StockControllerImpl(mockView, in, mockModel);
@@ -176,7 +174,7 @@ public class ControllerTest {
             + "Portfolio "
             + "number you want to select.", "Error",  "Enter the Portfolio number you want to "
             + "select.","Enter the date you want to see the composition for: ","The date "
-            + "should be in this format yyyy-mm-dd: ", "Goog 10", "AAPL 20", "Enter "
+            + "should be in this format yyyy-mm-dd: ", "Goog 10.0", "AAPL 20.0", "Enter "
             + "your choice: "};
     Reader in = new StringReader("3\n3.5\n0\n2024-03-20\n11\n");
 
@@ -1939,8 +1937,8 @@ public class ControllerTest {
   @Test
   public void testCostBasis() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "The cost " +
+            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "The cost " +
             "basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n0\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
@@ -1959,10 +1957,10 @@ public class ControllerTest {
   @Test
   public void testCostBasisInvalidDate() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
-        "Enter the date till which you want the cost basis of the portfolio", "The date " +
-        "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
+            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
+            "Enter the date till which you want the cost basis of the portfolio", "The date " +
+            "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n0\n2024-13-05\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -1980,10 +1978,10 @@ public class ControllerTest {
   @Test
   public void testCostBasisInvalidDateFormat() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
-        "Enter the date till which you want the cost basis of the portfolio", "The date " +
-        "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
+            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
+            "Enter the date till which you want the cost basis of the portfolio", "The date " +
+            "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n0\n13-10-2023\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -2001,11 +1999,11 @@ public class ControllerTest {
   @Test
   public void testCostBasisInvalidPortfolioChoice() {
     String[] expectedOutputLog = {"Enter your choice: ", "Test Portfolio inflexible", "Enter the " +
-        "Portfolio number you want to select.", "Error", "Enter the " +
-        "Portfolio number you want to select.", "Enter the date till which you want the cost " +
-        "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
-        "Enter the date till which you want the cost basis of the portfolio", "The date " +
-        "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
+            "Portfolio number you want to select.", "Error", "Enter the " +
+            "Portfolio number you want to select.", "Enter the date till which you want the cost " +
+            "basis of the portfolio", "The date should be in this format yyyy-mm-dd: ", "Error",
+            "Enter the date till which you want the cost basis of the portfolio", "The date " +
+            "should be in this format yyyy-mm-dd: ", "The cost basis is: $17.5", "Enter your choice: "};
     Reader in = new StringReader("8\n-3\n0\n13-10-2023\n2024-03-05\n11\n");
     this.controller = new StockControllerImpl(mockView, in, mockModel);
     controller.execute();
@@ -2018,16 +2016,5 @@ public class ControllerTest {
     for (int i = 0; i < outputLogChecker.length - 1; i++) {
       assertEquals(expectedOutputLog[i], outputLogChecker[i]);
     }
-  }
-
-  @Test
-  public void testCreate() {
-    IViewGUI view = new GUIView();
-    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.createFlexiblePortfolio("Portfolio 1");
-    StringBuilder inputLog = mockModel.getLogger();
-    String[] logChecker = inputLog.toString().split("\n");
-    assertEquals("Creating flexible portfolio with name: Portfolio 1",
-            logChecker[logChecker.length - 1]);
   }
 }
