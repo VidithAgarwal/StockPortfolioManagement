@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
 
+import model.InflexiblePortfolioImpl;
 import view.GUIView;
 import view.IViewGUI;
 
@@ -33,7 +34,7 @@ public class NewControllerTest {
    * Represents a mock model used for testing purposes.
    */
   private MockModel mockModel;
-  
+
 
   /**
    * Represents a mock name used for testing purposes.
@@ -70,10 +71,10 @@ public class NewControllerTest {
     this.mockModel = new MockModel(mockComposition, mockName, mockValue, intMockValue,
             mockTreeMap, mockStringInt, mockSaveInflexible);
 
-//    InflexiblePortfolioImpl.PortfolioBuilder newBuilder = new InflexiblePortfolioImpl
-//            .PortfolioBuilder(mockName);
-//    newBuilder.addShare("AAPL", 20);
-//    mockModel.addPortfolio(newBuilder);
+    InflexiblePortfolioImpl.PortfolioBuilder newBuilder = new InflexiblePortfolioImpl
+            .PortfolioBuilder(mockName);
+    newBuilder.addShare("AAPL", 20);
+    mockModel.addPortfolio(newBuilder);
   }
 
 
@@ -108,13 +109,23 @@ public class NewControllerTest {
   public void testExportPortfolio() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.export(0,"/Users/sachi/Desktop/ass6/s.csv");
+    controller.export(0,"/s.csv");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Portfolio to be saved is at index: 0",
             logChecker[logChecker.length -1]);
     //String error = controller.getErrorMessage();
     //assertEquals("Portfolio with this name already exists!",error);
+
+  }
+
+  @Test
+  public void testExportPortfolioInputInvalid() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.export(2,"/s.csv");
+    String error = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice",error);
 
   }
 
@@ -149,6 +160,15 @@ public class NewControllerTest {
     controller.buyStock("2024-13-20","1","aapl",0);
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
+  }
+
+  @Test
+  public void testBuyStockInvalidInput() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.buyStock("2024-12-20","1","aapl",2);
+    String message = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice", message);
   }
 
   @Test
@@ -205,12 +225,30 @@ public class NewControllerTest {
   }
 
   @Test
+  public void testSellStockInvalidInput() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.sellStock("2024-03-04","1","aapl",2);
+    String message = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice", message);
+  }
+
+  @Test
   public void testTotalValueInvalidDateFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
     controller.getTotalValue(0,"1");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date format.", message);
+  }
+
+  @Test
+  public void testTotalValueInvalidInput() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.getTotalValue(2,"2024-03-03");
+    String message = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice", message);
   }
 
   @Test
@@ -226,12 +264,12 @@ public class NewControllerTest {
   public void testTotalValue() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getTotalValue(1,"2024-03-04");
+    controller.getTotalValue(0,"2024-03-04");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("The total value of the portfolio on 2024-03-04 is 17.5", message);
-    assertEquals("Retrieving composition for portfolio at index: 1 For the day: 4 "
+    assertEquals("Retrieving composition for portfolio at index: 0 For the day: 4 "
                     + "month: 3 year: 2024"
             ,logChecker[logChecker.length -1]);
   }
@@ -240,12 +278,12 @@ public class NewControllerTest {
   public void testCostBasis() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getCostBasis(1,"2024-03-04");
+    controller.getCostBasis(0,"2024-03-04");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("The cost basis is: $17.5", message);
-    assertEquals("Calculating cost basis for portfolio at index: 1on date: 2024-03-04"
+    assertEquals("Calculating cost basis for portfolio at index: 0on date: 2024-03-04"
             ,logChecker[logChecker.length -1]);
   }
 
@@ -265,6 +303,15 @@ public class NewControllerTest {
     controller.getCostBasis(0,"2024-03-34");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
+  }
+
+  @Test
+  public void testCostBasisInvalidInput() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.getCostBasis(2,"2024-03-28");
+    String message = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice", message);
   }
 
   @Test
@@ -583,6 +630,15 @@ public class NewControllerTest {
   }
 
   @Test
+  public void testExamineCompositionInvalidInput() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    controller.examineComposition(2,"2024-0303");
+    String message = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice", message);
+  }
+
+  @Test
   public void testCreatePortfolioWithStrategy() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
@@ -593,7 +649,7 @@ public class NewControllerTest {
             "2024-04-03", 10, 100.0,shareDetails);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
-    assertEquals("Index of portfolio to be saved: -1 and buyingList to be appended are: "
+    assertEquals("Index of portfolio to be saved: 0 and buyingList to be appended are: "
                     + "[{goog: 50.0}, {aapl: 50.0}, ], startDate: 2024-03-03, endDate: 2024-04-03, "
                     + "frequencyDays: 10, amount: 100.0"
             ,logChecker[logChecker.length -1]);
@@ -717,6 +773,8 @@ public class NewControllerTest {
   }
 
 
+
+
   @Test
   public void testInvestWithDCAStrategy() {
     IViewGUI view = new GUIView();
@@ -728,7 +786,7 @@ public class NewControllerTest {
              100.0,shareDetails);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
-    assertEquals("Index of portfolio to be invested: -1 and investingList to be appended "
+    assertEquals("Index of portfolio to be invested: 0 and investingList to be appended "
                     + "are: [{goog: 50.0}, {aapl: 50.0}, ], date: 2024-03-03, amount: 100.0"
             ,logChecker[logChecker.length -1]);
   }
@@ -783,6 +841,19 @@ public class NewControllerTest {
             100.0,shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The combined sum of weights must be 100%", message);
+  }
+
+  @Test
+  public void testInvestWithDCAStrategyInvalidInput() {
+    IViewGUI view = new GUIView();
+    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
+    Map<String, Double> shareDetails = new HashMap<>();
+    shareDetails.put("aapl", 48.0);
+    shareDetails.put("goog", 50.0);
+    controller.investWithDCAStrategy(2,"2024-03-03",
+            100.0,shareDetails);
+    String message = controller.getErrorMessage();
+    assertEquals("Invalid portfolio choice", message);
   }
 
   @Test
