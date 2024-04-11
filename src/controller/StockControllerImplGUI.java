@@ -84,6 +84,10 @@ public class StockControllerImplGUI implements Features  {
     // THE DATA WILL BE DISPLAYED IN THAT ORDER OF INDEX OF PORTFOLIOS
     errorMessage = null;
     successMessage = null;
+    if (input < 0 || input >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
     Persistence persistence = new Persistence();
     try {
       persistence.exportAsCSV(path, model.save(input));
@@ -99,6 +103,10 @@ public class StockControllerImplGUI implements Features  {
   public void buyStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
+    if (choice < 0 || choice >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
 //    int shareQuantity;
 //    try {
 //      shareQuantity = Integer.parseInt(quantity);
@@ -225,6 +233,10 @@ public class StockControllerImplGUI implements Features  {
   public void sellStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
+    if (choice < 0 || choice >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
 //    int shareQuantity;
 //    try {
 //      shareQuantity = Integer.parseInt(quantity);
@@ -283,6 +295,10 @@ public class StockControllerImplGUI implements Features  {
   public void getTotalValue(int choice, String date) {
     errorMessage = null;
     successMessage = null;
+    if (choice < 0 || choice >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
     boolean validDate = false;
     int day = 0;
     int month = 0;
@@ -329,6 +345,10 @@ public class StockControllerImplGUI implements Features  {
   public void getCostBasis(int choice, String date) {
     errorMessage = null;
     successMessage = null;
+    if (choice < 0 || choice >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
 //    boolean validDate = false;
 //    int day = 0;
 //    int month = 0;
@@ -488,7 +508,7 @@ public class StockControllerImplGUI implements Features  {
   }
 
   /**
-   * method to check if the user has entered valid positive number. 
+   * method to check if the user has entered valid positive number.
    * @param quantity the parameter to be checked if it is positive integer or not.
    * @param message the string message that is passed based on the method using this validation.
    * @return the number if positive int or else returns -1.
@@ -783,7 +803,7 @@ public class StockControllerImplGUI implements Features  {
   /**
    * method to check that path entered by user is valid and take path as input.
    * @param path the path entered by the user.
-   * @return list of strings of the contents in the file. 
+   * @return list of strings of the contents in the file.
    */
   private List<String[]> inputPath(String path) {
     errorMessage = null;
@@ -801,6 +821,10 @@ public class StockControllerImplGUI implements Features  {
   public Map<String, Double> examineComposition(int input, String date) {
     errorMessage = null;
     successMessage = null;
+    if (input < 0 || input >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return null;
+    }
 //    boolean validDate = false;
 //    int day = 0;
 //    int month = 0;
@@ -959,10 +983,10 @@ public class StockControllerImplGUI implements Features  {
       return;
     }
 
-//    if (input < 0 || input >= model.getSize()) {
-//      errorMessage = "Invalid portfolio choice";
-//      return;
-//    }
+    if (input < 0 || input >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+      return;
+    }
 
 
     if (amount <= 0) {
