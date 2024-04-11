@@ -977,26 +977,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
     mainFrame.setVisible(true);
   }
-
-
-  /**
-   * this method display an error message in a dialog box.
-   * @param error the error message to be displayed
-   */
-  @Override
-  public void displayError(String error) {
-    JOptionPane.showMessageDialog(null, error, "Error",
-            JOptionPane.ERROR_MESSAGE);
-  }
-
-  /**
-   * this method print a message to the console.
-   * @param message the message to be printed
-   */
-  @Override
-  public void print(String message) {
-    System.out.println(message);
-  }
+  
 
 
   /**
