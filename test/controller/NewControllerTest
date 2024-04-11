@@ -3,46 +3,29 @@ package controller;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import model.InflexiblePortfolioImpl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
-import model.InflexiblePortfolioImpl;
 import view.GUIView;
 import view.IViewGUI;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class NewControllerTest {
 
 
 /**
- * This class represents a test suite for testing the functionality of StockControllerImpl class.
- * It contains test methods to verify the behavior of the controller in different scenarios.
+ * This class represents a test suite for testing the functionality of StockControllerImplGUI class.
+ * It contains test methods to verify the behavior of the GUI controller in different scenarios.
  */
 
 
   /**
-   * Represents an instance of StockControllerImpl used for testing purposes.
+   * Represents an instance of StockControllerImplGUI used for testing purposes.
    */
   private StockControllerImplGUI controller;
 
@@ -50,11 +33,7 @@ public class NewControllerTest {
    * Represents a mock model used for testing purposes.
    */
   private MockModel mockModel;
-
-  /**
-   * Represents a mock view used for testing purposes.
-   */
-  private MockView mockView;
+  
 
   /**
    * Represents a mock name used for testing purposes.
