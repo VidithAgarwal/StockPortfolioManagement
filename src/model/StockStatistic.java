@@ -28,7 +28,7 @@ public interface StockStatistic {
    * @return string indicating gain or loss over specified period.
    */
   String gainOrLoseOverPeriod(String tickerSymbol, String date1, String date2,
-                               TreeMap<String, ArrayList<Double>> priceData);
+                              TreeMap<String, ArrayList<Double>> priceData);
 
   /**
    * this method calculates X-day moving average of a stock on a specific date.
@@ -40,7 +40,7 @@ public interface StockStatistic {
    * @return  X-day moving average of stock on specified date.
    */
   double xDayMovingAvg(String tickerSymbol, String date, int x,
-                        TreeMap<String, ArrayList<Double>> priceData);
+                       TreeMap<String, ArrayList<Double>> priceData);
 
   /**
    * this method identifies crossover points over a specified period for a stock.
@@ -66,7 +66,8 @@ public interface StockStatistic {
    * @return treeMap containing moving crossovers with details whether it was buy/sell opportunity.
    */
   TreeMap<String, String> movingCrossoversOverPeriod(String tickerSymbol,
-              TreeMap<String, ArrayList<Double>> priceData, String startDate, String endDate,
+                                                     TreeMap<String, ArrayList<Double>> priceData,
+                                                     String startDate, String endDate,
                                                      int x, int y);
 
 }
