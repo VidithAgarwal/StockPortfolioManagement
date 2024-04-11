@@ -45,6 +45,14 @@ public interface Features {
    */
   void sellStock(String date, String quantity, String shareName, int choice);
 
+  /**
+   * this method is used to invests in a portfolio using Dollar-Cost Averaging (DCA) strategy.
+   * @param input         index of the portfolio to be invested.
+   * @param date          date of investment in the format "yyyy-MM-dd".
+   * @param amount        total amount to be invested.
+   * @param shareDetails   map containing the details of shares to be invested in, where
+   *                      the key is the share name and the value is the percentage allocation.
+   */
   void investWithDCAStrategy(int input, String date,
                              Double amount, Map<String, Double> shareDetails);
 
@@ -147,7 +155,7 @@ public interface Features {
   String  getSuccessMessage();
 
   /**
-   * this method loads a portfolio from a file, 
+   * this method loads a portfolio from a file,
    * for this it gets input from the gui and further uses model methods and delegate this.
    * input to model method to load the portfolio and create a new flexible portfolio from it.
    * @param name          name of the portfolio.
@@ -155,6 +163,16 @@ public interface Features {
    */
   void loadPortfolio(String name, String portfolioPath);
 
-  void createPortfolioWithStrategy(String portfolioName, String s, String s1, int frequency,
+  /**
+   * this method creates portfolio with specified strategy.
+   * @param portfolioName  name of the portfolio to be created.
+   * @param startDate       startDate for which strategy is to be started from.
+   * @param endDate        endDate for which strategy is to be created, until end date.
+   * @param frequency     frequency of investment for Dollar-Cost Averaging (DCA) strategy.
+   * @param amount        total amount to be invested initially.
+   * @param shareDetails   map containing the details of shares to be invested in, where
+   *                      the key is the share name and the value is the percentage allocation.
+   */
+  void createPortfolioWithStrategy(String portfolioName, String startDate, String endDate, int frequency,
                                    Double amount, Map<String, Double> shareDetails);
 }
