@@ -1,12 +1,14 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import model.InflexiblePortfolioImpl;
-
+/**
+ * The Features interface defines methods for managing investment portfolios and stocks.
+ * These methods are used by controller to delegate the input from view to the model.
+ * The method's parameters get the input through the view.
+ */
 public interface Features {
 
   /**
@@ -173,6 +175,7 @@ public interface Features {
    * @param shareDetails   map containing the details of shares to be invested in, where
    *                      the key is the share name and the value is the percentage allocation.
    */
-  void createPortfolioWithStrategy(String portfolioName, String startDate, String endDate, int frequency,
+  void createPortfolioWithStrategy(String portfolioName, String startDate, String endDate,
+                                   int frequency,
                                    Double amount, Map<String, Double> shareDetails);
 }
