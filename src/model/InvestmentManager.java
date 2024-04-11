@@ -144,8 +144,8 @@ public interface InvestmentManager {
    * @return TreeMap containing dates of crossover events and whether it is buy/ sell opportunity.
    */
   TreeMap<String, String> crossoverOverPeriod(String tickerSymbol,
-                                               IStockData api,
-                                               LocalDate startDate, LocalDate endDate);
+                                              IStockData api,
+                                              LocalDate startDate, LocalDate endDate);
 
   /**
    * this method calculates moving crossovers over specified period for given stock.
@@ -159,7 +159,7 @@ public interface InvestmentManager {
    * @return TreeMap containing dates of moving crossovers and whether it is buy/ sell opportunity.
    */
   TreeMap<String, String> movingCrossOver(String tickerSymbol, IStockData api, LocalDate startDate,
-                                           LocalDate endDate, int x, int y);
+                                          LocalDate endDate, int x, int y);
 
   /**
    * this method calculates performance of a specific stock over a given period.
@@ -170,7 +170,7 @@ public interface InvestmentManager {
    * @return TreeMap containing dates & values determined by scale for bar chart representation.
    */
   TreeMap<String, Integer> stockPerformance(String stock, IStockData api,
-                                             LocalDate start, LocalDate end) ;
+                                            LocalDate start, LocalDate end) ;
 
   /**
    * this method calculates performance of a portfolio over a given period.
@@ -180,7 +180,7 @@ public interface InvestmentManager {
    * @return TreeMap containing dates & values determined by scale for bar chart representation.
    */
   TreeMap<String, Integer> portfolioPerformance( int input,
-                                                  LocalDate start,  LocalDate end);
+                                                 LocalDate start,  LocalDate end);
 
   /**
    * this method determines appropriate scale for displaying performance of a specific stock.
@@ -236,11 +236,19 @@ public interface InvestmentManager {
    * @param api           stock data API to fetch historical prices.
    */
   void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList,
-                                      LocalDate startDate,
-                   LocalDate endDate,
-                   int frequencyDays, double amount,
-                   StockData api);
+                                       LocalDate startDate,
+                                       LocalDate endDate,
+                                       int frequencyDays, double amount,
+                                       StockData api);
 
+  /**
+   * this method executes an investment using Dollar Cost Averaging (DCA) strategy.
+   * @param input         frequency of investment, e.g., monthly, weekly, based on number of days.
+   * @param investingList  map containing stocks and their corresponding percentages of investment.
+   * @param date          date of investment.
+   * @param amount        total amount to be invested.
+   * @param api           interface for accessing stock data.
+   */
   void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
                              double amount, StockData api);
 
