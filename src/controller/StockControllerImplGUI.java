@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -78,14 +79,19 @@ public class StockControllerImplGUI implements Features  {
 
   }
 
+  private void validateChoice(int input) {
+    if (input < 0 || input >= model.getSize()) {
+      errorMessage = "Invalid portfolio choice";
+    }
+  }
   @Override
   public void export(int input,String path) {
     // here in view we will provide drop down for selecting portfolio
     // THE DATA WILL BE DISPLAYED IN THAT ORDER OF INDEX OF PORTFOLIOS
     errorMessage = null;
     successMessage = null;
-    if (input < 0 || input >= model.getSize()) {
-      errorMessage = "Invalid portfolio choice";
+    validateChoice(input);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
     }
     Persistence persistence = new Persistence();
@@ -103,46 +109,16 @@ public class StockControllerImplGUI implements Features  {
   public void buyStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
-    if (choice < 0 || choice >= model.getSize()) {
-      errorMessage = "Invalid portfolio choice";
+    validateChoice(choice);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
     }
-//    int shareQuantity;
-//    try {
-//      shareQuantity = Integer.parseInt(quantity);
-//      if (shareQuantity <= 0) {
-//        errorMessage = "Share quantity must be a positive integer.";
-//        return;
-//      }
-//    } catch (NumberFormatException e) {
-//      errorMessage = "Share quantity must be a positive integer.";
-//      return;
-//    }
+
     int shareQuantity = validatePositiveNumber(quantity,"Quantity must be positive integer.");
     if (shareQuantity ==  -1) {
       return;
     }
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//    }
-//    LocalDate buyDate = LocalDate.parse(date);
+
     LocalDate buyDate = validateDateMessage(date, "Invalid date!");
     if (buyDate == null) {
       return;
@@ -233,49 +209,15 @@ public class StockControllerImplGUI implements Features  {
   public void sellStock(String date, String quantity, String shareName, int choice) {
     errorMessage = null;
     successMessage = null;
-    if (choice < 0 || choice >= model.getSize()) {
-      errorMessage = "Invalid portfolio choice";
+    validateChoice(choice);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
     }
-//    int shareQuantity;
-//    try {
-//      shareQuantity = Integer.parseInt(quantity);
-//      if (shareQuantity <= 0) {
-//        //view.displayError("Share quantity must be a positive integer.");
-//        errorMessage = "Share quantity must be a positive integer.";
-//        return;
-//      }
-//    } catch (NumberFormatException e) {
-//      //view.displayError("Share quantity must be a positive integer.");
-//      errorMessage = "Share quantity must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return;
-//    }
+
     int shareQuantity = validatePositiveNumber(quantity,"Quantity must be positive integer.");
     if (shareQuantity ==  -1) {
       return;
     }
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//    }
-//    LocalDate sellDate = LocalDate.parse(date);
     LocalDate sellDate = validateDateMessage(date, "Invalid date!");
     if (sellDate == null) {
       return;
@@ -295,8 +237,8 @@ public class StockControllerImplGUI implements Features  {
   public void getTotalValue(int choice, String date) {
     errorMessage = null;
     successMessage = null;
-    if (choice < 0 || choice >= model.getSize()) {
-      errorMessage = "Invalid portfolio choice";
+    validateChoice(choice);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
     }
     boolean validDate = false;
@@ -345,33 +287,12 @@ public class StockControllerImplGUI implements Features  {
   public void getCostBasis(int choice, String date) {
     errorMessage = null;
     successMessage = null;
-    if (choice < 0 || choice >= model.getSize()) {
-      errorMessage = "Invalid portfolio choice";
+    
+    validateChoice(choice);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
     }
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate costBasisDate = LocalDate.parse(date);
+
     LocalDate costBasisDate = validateDateMessage(date, "Invalid date!");
     if (costBasisDate == null) {
       return;
@@ -397,29 +318,7 @@ public class StockControllerImplGUI implements Features  {
     StockData api = new StockData();
     errorMessage = null;
     successMessage = null;
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate date1 = LocalDate.parse(date);
+
     LocalDate date1 = validateDateMessage(date, "Invalid date!");
     if (date1 == null) {
       return;
@@ -442,56 +341,13 @@ public class StockControllerImplGUI implements Features  {
 //    boolean validDate = false;
     errorMessage = null;
     successMessage = null;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid start date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
+
     LocalDate startDate = validateDateMessage(startDateArray, "Invalid start date!");
     if (startDate == null) {
       return;
     }
 
-//    boolean validDate1 = false;
-//    int day1 = 0;
-//    int month1 = 0;
-//    int year1 = 0;
-//    if (isValidDateFormat(endDateArray)) {
-//      String[] dateParts1 = startDateArray.split("-");
-//      year1 = Integer.parseInt(dateParts1[0].trim());
-//      month1 = Integer.parseInt(dateParts1[1].trim());
-//      day1 = Integer.parseInt(dateParts1[2].trim());
-//
-//      if (validateDate(day1, month1, year1)) {
-//        validDate1 = true;
-//      } else {
-//        errorMessage = "Invalid end date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate endDate = LocalDate.parse(endDateArray);
+
     LocalDate endDate = validateDateMessage(endDateArray, "Invalid end date!");
     if (endDate == null) {
       return;
@@ -534,46 +390,12 @@ public class StockControllerImplGUI implements Features  {
     errorMessage = null;
     successMessage = null;
     int value = validatePositiveNumber(x,"X must be a positive integer." );
-//    try {
-//      value = Integer.parseInt(x);
-//      if (value <= 0) {
-//        //view.displayError("Share quantity must be a positive integer.");
-//        errorMessage = "X must be a positive integer.";
-//        return;
-//      }
-//    } catch (NumberFormatException e) {
-//      //view.displayError("Share quantity must be a positive integer.");
-//      errorMessage = "X must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return;
-//    }
+
     if (value == -1) {
       return;
     }
     StockData api = new StockData();
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
+
     LocalDate startDate = validateDateMessage(startDateArray, "Invalid date!");
     if (startDate == null) {
       return;
@@ -594,57 +416,13 @@ public class StockControllerImplGUI implements Features  {
     errorMessage = null;
     successMessage = null;
     StockData api = new StockData();
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid start date!";
-//        return null;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return null;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
+
     LocalDate startDate = validateDateMessage(startDateArray, "Invalid start date!");
     if (startDate == null) {
       return null;
     }
 
-//    boolean validDate1 = false;
-//    int day1 = 0;
-//    int month1 = 0;
-//    int year1 = 0;
-//    if (isValidDateFormat(endDateArray)) {
-//      String[] dateParts1 = startDateArray.split("-");
-//      year1 = Integer.parseInt(dateParts1[0].trim());
-//      month1 = Integer.parseInt(dateParts1[1].trim());
-//      day1 = Integer.parseInt(dateParts1[2].trim());
-//
-//      if (validateDate(day1, month1, year1)) {
-//        validDate1 = true;
-//      } else {
-//        errorMessage = "Invalid end date!";
-//        return null;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return null;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate endDate = LocalDate.parse(endDateArray);
+
     LocalDate endDate = validateDateMessage(endDateArray, "Invalid end date!");
     if (endDate == null) {
       return null;
@@ -665,92 +443,24 @@ public class StockControllerImplGUI implements Features  {
                                                             String x, String y, String ticker) {
     errorMessage = null;
     successMessage = null;
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDateArray)) {
-//      String[] dateParts = startDateArray.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid start date!";
-//        return null;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return null;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate startDate = LocalDate.parse(startDateArray);
+
     LocalDate startDate = validateDateMessage(startDateArray, "Invalid start date!");
     if (startDate == null) {
       return null;
     }
 
 
-//    boolean validDate1 = false;
-//    int day1 = 0;
-//    int month1 = 0;
-//    int year1 = 0;
-//    if (isValidDateFormat(endDateArray)) {
-//      String[] dateParts1 = startDateArray.split("-");
-//      year1 = Integer.parseInt(dateParts1[0].trim());
-//      month1 = Integer.parseInt(dateParts1[1].trim());
-//      day1 = Integer.parseInt(dateParts1[2].trim());
-//
-//      if (validateDate(day1, month1, year1)) {
-//        validDate1 = true;
-//      } else {
-//        errorMessage = "Invalid end date!";
-//        return null;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return null;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate endDate = LocalDate.parse(endDateArray);
+
     LocalDate endDate = validateDateMessage(endDateArray, "Invalid end date!");
     if (endDate == null) {
       return null;
     }
-
-//    int value;
-//    try {
-//      value = Integer.parseInt(x);
-//      if (value <= 0) {
-//        errorMessage = "X must be a positive integer.";
-//        return null;
-//      }
-//    } catch (NumberFormatException e) {
-//      errorMessage = "X must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return null;
-//    }
+    
     int value = validatePositiveNumber(x,"X must be a positive integer." );
     if (value ==  -1) {
       return null;
     }
-
-//    int value1;
-//    try {
-//      value1 = Integer.parseInt(y);
-//      if (value1 <= 0) {
-//        errorMessage = "Y must be a positive integer.";
-//        return null;
-//      }
-//    } catch (NumberFormatException e) {
-//      errorMessage = "Y must be a positive integer.";
-//      // Set to negative to continue the loop
-//      return null;
-//    }
+    
     int value1 = validatePositiveNumber(y,"Y must be a positive integer.");
     if (value1 ==  -1) {
       return null;
@@ -821,33 +531,11 @@ public class StockControllerImplGUI implements Features  {
   public Map<String, Double> examineComposition(int input, String date) {
     errorMessage = null;
     successMessage = null;
-    if (input < 0 || input >= model.getSize()) {
-      errorMessage = "Invalid portfolio choice";
+    validateChoice(input);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return null;
     }
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (validateDate(day, month, year)) {
-//        validDate = true;
-//      } else {
-//        errorMessage = "Invalid date!";
-//        return null;
-//        //view.displayError("Invalid date!");
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return null;
-//      //view.displayError("Invalid date format.");
-//    }
-//    LocalDate compositionDate = LocalDate.parse(date);
+
     LocalDate compositionDate = validateDateMessage(date, "Invalid date!");
     if (compositionDate == null) {
       return null;
@@ -870,44 +558,12 @@ public class StockControllerImplGUI implements Features  {
                                           Double amount, Map<String, Double> shareDetails) {
     this.errorMessage = null;
     this.successMessage = null;
-
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(startDate)) {
-//      String[] dateParts = startDate.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (!validateDate(day, month, year)) {
-//        errorMessage = "Invalid start date!";
-//        return;
-//      }
-//    } else {
-//      errorMessage = "Invalid start date format.";
-//      return;
-//    }
-//    LocalDate strategyStartDate = LocalDate.parse(startDate);
+    
     LocalDate strategyStartDate = validateDateMessage(startDate, "Invalid start date!");
     if (strategyStartDate == null) {
       return;
     }
-//    if (isValidDateFormat(endDate)) {
-//      String[] dateParts = endDate.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (!validateDate(day, month, year)) {
-//        errorMessage = "Invalid end date!";
-//        return;
-//      }
-//    } else {
-//      errorMessage = "Invalid end date format.";
-//      return;
-//    }
-//    LocalDate strategyEndDate = LocalDate.parse(endDate);
+
     LocalDate strategyEndDate = validateDateMessage(endDate, "Invalid end date!");
     if (strategyEndDate == null) {
       return;
@@ -957,26 +613,10 @@ public class StockControllerImplGUI implements Features  {
                                     Double amount, Map<String, Double> shareDetails) {
     this.errorMessage = null;
     this.successMessage = null;
-
-//    boolean validDate = false;
-//    int day = 0;
-//    int month = 0;
-//    int year = 0;
-//    if (isValidDateFormat(date)) {
-//      String[] dateParts = date.split("-");
-//      year = Integer.parseInt(dateParts[0].trim());
-//      month = Integer.parseInt(dateParts[1].trim());
-//      day = Integer.parseInt(dateParts[2].trim());
-//
-//      if (!validateDate(day, month, year)) {
-//        errorMessage = "Invalid date!";
-//        return;
-//      }
-//    } else {
-//      errorMessage = "Invalid date format.";
-//      return;
-//    }
-//    LocalDate investmentDate = LocalDate.parse(date);
+    validateChoice(input);
+    if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
+      return;
+    }
 
     LocalDate investmentDate = validateDateMessage(date, "Invalid date!");
     if (investmentDate == null) {
