@@ -411,6 +411,16 @@ public class MockModel implements InvestmentManager {
 
   }
 
+  /**
+   * this method logs information about creating a Dollar Cost Average investment strategy.
+   * @param input          index of the portfolio to be saved.
+   * @param buyingList     map containing stocks and their corresponding percentages of investment.
+   * @param startDate      start date of the investment strategy.
+   * @param endDate        end date of the investment strategy.
+   * @param frequencyDays  frequency of investment in days.
+   * @param amount         total amount to be invested.
+   * @param api            interface for accessing stock data.
+   */
   @Override
   public void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList,
                                               LocalDate startDate, LocalDate endDate,
@@ -428,6 +438,14 @@ public class MockModel implements InvestmentManager {
   }
 
 
+  /**
+   * this method logs information about investing with a Dollar Cost Average strategy.
+   * @param input         index of the portfolio to be invested.
+   * @param investingList map containing stocks and their corresponding percentages of investment.
+   * @param date          date of investment.
+   * @param amount        total amount to be invested.
+   * @param api           interface for accessing stock data.
+   */
   @Override
   public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
                                     double amount, StockData api) {
