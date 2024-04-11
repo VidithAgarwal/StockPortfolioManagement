@@ -5,7 +5,7 @@ The jar file should be present in the folder along with stocks.csv that has the 
 along with the ticker symbol that is used in the program to verify if the stock name or ticker
 symbol entered by the user is valid or not. Additionally, the project libraries should also contain
 the jdatepicker-1.3.4.jar file for using the calendar based date picker in GUI, for asking the users
-to select date.
+to select date. The jar file is present in the res folder along with the stocks.csv file.
 
 For running the GUI Based view the user can simply run the jar file and the default view opened
 for user access is the GUI Based view investment application. Further, to use the text based view
