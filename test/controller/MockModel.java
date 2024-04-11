@@ -313,7 +313,7 @@ public class MockModel implements InvestmentManager {
    */
   @Override
   public TreeMap<String, String> movingCrossOver(String tickerSymbol, IStockData api,
-                              LocalDate startDate, LocalDate endDate, int x, int y) {
+                                                 LocalDate startDate, LocalDate endDate, int x, int y) {
     logger.append("Calculating moving crossover for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
             .append(endDate.toString()).append(" for x = ").append(x).append(" and y = ")
@@ -412,12 +412,33 @@ public class MockModel implements InvestmentManager {
   }
 
   @Override
-  public void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList, LocalDate startDate, LocalDate endDate, int frequencyDays, double amount, StockData api) {
-
+  public void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList,
+                                              LocalDate startDate, LocalDate endDate,
+                                              int frequencyDays, double amount, StockData api) {
+    logger.append("Index of portfolio to be saved: ").append(input)
+            .append(" and buyingList to be appended are: [");
+    for (Map.Entry<String, Double> entry : buyingList.entrySet()) {
+      logger.append("{").append(entry.getKey()).append(": ").append(entry.getValue()).append("}, ");
+    }
+    logger.append("], startDate: ").append(startDate)
+            .append(", endDate: ").append(endDate)
+            .append(", frequencyDays: ").append(frequencyDays)
+            .append(", amount: ").append(amount)
+            .append("\n");
   }
+
 
   @Override
-  public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date, double amount, StockData api) {
-
+  public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
+                                    double amount, StockData api) {
+    logger.append("Index of portfolio to be invested: ").append(input)
+            .append(" and investingList to be appended are: [");
+    for (Map.Entry<String, Double> entry : investingList.entrySet()) {
+      logger.append("{").append(entry.getKey()).append(": ").append(entry.getValue()).append("}, ");
+    }
+    logger.append("], date: ").append(date)
+            .append(", amount: ").append(amount)
+            .append("\n");
   }
+
 }
