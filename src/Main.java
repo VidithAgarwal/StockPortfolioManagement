@@ -61,7 +61,7 @@ public class Main {
   /**
    * The main method initializes the components and starts the application.
    * It initializes gui controller as default and text based controller on entering -text in args.
-   * @param args The command line arguments. 
+   * @param args The command line arguments.
    */
   public static void main(String[] args) {
     // Default to GUI controller
@@ -90,7 +90,8 @@ public class Main {
     } else {
       // Text-based controller
       IView view = new IViewImpl(System.out, System.err);
-      StockControllerImpl controller = new StockControllerImpl(view, new InputStreamReader(System.in), model);
+      StockControllerImpl controller
+              = new StockControllerImpl(view, new InputStreamReader(System.in), model);
       controller.execute();
     }
   }
