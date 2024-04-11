@@ -17,6 +17,10 @@ import javax.swing.*;
 
 import controller.Features;
 
+/**
+ * CreateStrategyPage class represents page for creating an investment strategy.
+ * It allows users to input details such as portfolio name, stock detail, investment frequency, etc.
+ */
 public class CreateStrategyPage {
 
   private final JFrame mainFrame;
@@ -30,6 +34,12 @@ public class CreateStrategyPage {
   GUIView mainView;
   Features features;
 
+  /**
+   * the constructor CreateStrategyPage object, used to initialise frame, view and features.
+   * @param mainFrame  main JFrame of the application.
+   * @param view       GUIView instance.
+   * @param features  Features instance for interacting with the application's features.
+   */
   public CreateStrategyPage(JFrame mainFrame, GUIView view, Features features) {
     mainView = view;
     this.features = features;
@@ -44,6 +54,9 @@ public class CreateStrategyPage {
     createPortfolioWithStrategy();
   }
 
+  /**
+   * Displays panel for creating a portfolio with an investment strategy.
+   */
   private void createPortfolioWithStrategy() {
     mainPanel.removeAll();
     inputPanel = new JPanel(new GridBagLayout());
@@ -118,6 +131,10 @@ public class CreateStrategyPage {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method displays panel for taking strategy inputs.
+   * @param n is number of stocks for which strategy inputs are required.
+   */
   private void takeStrategyInputs(int n) {
     mainFrame.getContentPane().removeAll();
     inputPanel = new JPanel();
@@ -333,6 +350,11 @@ public class CreateStrategyPage {
   }
 
 
+  /**
+   * this method formats and displays selected date.
+   * @param datePicker  JDatePickerImpl object containing the selected date.
+   * @return  selected date in "yyyy-MM-dd" format.
+   */
   private String displaySelectedDate(JDatePickerImpl datePicker) {
     Date selectedDate = (Date) datePicker.getModel().getValue();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
