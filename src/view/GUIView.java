@@ -6,6 +6,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import controller.Features;
 
@@ -423,6 +425,7 @@ public class GUIView extends JFrame implements IViewGUI {
           filePath += ".csv"; // Ensuring the file extension is .csv
         }
         filePathField.setText(filePath);
+        browseButton.setEnabled(false);
       }
     });
 
@@ -439,6 +442,7 @@ public class GUIView extends JFrame implements IViewGUI {
           JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
+          browseButton.setEnabled(true);
           dropdown.setSelectedIndex(0);
           filePathField.setText("");
         } else {
@@ -451,6 +455,7 @@ public class GUIView extends JFrame implements IViewGUI {
         JOptionPane.showMessageDialog(panel, "Please select a portfolio and CSV file",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+        browseButton.setEnabled(true);
       }
     });
 
@@ -1498,6 +1503,7 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.insets = new Insets(10, 10, 10, 10);
 
+    AtomicBoolean fileSelected = new AtomicBoolean(false);
     JLabel heading = createLabel("Load Portfolio ");
     heading.setFont(new Font("Arial", Font.BOLD, 24));
     panel.add(heading, gbc);
@@ -1515,10 +1521,14 @@ public class GUIView extends JFrame implements IViewGUI {
     browseButton.addActionListener(e -> {
       JFileChooser fileChooser = new JFileChooser();
       fileChooser.setDialogTitle("Choose a CSV file to load portfolio");
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
+      fileChooser.setFileFilter(filter);
       int returnValue = fileChooser.showOpenDialog(null);
       if (returnValue == JFileChooser.APPROVE_OPTION) {
         File selectedFile = fileChooser.getSelectedFile();
         filePathField.setText(selectedFile.getAbsolutePath());
+        fileSelected.set(true); // Set the flag to true when file is selected
+        browseButton.setEnabled(false);
       }
     });
 
@@ -1533,6 +1543,7 @@ public class GUIView extends JFrame implements IViewGUI {
           JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
+          browseButton.setEnabled(true);
         } else {
           JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
                   "Success",
@@ -1543,6 +1554,7 @@ public class GUIView extends JFrame implements IViewGUI {
         JOptionPane.showMessageDialog(panel, "Please enter portfolio name and select a CSV file",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+        browseButton.setEnabled(true);
       }
     });
 
