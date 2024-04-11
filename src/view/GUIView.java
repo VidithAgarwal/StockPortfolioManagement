@@ -4,12 +4,27 @@ import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JFormattedTextField;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -50,14 +65,6 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     mainFrame.setLayout(new BorderLayout());
     mainFrame.setLocationRelativeTo(null);
-  }
-
-  public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        new GUIView();
-      }
-    });
   }
 
   /**
@@ -121,8 +128,8 @@ public class GUIView extends JFrame implements IViewGUI {
     JButton portfolioButton = createButton("Create a flexible portfolio");
     portfolioButton.addActionListener(evt -> createPortfolio(features));
 
-    JButton createStrategyButton = createButton("Create Portfolio with dollar-cost average " +
-            "strategy");
+    JButton createStrategyButton = createButton("Create Portfolio with dollar-cost average "
+            + "strategy");
     createStrategyButton.addActionListener(evt -> new CreateStrategyPage(mainFrame, this,
             features));
 
@@ -359,7 +366,8 @@ public class GUIView extends JFrame implements IViewGUI {
     UtilDateModel model = new UtilDateModel();
     model.setValue(null);
     Calendar calendar = Calendar.getInstance();
-    model.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    model.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH));
     model.setSelected(true);
 
     Properties properties = new Properties();
@@ -547,10 +555,11 @@ public class GUIView extends JFrame implements IViewGUI {
     button.setPreferredSize(new Dimension(500, 50));
     button.addActionListener(evt -> createPortfolio(features));
 
-    JButton createStrategyButton = createButton("Create Portfolio with dollar-cost average " +
-            "strategy");
+    JButton createStrategyButton = createButton("Create Portfolio with dollar-cost average "
+            + "strategy");
     button.setPreferredSize(new Dimension(500, 50));
-    createStrategyButton.addActionListener(evt -> new CreateStrategyPage(mainFrame, this, features));
+    createStrategyButton.addActionListener(evt -> new CreateStrategyPage(mainFrame,
+            this, features));
 
     JButton loadingButton = createButton("Load Flexible Portfolio");
     loadingButton.setPreferredSize(new Dimension(500, 50));
@@ -580,15 +589,10 @@ public class GUIView extends JFrame implements IViewGUI {
     saveButton.setPreferredSize(new Dimension(500, 50));
     saveButton.addActionListener(evt -> save(features));
 
-//    JButton dollarCostButton = createButton("Create Portfolio Using Dollar-Cost Averaging");
-//    dollarCostButton.setPreferredSize(new Dimension(500, 50));
-//    panel.add(dollarCostButton);
-//    dollarCostButton.addActionListener(evt -> dollarCostPortfolio(features));
-
-    JButton investButton = createButton("Investment in a Portfolio with Dollar cost Average " +
-            "Strategy");
+    JButton investButton = createButton("Investment in a Portfolio with Dollar cost Average "
+            + "Strategy");
     investButton.setPreferredSize(new Dimension(500, 50));
-    investButton.addActionListener(evt -> DCAInvestment(features));
+    investButton.addActionListener(evt -> dCAInvestment(features));
 
     JButton stockAnalysis = createButton("Get Stock Analysis");
     stockAnalysis.setPreferredSize(new Dimension(500, 50));
@@ -634,7 +638,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * Submits the investment request to Features object.
    * @param features An instance of the Features class providing functionality for the application.
    */
-  private void DCAInvestment(Features features) {
+  private void dCAInvestment(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel mainPanel = new JPanel(new BorderLayout());
     JPanel choicePanel = new JPanel(new GridBagLayout());
@@ -664,7 +668,8 @@ public class GUIView extends JFrame implements IViewGUI {
 
     final int[] choice = {0};
     dropdown.addActionListener(e -> {
-      Map<String, Double> composition = features.examineComposition( dropdown.getSelectedIndex() - 1,
+      Map<String, Double> composition
+              = features.examineComposition( dropdown.getSelectedIndex() - 1,
               date[0]);
       if (features.getErrorMessage() != null) {
         JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
@@ -686,7 +691,7 @@ public class GUIView extends JFrame implements IViewGUI {
         JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
-        DCAInvestment(features);
+        dCAInvestment(features);
       } else {
         updateForm(composition, formPanel, features, date[0], choice[0]);
       }
@@ -694,8 +699,6 @@ public class GUIView extends JFrame implements IViewGUI {
 
     mainPanel.add(choicePanel, BorderLayout.NORTH);
 
-
-    // Add components to the main panel
     JScrollPane scrollPane = new JScrollPane(formPanel);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -722,7 +725,6 @@ public class GUIView extends JFrame implements IViewGUI {
     formPanel.setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
-//    gbc.anchor = GridBagConstraints.CENTER;
     gbc.gridx = 0;
     gbc.gridy = 0;
 
@@ -804,7 +806,7 @@ public class GUIView extends JFrame implements IViewGUI {
         JOptionPane.showMessageDialog(formPanel, "Amount cannot be blank",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
-        DCAInvestment(features);
+        dCAInvestment(features);
       }
       Double amount = Double.parseDouble(totalAmountField.getText());
       features.investWithDCAStrategy(choice, date,
@@ -1207,7 +1209,8 @@ public class GUIView extends JFrame implements IViewGUI {
       String startDate = date1[0];
       String endDate = date2[0];
       if (inputText != null && startDate != null && endDate != null) {
-        TreeMap<String, String> result = features.crossoverOverPeriod(startDate, endDate, inputText);
+        TreeMap<String, String> result = features.crossoverOverPeriod(startDate,
+                endDate, inputText);
         if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
           JOptionPane.showMessageDialog(panel, error,
@@ -1630,10 +1633,6 @@ public class GUIView extends JFrame implements IViewGUI {
           dropdown.setSelectedIndex(0);
           showSecondMenu(features);
         } else {
-//          JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
-//                  "Success",
-//                  JOptionPane.INFORMATION_MESSAGE);
-//          showSecondMenu(features);
           displayCompositionResult(features, compositionResult);
         }
       } else {
