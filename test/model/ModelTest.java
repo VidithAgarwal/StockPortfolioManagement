@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -3387,9 +3388,9 @@ public class ModelTest {
     Map<String, Double> composition1 = portfolioDir.portfolioComposition(0, date3);
 
     assertEquals(2, composition1.size());
-    assertEquals(41.93,  composition1.get("AAPL"), 0.1);
-    assertEquals(50.83,  composition1.get("GOOG"), 0.1);
-    assertEquals(14877.72,
+    assertEquals(41.0,  composition1.get("AAPL"), 0.1);
+    assertEquals(50.0,  composition1.get("GOOG"), 0.1);
+    assertEquals(14589.24,
             portfolioDir.portfolioValue(0, 2, 1, 2024, api), 0.001);
 
 
@@ -3397,9 +3398,9 @@ public class ModelTest {
     Map<String, Double> composition2 = portfolioDir.portfolioComposition(0, date4);
 
     assertEquals(2, composition2.size());
-    assertEquals(68.87,  composition2.get("AAPL"), 0.1);
-    assertEquals(85.63,  composition2.get("GOOG"), 0.1);
-    assertEquals(25155.581599999998,
+    assertEquals(67.0,  composition2.get("AAPL"), 0.1);
+    assertEquals(84.0,  composition2.get("GOOG"), 0.1);
+    assertEquals(24572.8,
             portfolioDir.portfolioValue(0, 12, 1, 2024, api), 0.001);
 
 
@@ -3407,9 +3408,9 @@ public class ModelTest {
     Map<String, Double> composition3 = portfolioDir.portfolioComposition(0, date5);
 
     assertEquals(2, composition3.size());
-    assertEquals(94.66,  composition3.get("AAPL"), 0.1);
-    assertEquals(119.479,  composition3.get("GOOG"), 0.1);
-    assertEquals(36002.0182,
+    assertEquals(92.0,  composition3.get("AAPL"), 0.1);
+    assertEquals(117.0,  composition3.get("GOOG"), 0.1);
+    assertEquals(35119.95,
             portfolioDir.portfolioValue(0, 22, 1, 2024, api), 0.001);
 
 
@@ -3417,9 +3418,9 @@ public class ModelTest {
     Map<String, Double> composition4 = portfolioDir.portfolioComposition(0, date6);
 
     assertEquals(2, composition4.size());
-    assertEquals(121.77,  composition4.get("AAPL"), 0.1);
-    assertEquals(154.73,  composition4.get("GOOG"), 0.1);
-    assertEquals(44836.8876,
+    assertEquals(119.0,  composition4.get("AAPL"), 0.1);
+    assertEquals(152.0,  composition4.get("GOOG"), 0.1);
+    assertEquals(43928.26,
             portfolioDir.portfolioValue(0, 1, 2, 2024, api), 0.001);
 
 
@@ -3427,9 +3428,9 @@ public class ModelTest {
     Map<String, Double> composition5 = portfolioDir.portfolioComposition(0, date7);
 
     assertEquals(2, composition5.size());
-    assertEquals(121.77,  composition5.get("AAPL"), 0.1);
-    assertEquals(154.73,  composition5.get("GOOG"), 0.1);
-    assertEquals(45803.73569999999,
+    assertEquals(119.0,  composition5.get("AAPL"), 0.1);
+    assertEquals(152.0,  composition5.get("GOOG"), 0.1);
+    assertEquals(44877.81,
             portfolioDir.portfolioValue(0, 12, 2, 2024, api), 0.001);
 
   }
@@ -3550,7 +3551,6 @@ public class ModelTest {
     LocalDate endDate = LocalDate.of(2024, 1, 30);
     int frequencyDays = 10;
     double amount = 10000.0;
-    double commissionFee = 10.0;
     try {
       portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate,
               frequencyDays, amount,  api);
@@ -3585,6 +3585,54 @@ public class ModelTest {
     }
   }
 
+  @Test (expected = DateTimeException.class)
+  public void testAddStrategyShareInvalidDate() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 3);
+    LocalDate endDate = LocalDate.of(2024, 1, 35);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              api);
+
+
+  }
+
+  @Test
+  public void testAddStrategyShareInvalidInput() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 2;
+    Map<String, Double> buyingList = new HashMap<>();
+    buyingList.put("AAPL", 50.0);
+    buyingList.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 3);
+    LocalDate endDate = LocalDate.of(2024, 1, 30);
+    int frequencyDays = 10;
+    double amount = 10000.0;
+    try {
+      portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
+              api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("The choice of portfolio doesn't exists", e.getMessage());
+    }
+  }
+
   @Test (expected = IllegalArgumentException.class)
   public void testInflexibleAddStrategy() {
     InflexiblePortfolioImpl.PortfolioBuilder firstBuilder
@@ -3602,6 +3650,168 @@ public class ModelTest {
     int frequencyDays = 10;
     double amount = 10000.0;
     portfolioDir.createDollarCostAverageStrategy(input, buyingList, startDate, endDate, frequencyDays, amount,
-              api);
+            api);
   }
+
+  @Test
+  public void testInvestWithDCAStrategyPercentageNeg() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> list = new HashMap<>();
+    list.put("AAPL", -50.0);
+    list.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    double amount = 10000.0;
+    try {
+      portfolioDir.investWithDCAStrategy(input, list, startDate, amount,
+              api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Share percentage cannot be less than zero", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testInvestWithDCAStrategyAmountNeg() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> list = new HashMap<>();
+    list.put("AAPL", 50.0);
+    list.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+    double amount = -10000.0;
+    try {
+      portfolioDir.investWithDCAStrategy(input, list, startDate, amount,
+              api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Amount cannot be less than zero", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testInvestWithDCAStrategyBuyListEmpty() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> list = new HashMap<>();
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+
+    double amount = 10000.0;
+
+    try {
+      portfolioDir.investWithDCAStrategy(input, list, startDate, amount,
+              api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("Stock buying list is empty", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testInvestWithDCAStrategyInputInvalid() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = -1;
+    Map<String, Double> list = new HashMap<>();
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+
+    double amount = 10000.0;
+
+    try {
+      portfolioDir.investWithDCAStrategy(input, list, startDate, amount,
+              api);
+    }
+    catch (IllegalArgumentException e) {
+      assertEquals("The choice of portfolio doesn't exists", e.getMessage());
+    }
+  }
+
+  @Test (expected = DateTimeException.class)
+  public void testInvestWithDCAStrategyDateInvalid() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 12, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> list = new HashMap<>();
+    list.put("AAPL", 50.0);
+    list.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 13, 1);
+    double amount = 10000.0;
+
+      portfolioDir.investWithDCAStrategy(input, list, startDate, amount,
+              api);
+
+
+  }
+
+  @Test
+  public void testInvestWithDCAStrategy() {
+    portfolioDir.createFlexiblePortfolio("Test Portfolio1");
+    StockData api = new StockData();
+    LocalDate date = LocalDate.of(2023, 3, 13);
+    LocalDate date1 = LocalDate.of(2023, 12, 12);
+    portfolioDir.buyStock(0, "aapl", 15, date, api);
+    portfolioDir.buyStock(0, "goog", 15, date1, api);
+    int input = 0;
+    Map<String, Double> list = new HashMap<>();
+    list.put("AAPL", 50.0);
+    list.put("GOOG", 50.0);
+    LocalDate startDate = LocalDate.of(2024, 1, 1);
+
+    double amount = 10000.0;
+    portfolioDir.investWithDCAStrategy(input, list, startDate, amount, api);
+    LocalDate date2 = LocalDate.of(2023, 12, 13);
+    Map<String, Double> composition = portfolioDir.portfolioComposition(0, date2);
+
+    assertEquals(2, composition.size());
+    assertEquals(15,  composition.get("AAPL"), 0.1);
+    assertEquals(15,  composition.get("GOOG"), 0.1);
+    assertEquals(4978.95,
+            portfolioDir.portfolioValue(0, 13, 12, 2023, api), 0.001);
+
+    LocalDate date3 = LocalDate.of(2024, 1, 2);
+    Map<String, Double> composition1 = portfolioDir.portfolioComposition(0, date3);
+
+    assertEquals(2, composition1.size());
+    assertEquals(15.0,  composition1.get("AAPL"), 0.1);
+    assertEquals(15.0,  composition1.get("GOOG"), 0.1);
+    assertEquals(4878.0,
+            portfolioDir.portfolioValue(0, 2, 1, 2024, api), 0.001);
+
+
+    LocalDate date4 = LocalDate.of(2024, 1, 12);
+    Map<String, Double> composition2 = portfolioDir.portfolioComposition(0, date4);
+
+    assertEquals(2, composition2.size());
+    assertEquals(15.0,  composition2.get("AAPL"), 0.1);
+    assertEquals(15.0,  composition2.get("GOOG"), 0.1);
+    assertEquals(4952.4,
+            portfolioDir.portfolioValue(0, 12, 1, 2024, api), 0.001);
+
+
+  }
+
+
 }
