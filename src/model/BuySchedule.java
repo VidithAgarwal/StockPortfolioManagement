@@ -129,5 +129,7 @@ class BuySchedule implements Schedule {
   }
 
   @Override
-  public void setLastRunDate(LocalDate date) {this.lastRunDate = date;}
+  public void setLastRunDate(LocalDate date) {
+    this.lastRunDate = date;
+  }
 }
