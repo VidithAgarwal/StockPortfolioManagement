@@ -98,17 +98,24 @@ public class CreateStrategyPage {
       public void actionPerformed(ActionEvent e) {
         int n = Integer.parseInt(numberField.getText().trim());
         portfolioName = nameField.getText().trim();
-        features.createFlexiblePortfolio(portfolioName);
+        if (!portfolioName.isEmpty()) {
+          features.createFlexiblePortfolio(portfolioName);
 
-        if (features.getErrorMessage() != null) {
-          JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+          if (features.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            numberField.setText("");
+            nameField.setText("");
+            nameField.requestFocus();
+          } else {
+            takeStrategyInputs(n);
+          }
+        }
+        else {
+          JOptionPane.showMessageDialog(inputPanel, "Please enter portfolio name.",
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
-          numberField.setText("");
-          nameField.setText("");
-          nameField.requestFocus();
-        } else {
-          takeStrategyInputs(n);
         }
       }
     });
@@ -325,23 +332,31 @@ public class CreateStrategyPage {
     confirmButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-
+        String frequencyS = frequencyDaysField.getText();
+        String amountS = totalAmountField.getText();
         int frequency = Integer.parseInt(frequencyDaysField.getText());
         Double amount = Double.parseDouble(totalAmountField.getText());
-        features.createPortfolioWithStrategy(portfolioName, startDate[0], endDate[0], frequency,
-                amount, shareDetails);
+        if (!shareDetails.isEmpty() && !frequencyS.isEmpty() && !amountS.isEmpty()) {
+          features.createPortfolioWithStrategy(portfolioName, startDate[0], endDate[0], frequency,
+                  amount, shareDetails);
 
-        if (features.getErrorMessage() != null) {
-          JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+          if (features.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            shareDetails = new HashMap<>();
+            takeStrategyInputs(n);
+          } else {
+            JOptionPane.showMessageDialog(inputPanel, features.getSuccessMessage(),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            mainView.showSecondMenu(features);
+          }
+        }
+        else {
+          JOptionPane.showMessageDialog(inputPanel, "Please enter value for all fields",
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
-          shareDetails = new HashMap<>();
-          takeStrategyInputs(n);
-        } else {
-          JOptionPane.showMessageDialog(inputPanel, features.getSuccessMessage(),
-                  "Success",
-                  JOptionPane.INFORMATION_MESSAGE);
-          mainView.showSecondMenu(features);
         }
       }
     });
