@@ -361,6 +361,9 @@ public class InvestmentManagerImpl implements InvestmentManager {
                    LocalDate endDate,
                    int frequencyDays, double amount,
                    StockData api) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
     Schedule schedule = new BuySchedule(amount, frequencyDays, startDate, endDate,
              null, buyingList);
     Strategy newStrategy = new DollarCostAverageStrategy();
@@ -370,6 +373,9 @@ public class InvestmentManagerImpl implements InvestmentManager {
   @Override
   public void investWithDCAStrategy(int input, Map<String, Double> investingList, LocalDate date,
                                     double amount, StockData api) {
+    if (input >= portfolioDirectory.size() || input < 0) {
+      throw new IllegalArgumentException("The choice of portfolio doesn't exists");
+    }
     Schedule schedule = new BuySchedule(amount, 1, date, date,
             null, investingList);
     Strategy newStrategy = new DollarCostAverageStrategy();
