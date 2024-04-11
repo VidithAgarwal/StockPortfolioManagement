@@ -3,7 +3,6 @@ package view;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -12,8 +11,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JFormattedTextField;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
-import javax.swing.*;
+
 
 import controller.Features;
 
@@ -64,8 +77,8 @@ public class CreateStrategyPage {
     JLabel nameLabel = new JLabel("Enter the name of the portfolio:");
     JTextField nameField = new JTextField(15);
 
-    JLabel numberLabel = new JLabel("Enter number of stocks you want to make the strategy " +
-            "for:");
+    JLabel numberLabel = new JLabel("Enter number of stocks you want to make the strategy "
+            + "for:");
     JTextField numberField = new JTextField(15);
 
     numberField.addKeyListener(new KeyAdapter() {
@@ -85,17 +98,24 @@ public class CreateStrategyPage {
       public void actionPerformed(ActionEvent e) {
         int n = Integer.parseInt(numberField.getText().trim());
         portfolioName = nameField.getText().trim();
-        features.createFlexiblePortfolio(portfolioName);
+        if (!portfolioName.isEmpty()) {
+          features.createFlexiblePortfolio(portfolioName);
 
-        if (features.getErrorMessage() != null) {
-          JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+          if (features.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            numberField.setText("");
+            nameField.setText("");
+            nameField.requestFocus();
+          } else {
+            takeStrategyInputs(n);
+          }
+        }
+        else {
+          JOptionPane.showMessageDialog(inputPanel, "Please enter portfolio name.",
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
-          numberField.setText("");
-          nameField.setText("");
-          nameField.requestFocus();
-        } else {
-          takeStrategyInputs(n);
         }
       }
     });
@@ -312,26 +332,32 @@ public class CreateStrategyPage {
     confirmButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-
+        String frequencyS = frequencyDaysField.getText();
+        String amountS = totalAmountField.getText();
         int frequency = Integer.parseInt(frequencyDaysField.getText());
         Double amount = Double.parseDouble(totalAmountField.getText());
-        features.createPortfolioWithStrategy(portfolioName, startDate[0], endDate[0], frequency,
-                amount, shareDetails);
+        if (!shareDetails.isEmpty() && !frequencyS.isEmpty() && !amountS.isEmpty()) {
+          features.createPortfolioWithStrategy(portfolioName, startDate[0], endDate[0], frequency,
+                  amount, shareDetails);
 
-        if (features.getErrorMessage() != null) {
-          JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+          if (features.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            shareDetails = new HashMap<>();
+            takeStrategyInputs(n);
+          } else {
+            JOptionPane.showMessageDialog(inputPanel, features.getSuccessMessage(),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            mainView.showSecondMenu(features);
+          }
+        }
+        else {
+          JOptionPane.showMessageDialog(inputPanel, "Please enter value for all fields",
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
-          shareDetails = new HashMap<>();
-          takeStrategyInputs(n);
-        } else {
-          JOptionPane.showMessageDialog(inputPanel, features.getSuccessMessage(),
-                  "Success",
-                  JOptionPane.INFORMATION_MESSAGE);
-          mainView.showSecondMenu(features);
         }
-        // Process the entered data
-        // For example, you can access the data entered in the text fields and date pickers and do something with it
       }
     });
 

@@ -84,10 +84,10 @@ public class StockControllerImplGUI implements Features  {
       errorMessage = "Invalid portfolio choice";
     }
   }
+
+
   @Override
   public void export(int input,String path) {
-    // here in view we will provide drop down for selecting portfolio
-    // THE DATA WILL BE DISPLAYED IN THAT ORDER OF INDEX OF PORTFOLIOS
     errorMessage = null;
     successMessage = null;
     validateChoice(input);
@@ -141,7 +141,7 @@ public class StockControllerImplGUI implements Features  {
    * @return the date if date entered is true or null otherwise.
    */
   private LocalDate validateDateMessage(String date, String message) {
-    boolean validDate = false;
+
     int day = 0;
     int month = 0;
     int year = 0;
@@ -152,7 +152,7 @@ public class StockControllerImplGUI implements Features  {
       day = Integer.parseInt(dateParts[2].trim());
 
       if (validateDate(day, month, year)) {
-        validDate = true;
+        errorMessage = null;
       } else {
         errorMessage = message;
         return null;
@@ -161,8 +161,8 @@ public class StockControllerImplGUI implements Features  {
       errorMessage = message;
       return null;
     }
-    LocalDate buyDate = LocalDate.parse(date);
-    return buyDate;
+    LocalDate date1 = LocalDate.parse(date);
+    return date1;
   }
 
   /**
@@ -220,7 +220,7 @@ public class StockControllerImplGUI implements Features  {
     if (sellDate == null) {
       return;
     }
-    //sellStock(date,shareQuantity,name,choice);
+
     try {
       model.sellStock(choice, shareName, shareQuantity, sellDate, new StockData());
       successMessage = quantity + " " + shareName + " sold successfully";
@@ -237,7 +237,7 @@ public class StockControllerImplGUI implements Features  {
     if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
     }
-    boolean validDate = false;
+
     int day = 0;
     int month = 0;
     int year = 0;
@@ -248,7 +248,7 @@ public class StockControllerImplGUI implements Features  {
       day = Integer.parseInt(dateParts[2].trim());
 
       if (validateDate(day, month, year)) {
-        validDate = true;
+        errorMessage = null;
       } else {
         errorMessage = "Invalid date!";
         return;
@@ -278,7 +278,7 @@ public class StockControllerImplGUI implements Features  {
   public void getCostBasis(int choice, String date) {
     errorMessage = null;
     successMessage = null;
-    
+
     validateChoice(choice);
     if (Objects.equals(errorMessage, "Invalid portfolio choice")) {
       return;
@@ -393,7 +393,8 @@ public class StockControllerImplGUI implements Features  {
   }
 
   @Override
-  public TreeMap<String, String> crossoverOverPeriod(String startDateArray, String endDateArray, String ticker) {
+  public TreeMap<String, String> crossoverOverPeriod(String startDateArray, String endDateArray,
+                                                     String ticker) {
     errorMessage = null;
     successMessage = null;
     StockData api = new StockData();
@@ -417,8 +418,11 @@ public class StockControllerImplGUI implements Features  {
       return null;
     }
   }
+
+
   @Override
-  public TreeMap<String, String> movingCrossoversOverPeriod(String startDateArray, String endDateArray,
+  public TreeMap<String, String> movingCrossoversOverPeriod(String startDateArray,
+                                                            String endDateArray,
                                                             String x, String y, String ticker) {
     errorMessage = null;
     successMessage = null;
@@ -434,19 +438,18 @@ public class StockControllerImplGUI implements Features  {
     if (endDate == null) {
       return null;
     }
-    
+
     int value = validatePositiveNumber(x,"X must be a positive integer." );
     if (value ==  -1) {
       return null;
     }
-    
+
     int value1 = validatePositiveNumber(y,"Y must be a positive integer.");
     if (value1 ==  -1) {
       return null;
     }
 
-      StockData api = new StockData();
-    TreeMap<String, String> result;
+    StockData api = new StockData();
     try {
       return model.movingCrossOver(ticker, api, startDate, endDate, value, value1);
 
@@ -459,7 +462,7 @@ public class StockControllerImplGUI implements Features  {
 
   @Override
   public ArrayList<String> getPortfolioNames() {
-    Map<String, String > mapOfPortfolios = model.getListOfPortfoliosName();
+    Map<String, String> mapOfPortfolios = model.getListOfPortfoliosName();
     ArrayList<String> list = new ArrayList<>();
     for (Map.Entry<String, String> entry: mapOfPortfolios.entrySet()) {
       if (entry.getValue().equalsIgnoreCase("Flexible")) {
@@ -532,7 +535,7 @@ public class StockControllerImplGUI implements Features  {
                                           Double amount, Map<String, Double> shareDetails) {
     this.errorMessage = null;
     this.successMessage = null;
-    
+
     LocalDate strategyStartDate = validateDateMessage(startDate, "Invalid start date!");
     if (strategyStartDate == null) {
       return;
@@ -559,7 +562,8 @@ public class StockControllerImplGUI implements Features  {
     }
 
     try {
-      model.createDollarCostAverageStrategy(model.getSize() - 1, shareDetails, strategyStartDate,
+      model.createDollarCostAverageStrategy(model.getSize() - 1, shareDetails,
+              strategyStartDate,
               strategyEndDate, frequency, amount, new StockData());
       this.successMessage = "Portfolio with the provided strategy created successfully";
     } catch (RuntimeException e) {

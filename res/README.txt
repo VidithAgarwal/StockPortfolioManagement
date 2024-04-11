@@ -1,18 +1,28 @@
-ASSIGNMENT - 4
+ASSIGNMENT - 6
 
-The assignment follows MVC architecture for portfolio creation, management (save/load portfolio),
+The assignment follows MVC architecture for portfolio creation both flexible and inflexible,
+management (save/load portfolio), creating dollar cost averaging, investment strategies ( for flexible portfolios),
 stock and portfolio statistic, performance evaluation for stock and portfolio,
 composition of portfolio, total value and shares handling for a portfolio.
 
 The program has various features for stock addition, portfolio creation (flexible and inflexible),
 persisting the portfolio, getting total value of portfolio, getting composition of a portfolio
-and loading a portfolio, cost basis for flexible portfolio, and also buying and selling of stocks for
-flexible portfolio.
+and loading a portfolio, cost basis for flexible portfolio, also buying and selling of stocks for
+flexible portfolio, and creating dollar cost averaging, investment strategies ( for flexible portfolios).
+
 The stock statistics features are also provided such as gain or lose on
 a date,gain or lose over a period, x-day moving average on a given date, crossover for a specified time
 period, moving crossover for a time period. Performance over time for stock and portfolios.
 
-1. Creating a inflexible portfolio , adding shares and their quantity :
+The user gets two view options, one is text based view and other is GUI based view. Default view provided
+to the user is GUI based view. Which contains the functionality related to flexible portfolio. And
+also the stock statistic analysis.
+Whereas the text based view is called when -text is typed in command line as arguments , this text -
+based view contains functionality for both the flexible and inflexible portfolio. But only does not
+have the additional functionality of dollar cost averaging and investment strategy adding for flexible
+portfolios.
+
+1. Creating inflexible portfolio , adding shares and their quantity :
 The program allows the user to create one or more portfolios, and have one or more stocks in the
  portfolio. The stocks can be added in the portfolio along with their name/ticker symbol and
  quantity. The stocks once added in the portfolio cannot be removed from the portfolio or new
@@ -150,6 +160,41 @@ time-stamp dates over the period.
 For flexible portfolio, the performance is calculated by getting the total value of portfolio on the
 time-stamp dates over the period. The total value depends on the composition of the portfolio, and changes
 as stocks are bought and sold from the portfolio.
+
+10. Creating Dollar Cost Averaging Strategy for flexible portfolio : The user can create a dollar cost
+averaging strategy at the time for creating a flexible portfolio, by entering start date for strategy,
+end date for strategy,
+number of days (frequency) based on which strategy is to be carried out, amount for creating the
+strategy that is how much money is to be invested. And for all the stocks in the portfolio ask the user
+to enter the percentage of a particular stocks they want to get invested. The percentage should add
+upto 100%. Here, when creating portfolio the users cannot buy fractional shares explicitly,
+however this strategy does allow purchases of fractional shares depending on the amount specified.
+That depends on the percentage and the amount entered for investment. That is offers creating
+"start-to-finish" dollar-cost averaging as a single operation.
+
+
+11. Investment with dollar cost averaging strategy for flexible portfolio : Here, the user has to enter
+the inputs as mentioned above. The only difference is the portfolio is already created and therefore,
+for that flexible portfolio additionally the dollar cost averaging strategy is added. For this the user
+has to select from the existing portfolios list and enters the inputs as similar to above-mentioned
+function of creating dollar cost averaging strategy for flexible portfolio. The strategy may be
+ongoing, i.e. the user may not specify an end date . So, in that cases the end date is taken as the
+current date. The program additionally also supports the addition of new strategies in future without
+any change in the existing code.
+
+12 : GUI-based view : The user gets to access the functionality using the GUI based view.
+The user gets options to create a flexible portfolio, load a flexible portfolio, and create a portfolio
+with dollar cost average strategy at the beginning. Once, there is a single portfolio created the user
+gets different options to select from. The user can get composition of a portfolio, buy stocks, sell
+stocks, get cost basis, get total value, save portfolio, investment in a portfolio with dollar cost
+average strategy, and get stock analysis.
+Based on the choice selected the user has to enter the required fields to get the required output.
+The date field is taken to be selected from calendar. The portfolio is to be selected as a drop-down
+to select portfolio. The composition is shown in a tabular form, save and load allow to take in csv files
+only. There are various features provided by the gui, like it throws error messages when user enters
+some invalid input and also shows success messages to user when user enters correct values and gets the
+required output.
+
 
 Additional Details:
 

@@ -357,15 +357,16 @@ public class InvestmentManagerImpl implements InvestmentManager {
 
   @Override
   public void createDollarCostAverageStrategy(int input, Map<String, Double> buyingList,
-                                      LocalDate startDate,
-                   LocalDate endDate,
-                   int frequencyDays, double amount,
-                   StockData api) {
+                                              LocalDate startDate,
+                                              LocalDate endDate,
+                                              int frequencyDays, double amount,
+                                              StockData api) {
     if (input >= portfolioDirectory.size() || input < 0) {
       throw new IllegalArgumentException("The choice of portfolio doesn't exists");
     }
     Schedule schedule = new BuySchedule("DCA",amount, frequencyDays, startDate, endDate,
              null, buyingList);
+
     Strategy newStrategy = new DollarCostAverageStrategy();
     portfolioDirectory.get(input).strategicalInvestment(schedule, newStrategy, api);
   }

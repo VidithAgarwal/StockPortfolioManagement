@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import controller.IStockData;
-import controller.StockData;
 
 import static model.AbstractPortfolio.validateStockName;
 

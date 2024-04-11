@@ -1,4 +1,4 @@
-ASSIGNMENT - 4
+ASSIGNMENT - 6
 
 The design is implemented as follows:
 
@@ -225,9 +225,9 @@ The main program files created in the assignment are:
 Model :
 
 
-1. PortfolioDir :
+1. Investment Manager :
 
-Interface:  portfolio dir has the methods for delegating input to a particular portfolio through
+Interface:  Investment manager has the methods for delegating input to a particular portfolio through
 the list of portfolios.
 
 Responsibility: stores the data of list of portfolios created in the program,
@@ -281,11 +281,19 @@ performance of a portfolio.
 20. save() : Saves the portfolio, based on flexible or inflexible portfolio.
 21. loadPortfolio() : this method loads a portfolio from data provided by a list of strings and a
 StockData object, based on type of portfolio to be loaded.
+22.createDollarCostAverageStrategy() : method adds a new investment strategy to a portfolio in the
+portfolio directory. It executes a dollar-cost averaging investment strategy for the given portfolio,
+ with parameters such as the buying list (map of stocks to buy with respective percentages),
+ start and end dates of the investment strategy, frequency of investments in days, total investment
+  amount, and the stock data API to fetch historical prices.
+ 23. investWithDCAStrategy(): method executes an investment using the Dollar Cost Averaging (DCA)
+ strategy. It takes parameters such as the frequency of investment (e.g., monthly, weekly, based
+ on the number of days), a map containing stocks and their corresponding percentages of investment,
+ the date of investment, the total amount to be invested, and the stock data API for accessing stock data.
 
+2. InvestmentManagerImpl :
 
-2. PortfolioDirImpl :
-
-Responsibility: Implements the methods defined in the PortfolioDir interface.
+Responsibility: Implements the methods defined in the InvestmentManager interface.
 Description : it has methods which are implemented for adding portfolio to portfolio directory,
 getting list of portfolios, composition of a portfolio, and portfolio value.
 Also. getting the total value of a specific portfolio in the array list of
@@ -326,6 +334,11 @@ the implementation varies.
 8. isFlexible() : Checks if the portfolio is flexible.
 9. load() : this method loads a portfolio from data provided by a list of strings and a
 StockData object. The implementation varies based on the type of portfolio to be loaded.
+10. strategicalInvestment() : The strategicalInvestment method executes a dollar-cost averaging
+investment strategy based on the provided buying schedule, current date, and a given stock data API
+to fetch historical prices. It takes three parameters: schedule, which defines the buying schedule
+specifying the investment strategy; strategy, representing the strategy interface used to generate
+ transactions; and api, which is the stock data API utilized to fetch historical prices.
 
 
 4. PortfolioImpl :
@@ -495,6 +508,47 @@ based on the composition and stock prices.
 returns its ticker symbol.
 5. deepCopy(): Creates deep copy of map to ensure independent copies of composition of portfolio.
 
+11. Strategy :
+The Strategy interface, situated in the model package, delineates the blueprint for implementing
+investment strategies within the system. It encapsulates the method applyStrategy(LocalDate date,
+ Schedule schedule, IStockData api), responsible for generating transactions based on a given date,
+ schedule, and access to stock data via the provided interface IStockData api.
+ This method orchestrates the application of the strategy, producing a list of transactions as its
+ output, each representing a specific action such as buying or selling stocks in accordance with the
+  implemented investment strategy.
+
+12. Schedule :
+The Schedule interface, located in the model package, serves as a blueprint for implementing
+buying strategies within the investment system. It facilitates the investment of a specific amount
+in an existing flexible portfolio on a designated date by specifying the weights for distributing the
+investment across various stocks within the portfolio. This interface encapsulates methods such as
+ getAmount(), getFrequencyDays(), getStartDate(), getEndDate(), getLastRunDate(), and getBuyingList()
+ which respectively retrieve the amount to invest, the frequency of transactions in days, the start
+ and end dates of the buying strategy, the date of the last execution of the strategy, and a map
+ representing the buying list indicating the assets to buy and their corresponding investment amounts.
+
+13. DollarCostAverageStrategy :
+The DollarCostAverageStrategy class encapsulates the logic for a Dollar Cost Averaging investment
+ strategy, which involves investing a fixed amount of money at regular intervals. It applies the
+ strategy to generate transactions based on given parameters such as the current date, the scheduling
+  for strategy execution, and an interface for accessing stock data. The method applyStrategy calculates
+   and generates transactions for the strategy, ensuring that the investments are made according to the
+   defined schedule and buying list while handling any encountered invalid stock names appropriately.
+
+14. BuyingStrategy :
+The BuyingStrategy interface defines the structure for representing a buying strategy for
+investments. It specifies methods to retrieve various parameters of the buying strategy such as the
+ amount of money to be invested, the frequency of transactions in days, the start and end dates of
+ the strategy, the last execution date, and a map representing the buying list, which contains symbols
+  of assets to buy along with corresponding amounts to invest in each asset. This interface allows for
+  the implementation of flexible and customizable buying strategies within investment portfolios.
+
+14. BuySchedule :
+The responsibility of the BuySchedule class is to represent a schedule for buying stocks,
+encapsulating information such as the investment amount, buying frequency in days, start and
+ end dates of the buying strategy, the last run date, and a map containing stocks to buy along with
+  their respective percentages. Additionally, it ensures that the provided buying list is correctly
+   formatted and scaled to sum up to 100%, throwing exceptions for invalid inputs.
 
 
 Controller :
@@ -573,6 +627,31 @@ particular ticker symbol in the data folder. It constructs the file path based o
 and current date, then checks if the file exists.
 It returns true if the CSV file exists, otherwise false.
 
+5. Features : The responsibility of the Features interface is to define a set of methods that
+interact with the user interface (GUI) to facilitate various actions related to portfolio management.
+These actions include creating flexible portfolios, exporting portfolio data to files, buying and
+selling stocks, investing with Dollar-Cost Averaging (DCA) strategy, examining portfolio composition,
+retrieving total portfolio value and cost basis, analyzing gains or losses for stocks, calculating
+moving averages and crossover points, handling error and success messages, retrieving portfolio names,
+loading portfolios from files, and creating portfolios with specified investment strategies.
+These methods delegate user input to model methods for performing the corresponding actions.
+
+6. StockControllerImplGUI :
+The StockControllerImplGUI class implements the Features interface and serves as a controller for
+ managing investment manager-related operations in a graphical user interface (GUI) environment. 
+ It handles tasks such as creating flexible portfolios, exporting portfolio data, buying and selling
+  stocks, retrieving total portfolio value and cost basis, analyzing gains or losses for stocks, 
+  calculating moving averages and crossover points, handling error and success messages, 
+  loading portfolios from files, and creating portfolios with specified investment strategies. It 
+  interacts with the model (InvestmentManager) to perform these operations and communicates with 
+  the view component (IViewGUI) to display information and receive user input. Additionally, 
+  it contains methods for validating user input, managing error messages, and setting the view component.
+
+
+
+
+
+
 
 View :
 
@@ -605,6 +684,42 @@ inflexible.
  displaying error messages, showing the bar graph for portfolio and stock performance to the user,
   showing the stock statistics menu, showing the x-day moving average, crossover days, displaying
   portfolio types to choose from and printing the messages for user interaction with menu.
+
+3. IViewGUI :
+Interface: The IViewGUI interface defines methods for interacting with the graphical user
+interface (GUI) components of the application.
+Methods:
+1. addFeatures(): This method sets the Features instance for the GUI
+and connects the view with the controller. It defines callback functions based on actions to
+perform when used in the view.
+
+4. GUIView: The GUIView implements the IViewGUI and further has various private methods that help in
+creating a proper user-friendly view. And also methods to direct the input from the view to the controller
+for all the different methods.
+The GUIView class in the view package of the investment application is responsible for managing the
+ graphical user interface (GUI) elements and interactions. It creates various components such as
+ buttons, text fields, and labels, and handles user actions like creating portfolios, buying and
+ selling stocks, saving portfolios, and implementing investment strategies like Dollar Cost
+ Averaging (DCA). Additionally, it communicates with the Features class to perform corresponding
+ actions and displays relevant information to the user, ensuring a seamless and intuitive user
+  experience throughout the application. It has all the methods that are represented using GUI View
+  persisting to the flexible portfolio.
+
+5. CreateStrategyPage : The CreateStrategyPage class is used for creating
+investment strategies within the graphical user interface (GUI) of the application.
+It provides functionality to display forms for inputting portfolio details, including stock names,
+ quantities, total amount, frequency days, start and end dates. Additionally, it handles user
+ interactions for submitting and confirming the strategy, validates user input,
+ and interacts with the Features instance to perform actions such as creating portfolios and
+ managing strategies. Furthermore, it manages UI components and displays selected dates using date
+ pickers, ensuring a smooth user experience throughout the strategy creation process.
+
+
+
+
+
+
+
 
 
 
