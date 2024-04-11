@@ -101,7 +101,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method adds features to the GUI interface.
-   * @param features is the Features object containing the features to be added.
+   * @param features An instance of the Features class providing functionality for the application.
    */
   @Override
   public void addFeatures(Features features) {
@@ -149,14 +149,18 @@ public class GUIView extends JFrame implements IViewGUI {
   }
 
   /**
-   * Creates a JComboBox (dropdown) with the specified list of portfolio names.
-   * @param listOfPortfolioNames an array of portfolio names to be displayed in the dropdown
-   * @return a JComboBox object with the provided list of portfolio names
+   * this method creates JComboBox (dropdown) with specified list of portfolio names.
+   * @param listOfPortfolioNames array of portfolio names to be displayed in the dropdown.
+   * @return  JComboBox object with the provided list of portfolio names.
    */
   private JComboBox<String> createDropdown(String[] listOfPortfolioNames) {
     return new JComboBox<String>(listOfPortfolioNames);
   }
 
+  /**
+   * displays buy page for purchasing stocks.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void showBuyPage(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -239,6 +243,10 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method displays sell page for selling stocks.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void showSellPage(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -320,17 +328,31 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method retrieves the index of the selected item from the dropdown.
+   * @param e is the ActionEvent triggered by the dropdown selection.
+   * @return index of the selected item in the dropdown.
+   */
   private int getDropdownChoice(ActionEvent e) {
     JComboBox<String> cb = (JComboBox<String>) e.getSource();
     return cb.getSelectedIndex();
   }
 
+  /**
+   * this method retrieves the selected date from the JDatePicker.
+   * @param datePicker the JDatePicker object containing selected date.
+   * @return string representation of the selected date.
+   */
   String getDate(JDatePicker datePicker) {
     Date selectedDate = (Date) datePicker.getModel().getValue();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     return sdf.format(selectedDate);
   }
 
+  /**
+   * this method creates a JDatePanelImpl (date picker panel) with default properties.
+   * @return a JDatePanelImpl object representing date picker panel.
+   */
   JDatePanelImpl createDatePanel() {
     UtilDateModel model = new UtilDateModel();
     model.setValue(null);
@@ -346,15 +368,11 @@ public class GUIView extends JFrame implements IViewGUI {
     return new JDatePanelImpl(model, properties);
   }
 
-  private void sellStock(Features features) {
-  }
 
-  private void costBasis(Features features) {
-  }
-
-  private void totalValue(Features features) {
-  }
-
+  /**
+   * this method displays the save page for exporting the portfolio to a CSV file.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void save(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -443,12 +461,11 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
-  private void dollarCostPortfolio(Features features) {
-  }
 
-  private void investmentPortfolio(Features features) {
-  }
-
+  /**
+   * this method displays create portfolio page for creating a new flexible portfolio.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void createPortfolio(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -500,6 +517,13 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method displays second menu with various options for user, such as creating portfolios,
+   * loading portfolios, getting portfolio composition, buying stocks, selling stocks, getting
+   * cost basis, getting total value, saving portfolios, investing with Dollar Cost Averaging (DCA)
+   * strategy, and getting stock analysis.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   void showSecondMenu(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -599,6 +623,12 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method perform Dollar Cost Averaging (DCA) investment strategy.
+   * Displays a form for user to select a portfolio, date of investment, and weight for each stock.
+   * Submits the investment request to Features object.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void DCAInvestment(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel mainPanel = new JPanel(new BorderLayout());
@@ -671,6 +701,16 @@ public class GUIView extends JFrame implements IViewGUI {
 
   }
 
+  /**
+   * this method update form with composition details of the selected portfolio.
+   * Allows the user to enter the weight for each stock and the total investment amount.
+   *
+   * @param stringDoubleMap  map containing the composition of the portfolio.
+   * @param formPanel      panel containing the form elements.
+   * @param features       Features object containing the investment features.
+   * @param date            date of investment.
+   * @param choice         index of the selected portfolio.
+   */
   private void updateForm(Map<String, Double> stringDoubleMap, JPanel formPanel,
                           Features features, String date, int choice) {
     formPanel.removeAll();
@@ -796,6 +836,10 @@ public class GUIView extends JFrame implements IViewGUI {
   }
 
 
+  /**
+   * this method displays page for calculating cost basis of a portfolio.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void showCostBasisPage(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -859,6 +903,10 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method display page for calculating the total value of a portfolio.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void showTotalValuePage(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -924,23 +972,30 @@ public class GUIView extends JFrame implements IViewGUI {
   }
 
 
+  /**
+   * this method display an error message in a dialog box.
+   * @param error the error message to be displayed
+   */
   @Override
   public void displayError(String error) {
-    JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(null, error, "Error",
+            JOptionPane.ERROR_MESSAGE);
   }
 
+  /**
+   * this method print a message to the console.
+   * @param message the message to be printed
+   */
   @Override
   public void print(String message) {
     System.out.println(message);
   }
 
 
-
-//  @Override
-//  public void addFeatures(Features.java features) {
-//    // Implement if needed
-//  }
-
+  /**
+   * this method display stock analysis menu with various options.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void stockAnalysis(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -996,6 +1051,10 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method display the moving crossover analysis form.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void movingCrossover(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1096,6 +1155,12 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method clears the main frame content.
+   * prepares a panel for getting crossover days for a stock.
+   * and sets up UI components for user input.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void crossoverPeriod(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1180,6 +1245,12 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method clears main frame content.
+   * prepares a panel for obtaining X-Day Moving Date Average for a stock,
+   * and sets up UI components for user input.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void xMovingAvg(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1254,6 +1325,12 @@ public class GUIView extends JFrame implements IViewGUI {
 
   }
 
+  /**
+   * this method clears main frame content.
+   * prepares a panel for obtaining gain or loss of a stock over a period of time,
+   * and sets up UI components for user input.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void gainOrLoseOverPeriod(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1333,6 +1410,12 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method clears main frame content.
+   * prepares a panel for obtaining gain or loss of a stock on a particular date,
+   * and sets up UI components for user input.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void gainOrLose(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1400,6 +1483,12 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method clears main frame content.
+   * prepares a panel for loading a portfolio from a CSV file,
+   * and sets up UI components for user input.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void loadPortfolio(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1472,6 +1561,12 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method clears the main frame content.
+   * prepares a panel for obtaining the composition of a portfolio,
+   * and sets up UI components for user input.
+   * @param features An instance of the Features class providing functionality for the application.
+   */
   private void composition(Features features) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new GridBagLayout());
@@ -1543,6 +1638,11 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method displays the composition result of a portfolio in a table format.
+   * @param features An instance of the Features class providing functionality for application.
+   * @param compositionResult  map containing the composition result of  portfolio.
+   */
   private void displayCompositionResult(Features features, Map<String, Double> compositionResult) {
     mainFrame.getContentPane().removeAll();
     JPanel panel = new JPanel(new BorderLayout());
@@ -1564,6 +1664,11 @@ public class GUIView extends JFrame implements IViewGUI {
     mainFrame.setVisible(true);
   }
 
+  /**
+   * this method creates a JTable to display the composition result of a portfolio.
+   * @param compositionResult  map containing the composition result of the portfolio.
+   * @return  JTable displaying the composition result.
+   */
   private JTable createCompositionTable(Map<String, Double> compositionResult) {
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("Ticker Symbol");
@@ -1578,6 +1683,9 @@ public class GUIView extends JFrame implements IViewGUI {
     return table;
   }
 
+  /**
+   * Custom formatter class for formatting dates in UI.
+   */
   static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
 
     @Override
@@ -1585,6 +1693,14 @@ public class GUIView extends JFrame implements IViewGUI {
       return null; // Not used
     }
 
+    /**
+     * this method overrides valueToString method of AbstractFormatter class.
+     * to format dates as strings.
+     * If provided value is an instance of Date, it formats the date using the "yyyy-MM-dd" format.
+     * Otherwise, it returns an empty string.
+     * @param value value to be formatted.
+     * @return formatted string representation of the date, or an empty string if value is not Date.
+     */
     @Override
     public String valueToString(Object value) {
       if (value instanceof Date) {
