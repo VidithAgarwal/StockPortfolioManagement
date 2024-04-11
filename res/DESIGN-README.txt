@@ -7,15 +7,15 @@ the user and passes the input to the model for processing and, the controller se
 data received from the model to the view to show that processed data to the user.
 
 For, the GUI based view creation, there is an addition of new features interface class in the controller.
-The features interface contains of all the methods that are shown in the GUI based view. This interface 
-is implemented by the new StockControllerImplGUI. The methods in the controller get the input from the 
+The features interface contains of all the methods that are shown in the GUI based view. This interface
+is implemented by the new StockControllerImplGUI. The methods in the controller get the input from the
 view and further pass the inputs to the model for getting further output. The StockControllerImplGUI
 uses setView method to provide view with all the callbacks using the add features method of the view.
-The add features method further represents the primary menu which is shown when no portfolio is created. 
-The user can select any choice based on the options shown on the home page. Based on the user's choice 
-respective private methods are called. This methods delegate the input from the view to the controller 
+The add features method further represents the primary menu which is shown when no portfolio is created.
+The user can select any choice based on the options shown on the home page. Based on the user's choice
+respective private methods are called. This methods delegate the input from the view to the controller
 and controller further processes it to the model. If the model produces an output message then that is
-stored in the error message string and further shown in the view, and if the model successfully processes 
+stored in the error message string and further shown in the view, and if the model successfully processes
 the output then that is represented on the screen through the use of success message.
 
 
@@ -154,9 +154,23 @@ On exit of the program, all the folders inside the Data folder are deleted other
 containing the historical data of different stocks that were fetched today. As the date changes the
 folder is deleted upon exit as a new folder with that date's name will be created.
 
-Our program supports all stocks in NYSE and NASDAQ, and it supports all the dates
+Our program supports all stocks in NYSE and NASDAQ, and it supports all the dates.
 
-CHANGES FROM THE PREVIOUS DESIGN:
+CHANGES FROM THE PREVIOUS DESIGN, ASSIGNMENT 5 TO 6 :
+1) Initially the quantity of a particular stock was taken as int as fractional shares were not allowed.
+However, now the quantity field is taken as double in the model. Still keeping the restriction of not allowing
+the users to enter fractional shares as in the controller the stock quantity that the user can enter
+is still restricted to positive integer. But, now as the user can enter different weight % when adding
+strategy the stock quantity can come to be fractional from different shares based on weight %, stock price and
+the amount entered by user for investing.
+
+2) The functionality of load and save is also changed to some extent. As, now if there is an
+ongoing strategy the strategy will have to be saved along with the portfolio transactions. Further,
+when loading a flexible portfolio it is checked if there is a strategy present along with portfolio
+transaction information. This helps user in continuing the strategy.
+
+
+CHANGES FROM THE PREVIOUS DESIGN, ASSIGNMENT 4 TO 5:
 1) Initially I had the fetching from the API functionality inside my model package,
 but now I have created a new class Stock Data inside my Controller package as any data that
 comes from outside the program must belong to the controller, So now storing the historical data,
