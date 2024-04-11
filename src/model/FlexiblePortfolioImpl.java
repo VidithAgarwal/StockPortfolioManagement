@@ -337,14 +337,11 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
     }
   }
 
-
   /**
-   * this method executes dollar-cost averaging investment strategy.
-   * based on the provided schedule and current date,
-   * using the given stock data API to fetch historical prices.
-   * @param today    current date.
-   * @param schedule  buying schedule defining investment strategy.
-   * @param api      stock data API to fetch historical prices.
+   * this method executes a strategic investment plan using the provided strategy.
+   * @param schedule   schedule for executing the investment strategy.
+   * @param strategy   strategy to be applied for investment.
+   * @param api        interface for accessing stock data.
    */
   @Override
   public void strategicalInvestment(Schedule schedule, Strategy strategy, IStockData api) {
