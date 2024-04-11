@@ -228,21 +228,28 @@ public class GUIView extends JFrame implements IViewGUI {
     submitButton.addActionListener(e -> {
       String shareName = stringInputField.getText().trim();
       String quantity = numberInputField.getText().trim();
-      System.out.println(date[0]);
-      features.buyStock(date[0], quantity, shareName, choice[0]);
-      if (features.getErrorMessage() != null) {
-        JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+      if (!shareName.isEmpty() && !quantity.isEmpty()) {
+        features.buyStock(date[0], quantity, shareName, choice[0]);
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          numberInputField.setText("");
+          stringInputField.setText("");
+          dropdown.setSelectedIndex(0);
+        } else {
+          JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
+                  "Success",
+                  JOptionPane.INFORMATION_MESSAGE);
+          showSecondMenu(features);
+        }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter value of all fields",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
-        numberInputField.setText("");
-        stringInputField.setText("");
-        dropdown.setSelectedIndex(0);
-      } else {
-        JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
-        showSecondMenu(features);
       }
+
     });
 
     mainFrame.add(panel);
@@ -314,19 +321,26 @@ public class GUIView extends JFrame implements IViewGUI {
     submitButton.addActionListener(e -> {
       String shareName = stringInputField.getText().trim();
       String quantity = numberInputField.getText().trim();
-      features.sellStock(date[0], quantity, shareName, choice[0]);
-      if (features.getErrorMessage() != null) {
-        JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+      if (!shareName.isEmpty() && !quantity.isEmpty()) {
+        features.sellStock(date[0], quantity, shareName, choice[0]);
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          numberInputField.setText("");
+          stringInputField.setText("");
+          dropdown.setSelectedIndex(0);
+        } else {
+          JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
+                  "Success",
+                  JOptionPane.INFORMATION_MESSAGE);
+          showSecondMenu(features);
+        }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter value of all fields",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
-        numberInputField.setText("");
-        stringInputField.setText("");
-        dropdown.setSelectedIndex(0);
-      } else {
-        JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
-        showSecondMenu(features);
       }
     });
 
@@ -500,7 +514,7 @@ public class GUIView extends JFrame implements IViewGUI {
     submitButton.setPreferredSize(new Dimension(200, 35));
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
-      if (inputText != null) {
+      if (!inputText.isEmpty()) {
         features.createFlexiblePortfolio(inputText);
         if (features.getErrorMessage() != null) {
           JOptionPane.showMessageDialog(panel, "Portfolio with this name already exists",
@@ -515,6 +529,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter name for creating portfolio",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
       }
     });
 
@@ -956,19 +975,19 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(submitButton, gbc);
 
     submitButton.addActionListener(e -> {
-      System.out.println(date[0]);
-      features.getTotalValue(choice[0], date[0]);
-      if (features.getErrorMessage() != null) {
-        JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        dropdown.setSelectedIndex(0);
-      } else {
-        JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
-        showSecondMenu(features);
-      }
+        features.getTotalValue(choice[0], date[0]);
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          dropdown.setSelectedIndex(0);
+        } else {
+          JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
+                  "Success",
+                  JOptionPane.INFORMATION_MESSAGE);
+          showSecondMenu(features);
+        }
+
     });
 
     mainFrame.add(panel);
@@ -977,7 +996,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
     mainFrame.setVisible(true);
   }
-  
+
 
 
   /**
@@ -1093,8 +1112,8 @@ public class GUIView extends JFrame implements IViewGUI {
       String endDate = date2[0];
       String xValue = textBox3.getText();
       String yValue = textBox4.getText();
-      if (inputText != null && startDate != null && endDate != null
-              && xValue != null && yValue != null) {
+      if (!inputText.isEmpty() && !startDate.isEmpty() && !endDate.isEmpty()
+              && !xValue.isEmpty() && !yValue.isEmpty()) {
         TreeMap<String, String> result = features.movingCrossoversOverPeriod(startDate, endDate,
                 xValue, yValue, inputText);
 
@@ -1117,6 +1136,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter value for all fields",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
       }
     });
 
@@ -1189,7 +1213,7 @@ public class GUIView extends JFrame implements IViewGUI {
       String inputText = textBox.getText();
       String startDate = date1[0];
       String endDate = date2[0];
-      if (inputText != null && startDate != null && endDate != null) {
+      if (!inputText.isEmpty() && !startDate.isEmpty() && !endDate.isEmpty()) {
         TreeMap<String, String> result = features.crossoverOverPeriod(startDate,
                 endDate, inputText);
         if (features.getErrorMessage() != null) {
@@ -1212,6 +1236,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter ticker symbol and date",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
       }
     });
 
@@ -1274,7 +1303,7 @@ public class GUIView extends JFrame implements IViewGUI {
       String inputText = textBox.getText();
       String xValue = textBox2.getText();
       String inputDate = date[0];
-      if (inputText != null && inputDate != null && xValue != null) {
+      if (!inputText.isEmpty() && !inputDate.isEmpty() && !xValue.isEmpty()) {
         features.xDayMovingAvg(inputText, xValue, inputDate);
 
         if (features.getErrorMessage() != null) {
@@ -1291,6 +1320,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter ticker symbol, X days and date",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
       }
     });
 
@@ -1360,7 +1394,7 @@ public class GUIView extends JFrame implements IViewGUI {
       String inputText = textBox.getText();
       String startDate = date1[0];
       String endDate = date2[0];
-      if (inputText != null && startDate != null && endDate != null) {
+      if (!inputText.isEmpty() && !startDate.isEmpty() && !endDate.isEmpty()) {
         features.gainOrLoseOverPeriod(startDate, endDate, inputText);
 
         if (features.getErrorMessage() != null) {
@@ -1377,6 +1411,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter ticker symbol and date",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
       }
     });
 
@@ -1436,7 +1475,7 @@ public class GUIView extends JFrame implements IViewGUI {
     submitButton.addActionListener(evt -> {
       String inputText = textBox.getText();
       String inputDate = date[0];
-      if (inputText != null && inputDate != null) {
+      if (!inputText.isEmpty() && !inputDate.isEmpty()) {
         features.gainOrLose(inputDate, inputText);
         if (features.getErrorMessage() != null) {
           String error = features.getErrorMessage();
@@ -1452,6 +1491,11 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
+      }
+      else {
+        JOptionPane.showMessageDialog(panel, "Please enter ticker symbol and date",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
       }
     });
 
