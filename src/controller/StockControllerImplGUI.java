@@ -50,8 +50,14 @@ public class StockControllerImplGUI implements Features  {
     view.addFeatures(this);
   }
 
+  /**
+   * string error message that contains the error message at different executions.
+   */
   private String errorMessage;
 
+  /**
+   * string success message that contains success message when used in different methods.
+   */
   private String successMessage;
 
   @Override
@@ -145,6 +151,13 @@ public class StockControllerImplGUI implements Features  {
 
   }
 
+  /**
+   * method to take in the date and pass the message to user based on date validation as used.
+   * differently in different methods.
+   * @param date the date that is passed to check for validity.
+   * @param message the message based on which method is using this date validation.
+   * @return the date if date entered is true or null otherwise.
+   */
   private LocalDate validateDateMessage(String date, String message) {
     boolean validDate = false;
     int day = 0;
@@ -170,11 +183,23 @@ public class StockControllerImplGUI implements Features  {
     return buyDate;
   }
 
+  /**
+   * method to validate the date format.
+   * @param date the date entered by the user which is checked if is in correct format.
+   * @return true is pattern matches or false otherwise.
+   */
   private boolean isValidDateFormat(String date) {
     String regex = "\\d{4}-\\d{2}-\\d{2}";
     return Pattern.matches(regex, date);
   }
 
+  /**
+   * method to validate the date entered by the user.
+   * @param day the day of the year entered by the user.
+   * @param month the month of the year selected by the user.
+   * @param year the year selected by the user.
+   * @return true if the date is valid or false otherwise.
+   */
   private boolean validateDate(int day, int month, int year) {
     if (month < 1 || month > 12) {
       return false;
@@ -462,6 +487,12 @@ public class StockControllerImplGUI implements Features  {
     }
   }
 
+  /**
+   * method to check if the user has entered valid positive number. 
+   * @param quantity the parameter to be checked if it is positive integer or not.
+   * @param message the string message that is passed based on the method using this validation.
+   * @return the number if positive int or else returns -1.
+   */
   private int validatePositiveNumber(String quantity, String message) {
     int value;
     try {
@@ -749,6 +780,11 @@ public class StockControllerImplGUI implements Features  {
   }
 
 
+  /**
+   * method to check that path entered by user is valid and take path as input.
+   * @param path the path entered by the user.
+   * @return list of strings of the contents in the file. 
+   */
   private List<String[]> inputPath(String path) {
     errorMessage = null;
     Persistence persistence = new Persistence();
