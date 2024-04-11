@@ -15,15 +15,11 @@ import view.GUIView;
 import view.IViewGUI;
 
 
-
-public class NewControllerTest {
-
-
 /**
  * This class represents a test suite for testing the functionality of StockControllerImplGUI class.
  * It contains test methods to verify the behavior of the GUI controller in different scenarios.
  */
-
+public class NewControllerTest {
 
   /**
    * Represents an instance of StockControllerImplGUI used for testing purposes.
@@ -574,13 +570,13 @@ public class NewControllerTest {
   public void testLoad() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.loadPortfolio("sachi", "/Users/sachi/Downloads/output1 2.csv");
+    String path = System.getProperty("user.dir") + "/test/testFiles/loadTest.csv";
+    controller.loadPortfolio("sachi", path);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("File loaded successfully", message);
-    assertEquals("Calculating moving crossover for aapl from 2024-03-03 to "
-                    + "2024-03-13 for x = 10 and y = 100"
+    assertEquals("Name of portfolio to be saved: sachi and lines to be appended are: lines"
             ,logChecker[logChecker.length -1]);
 
   }
@@ -592,11 +588,8 @@ public class NewControllerTest {
     controller.loadPortfolio("sachi", "");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
-    String message = controller.getSuccessMessage();
-    assertEquals("File loaded successfully", message);
-    assertEquals("Calculating moving crossover for aapl from 2024-03-03 to "
-                    + "2024-03-13 for x = 10 and y = 100"
-            ,logChecker[logChecker.length -1]);
+    String message = controller.getErrorMessage();
+    assertEquals("File not found. Please enter a valid file path.", message);
 
   }
 

@@ -536,6 +536,10 @@ public class StockControllerImplGUI implements Features  {
     this.errorMessage = null;
     this.successMessage = null;
 
+    if (startDate == null) {
+      errorMessage = "Choose a start date";
+      return;
+    }
     LocalDate strategyStartDate = validateDateMessage(startDate, "Invalid start date!");
     if (strategyStartDate == null) {
       return;

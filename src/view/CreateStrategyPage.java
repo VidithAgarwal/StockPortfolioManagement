@@ -172,7 +172,7 @@ public class CreateStrategyPage {
       JLabel shareNameLabel = new JLabel("Enter the name of stock " + (i + 1) + ":");
       JTextField shareName = new JTextField(10);
 
-      JLabel quantityLabel = new JLabel("Enter the quantity:");
+      JLabel quantityLabel = new JLabel("Enter the weight for the stock (%)");
       JTextField quantity = new JTextField(10);
       shareName.addKeyListener(new KeyAdapter() {
         @Override
@@ -237,7 +237,7 @@ public class CreateStrategyPage {
       gbc.gridwidth = 1;
     }
 
-    JLabel totalAmountLabel = new JLabel("Total Amount:");
+    JLabel totalAmountLabel = new JLabel("Total Amount you want to invest ($):");
     JTextField totalAmountField = new JTextField(10);
 
     gbc.gridx = 0;
@@ -248,7 +248,7 @@ public class CreateStrategyPage {
     inputPanel.add(totalAmountField, gbc);
 
     // Add a text field for frequency days
-    JLabel frequencyDaysLabel = new JLabel("Frequency Days:");
+    JLabel frequencyDaysLabel = new JLabel("Frequency of Days:");
     JTextField frequencyDaysField = new JTextField(10);
 
     gbc.gridx = 0;

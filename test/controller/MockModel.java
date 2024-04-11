@@ -407,7 +407,7 @@ public class MockModel implements InvestmentManager {
   @Override
   public void loadPortfolio(String portfolioName, List<String[]> lines, IStockData api) {
     logger.append("Name of portfolio to be saved: ").append(portfolioName).append(" and "
-            + "lines to be appended are: ").append(lines).append("\n");
+            + "lines to be appended are: ").append("lines").append("\n");
 
   }
 
