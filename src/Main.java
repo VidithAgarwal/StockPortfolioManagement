@@ -28,8 +28,6 @@ public class Main {
     if (args.length > 0) {
       if (args[0].equals("-text")) {
         useGUI = false;
-      } else if (args[0].equals("-gui")) {
-        useGUI = true;
       } else {
         System.out.println("Usage: java Main [-gui | -text], \n type -text to use test based "
                 + "view or -gui for gui based view");

@@ -4,6 +4,7 @@ import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JFormattedTextField;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Dimension;
@@ -23,8 +25,10 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -53,7 +57,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
 
   private Map<String, Double> shareDetails = new HashMap<>();
-  private JFrame mainFrame;
+  private final JFrame mainFrame;
 
   /**
    * this constructs a new GUIView object.
@@ -69,6 +73,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method creates a JButton with specified label and customizes its appearance.
+   *
    * @param s the label text for button.
    * @return a customized JButton object.
    */
@@ -82,6 +87,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method creates a JTextField with specified number of columns & customizes its appearance.
+   *
    * @param columns number of columns for the text field.
    * @return a customized JTextField object.
    */
@@ -99,7 +105,8 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method creates a JLabel with specified text and customizes its appearance.
-   * @param s  text for the label.
+   *
+   * @param s text for the label.
    * @return a customized JLabel object.
    */
   private JLabel createLabel(String s) {
@@ -110,6 +117,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method adds features to the GUI interface.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   @Override
@@ -159,8 +167,9 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method creates JComboBox (dropdown) with specified list of portfolio names.
+   *
    * @param listOfPortfolioNames array of portfolio names to be displayed in the dropdown.
-   * @return  JComboBox object with the provided list of portfolio names.
+   * @return JComboBox object with the provided list of portfolio names.
    */
   private JComboBox<String> createDropdown(String[] listOfPortfolioNames) {
     return new JComboBox<String>(listOfPortfolioNames);
@@ -168,6 +177,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * displays buy page for purchasing stocks.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void showBuyPage(Features features) {
@@ -243,14 +253,23 @@ public class GUIView extends JFrame implements IViewGUI {
                   JOptionPane.INFORMATION_MESSAGE);
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter value of all fields",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
 
     });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    submitButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
 
     mainFrame.add(panel);
     mainFrame.repaint();
@@ -261,6 +280,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method displays sell page for selling stocks.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void showSellPage(Features features) {
@@ -336,13 +356,22 @@ public class GUIView extends JFrame implements IViewGUI {
                   JOptionPane.INFORMATION_MESSAGE);
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter value of all fields",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
     });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    submitButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
 
     mainFrame.add(panel);
     mainFrame.repaint();
@@ -353,6 +382,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method retrieves the index of the selected item from the dropdown.
+   *
    * @param e is the ActionEvent triggered by the dropdown selection.
    * @return index of the selected item in the dropdown.
    */
@@ -363,6 +393,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method retrieves the selected date from the JDatePicker.
+   *
    * @param datePicker the JDatePicker object containing selected date.
    * @return string representation of the selected date.
    */
@@ -374,6 +405,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method creates a JDatePanelImpl (date picker panel) with default properties.
+   *
    * @return a JDatePanelImpl object representing date picker panel.
    */
   JDatePanelImpl createDatePanel() {
@@ -395,6 +427,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method displays the save page for exporting the portfolio to a CSV file.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void save(Features features) {
@@ -481,6 +514,16 @@ public class GUIView extends JFrame implements IViewGUI {
       }
     });
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    submitButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
+
     mainFrame.add(panel);
     mainFrame.repaint();
     mainFrame.revalidate();
@@ -491,6 +534,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method displays create portfolio page for creating a new flexible portfolio.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void createPortfolio(Features features) {
@@ -529,17 +573,26 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter name for creating portfolio",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
     });
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      mainFrame.getContentPane().removeAll();
+      mainFrame.repaint();
+      mainFrame.revalidate();
+      showSecondMenu(features);
+    });
+
     panel.add(label, gbc);
     panel.add(textBox, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     // Add the panel to the frame
     mainFrame.add(panel);
@@ -554,6 +607,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * loading portfolios, getting portfolio composition, buying stocks, selling stocks, getting
    * cost basis, getting total value, saving portfolios, investing with Dollar Cost Averaging (DCA)
    * strategy, and getting stock analysis.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   void showSecondMenu(Features features) {
@@ -655,6 +709,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method perform Dollar Cost Averaging (DCA) investment strategy.
    * Displays a form for user to select a portfolio, date of investment, and weight for each stock.
    * Submits the investment request to Features object.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void dCAInvestment(Features features) {
@@ -682,20 +737,29 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.gridy++;
     choicePanel.add(datePanel, gbc);
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    choicePanel.add(backButton, gbc);
+
     final String[] date = {LocalDate.now().minusDays(1) + ""};
     JPanel formPanel = new JPanel(new GridBagLayout());
 
     final int[] choice = {0};
     dropdown.addActionListener(e -> {
       Map<String, Double> composition
-              = features.examineComposition( dropdown.getSelectedIndex() - 1,
+              = features.examineComposition(dropdown.getSelectedIndex() - 1,
               date[0]);
       if (features.getErrorMessage() != null) {
         JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         showSecondMenu(features);
-        return;
       } else {
         choice[0] = dropdown.getSelectedIndex() - 1;
         updateForm(composition, formPanel, features, date[0], choice[0]);
@@ -732,11 +796,11 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method update form with composition details of the selected portfolio.
    * Allows the user to enter the weight for each stock and the total investment amount.
    *
-   * @param stringDoubleMap  map containing the composition of the portfolio.
-   * @param formPanel      panel containing the form elements.
-   * @param features       Features object containing the investment features.
+   * @param stringDoubleMap map containing the composition of the portfolio.
+   * @param formPanel       panel containing the form elements.
+   * @param features        Features object containing the investment features.
    * @param date            date of investment.
-   * @param choice         index of the selected portfolio.
+   * @param choice          index of the selected portfolio.
    */
   private void updateForm(Map<String, Double> stringDoubleMap, JPanel formPanel,
                           Features features, String date, int choice) {
@@ -753,7 +817,7 @@ public class GUIView extends JFrame implements IViewGUI {
       JPanel rowPanel = new JPanel(new GridBagLayout());
       gbc.gridwidth = 1;
 
-      JLabel quantityLabel = createLabel("Enter the weight for " + entry.getKey());
+      JLabel quantityLabel = createLabel("Enter the weight for " + entry.getKey() + "(%)");
       JTextField quantity = createTextField(10);
 
       quantity.addKeyListener(new KeyAdapter() {
@@ -795,10 +859,11 @@ public class GUIView extends JFrame implements IViewGUI {
       gbc.gridwidth = 2;
       formPanel.add(rowPanel, gbc);
     }
-    JLabel totalAmountLabel = createLabel("Total Investment Amount:");
+    JLabel totalAmountLabel = createLabel("Total Investment Amount($)");
     JTextField totalAmountField = createTextField(10);
     totalAmountField.addKeyListener(new KeyAdapter() {
       int flag = 0;
+
       @Override
       public void keyTyped(KeyEvent e) {
         char c = e.getKeyChar();
@@ -821,27 +886,27 @@ public class GUIView extends JFrame implements IViewGUI {
 
 
     submitButton.addActionListener(e -> {
-      if (totalAmountField.getText().isEmpty()) {
-        JOptionPane.showMessageDialog(formPanel, "Amount cannot be blank",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        dCAInvestment(features);
-      }
-      Double amount = Double.parseDouble(totalAmountField.getText());
-      features.investWithDCAStrategy(choice, date,
-              amount, shareDetails);
+      if (!totalAmountField.getText().isEmpty()) {
+        Double amount = Double.parseDouble(totalAmountField.getText());
+        features.investWithDCAStrategy(choice, date,
+                amount, shareDetails);
+        if (features.getErrorMessage() != null) {
+          JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+          shareDetails = new HashMap<>();
+        } else {
+          JOptionPane.showMessageDialog(formPanel, features.getSuccessMessage(),
+                  "Success",
+                  JOptionPane.INFORMATION_MESSAGE);
+          showSecondMenu(features);
 
-      if (features.getErrorMessage() != null) {
-        JOptionPane.showMessageDialog(formPanel, features.getErrorMessage(),
+        }
+      } else {
+        JOptionPane.showMessageDialog(formPanel, "Please enter amount to be invested",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         shareDetails = new HashMap<>();
-      } else {
-        JOptionPane.showMessageDialog(formPanel, features.getSuccessMessage(),
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
-        showSecondMenu(features);
-
       }
     });
 
@@ -864,6 +929,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method displays page for calculating cost basis of a portfolio.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void showCostBasisPage(Features features) {
@@ -922,6 +988,16 @@ public class GUIView extends JFrame implements IViewGUI {
       }
     });
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    submitButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
+
     mainFrame.add(panel);
     mainFrame.repaint();
     mainFrame.revalidate();
@@ -931,6 +1007,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method display page for calculating the total value of a portfolio.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void showTotalValuePage(Features features) {
@@ -975,20 +1052,30 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(submitButton, gbc);
 
     submitButton.addActionListener(e -> {
-        features.getTotalValue(choice[0], date[0]);
-        if (features.getErrorMessage() != null) {
-          JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
-          dropdown.setSelectedIndex(0);
-        } else {
-          JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
-                  "Success",
-                  JOptionPane.INFORMATION_MESSAGE);
-          showSecondMenu(features);
-        }
+      features.getTotalValue(choice[0], date[0]);
+      if (features.getErrorMessage() != null) {
+        JOptionPane.showMessageDialog(panel, features.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        dropdown.setSelectedIndex(0);
+      } else {
+        JOptionPane.showMessageDialog(panel, features.getSuccessMessage(),
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        showSecondMenu(features);
+      }
 
     });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    submitButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
 
     mainFrame.add(panel);
     mainFrame.repaint();
@@ -998,9 +1085,9 @@ public class GUIView extends JFrame implements IViewGUI {
   }
 
 
-
   /**
    * this method display stock analysis menu with various options.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void stockAnalysis(Features features) {
@@ -1041,6 +1128,12 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(movingButton);
     movingButton.addActionListener(evt -> movingCrossover(features));
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.RED);
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
     panel.add(gainButton, gbc);
     gbc.gridy = 1;
     panel.add(periodButton, gbc);
@@ -1050,6 +1143,8 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(crossoverButton, gbc);
     gbc.gridy = 4;
     panel.add(movingButton, gbc);
+    gbc.gridy = 5;
+    panel.add(backButton, gbc);
 
     mainFrame.add(panel);
 
@@ -1060,6 +1155,7 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method display the moving crossover analysis form.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void movingCrossover(Features features) {
@@ -1136,12 +1232,18 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter value for all fields",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
+    });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.RED);
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
     });
 
     panel.add(label, gbc);
@@ -1155,6 +1257,7 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(xLabel1, gbc);
     panel.add(textBox4, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1171,6 +1274,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method clears the main frame content.
    * prepares a panel for getting crossover days for a stock.
    * and sets up UI components for user input.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void crossoverPeriod(Features features) {
@@ -1236,12 +1340,18 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter ticker symbol and date",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
+    });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.RED);
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
     });
 
     panel.add(label, gbc);
@@ -1251,6 +1361,7 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(dateLabel1, gbc);
     panel.add(datePanel2, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1267,6 +1378,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method clears main frame content.
    * prepares a panel for obtaining X-Day Moving Date Average for a stock,
    * and sets up UI components for user input.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void xMovingAvg(Features features) {
@@ -1320,12 +1432,18 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter ticker symbol, X days and date",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
+    });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.RED);
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
     });
 
     panel.add(label, gbc);
@@ -1335,6 +1453,7 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(dateLabel, gbc);
     panel.add(datePanel, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1352,6 +1471,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method clears main frame content.
    * prepares a panel for obtaining gain or loss of a stock over a period of time,
    * and sets up UI components for user input.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void gainOrLoseOverPeriod(Features features) {
@@ -1411,12 +1531,18 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter ticker symbol and date",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
+    });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.RED);
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
     });
 
     panel.add(label, gbc);
@@ -1426,6 +1552,7 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(dateLabel1, gbc);
     panel.add(datePanel2, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1442,6 +1569,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method clears main frame content.
    * prepares a panel for obtaining gain or loss of a stock on a particular date,
    * and sets up UI components for user input.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void gainOrLose(Features features) {
@@ -1491,12 +1619,18 @@ public class GUIView extends JFrame implements IViewGUI {
 
           showSecondMenu(features);
         }
-      }
-      else {
+      } else {
         JOptionPane.showMessageDialog(panel, "Please enter ticker symbol and date",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
       }
+    });
+
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.RED);
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
     });
 
     panel.add(label, gbc);
@@ -1504,6 +1638,7 @@ public class GUIView extends JFrame implements IViewGUI {
     panel.add(dateLabel, gbc);
     panel.add(datePanel, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1520,6 +1655,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method clears main frame content.
    * prepares a panel for loading a portfolio from a CSV file,
    * and sets up UI components for user input.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void loadPortfolio(Features features) {
@@ -1549,7 +1685,8 @@ public class GUIView extends JFrame implements IViewGUI {
     browseButton.addActionListener(e -> {
       JFileChooser fileChooser = new JFileChooser();
       fileChooser.setDialogTitle("Choose a CSV file to load portfolio");
-      FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files",
+              "csv");
       fileChooser.setFileFilter(filter);
       int returnValue = fileChooser.showOpenDialog(null);
       if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -1579,19 +1716,29 @@ public class GUIView extends JFrame implements IViewGUI {
           showSecondMenu(features);
         }
       } else {
-        JOptionPane.showMessageDialog(panel, "Please enter portfolio name and select a CSV file",
+        JOptionPane.showMessageDialog(panel, "Please enter portfolio name and select " +
+                        "a CSV file",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         browseButton.setEnabled(true);
       }
     });
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setPreferredSize(new Dimension(200, 35));
+    backButton.addActionListener(e -> {
+      mainFrame.getContentPane().removeAll();
+      mainFrame.repaint();
+      mainFrame.revalidate();
+      showSecondMenu(features);
+    });
+
     panel.add(nameLabel, gbc);
     panel.add(nameField, gbc);
     panel.add(fileLabel, gbc);
-    //panel.add(filePathField, gbc);
     panel.add(browseButton, gbc);
     panel.add(submitButton, gbc);
+    panel.add(backButton, gbc);
 
     // Add the panel to the frame
     mainFrame.add(panel);
@@ -1605,6 +1752,7 @@ public class GUIView extends JFrame implements IViewGUI {
    * this method clears the main frame content.
    * prepares a panel for obtaining the composition of a portfolio,
    * and sets up UI components for user input.
+   *
    * @param features An instance of the Features class providing functionality for the application.
    */
   private void composition(Features features) {
@@ -1647,6 +1795,15 @@ public class GUIView extends JFrame implements IViewGUI {
     gbc.gridwidth = 2;
     panel.add(submitButton, gbc);
 
+    JButton backButton = createButton("Go to menu page");
+    backButton.setBackground(Color.lightGray);
+    backButton.addActionListener(e -> {
+      showSecondMenu(features);
+    });
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
+
     submitButton.addActionListener(e -> {
       if (date[0] != null) { //date[0] != null
         Map<String, Double> compositionResult = features.examineComposition(choice[0], date[0]);
@@ -1676,8 +1833,10 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method displays the composition result of a portfolio in a table format.
-   * @param features An instance of the Features class providing functionality for application.
-   * @param compositionResult  map containing the composition result of  portfolio.
+   *
+   * @param features          An instance of the Features class providing functionality for
+   *                          application.
+   * @param compositionResult map containing the composition result of  portfolio.
    */
   private void displayCompositionResult(Features features, Map<String, Double> compositionResult) {
     mainFrame.getContentPane().removeAll();
@@ -1702,8 +1861,9 @@ public class GUIView extends JFrame implements IViewGUI {
 
   /**
    * this method creates a JTable to display the composition result of a portfolio.
-   * @param compositionResult  map containing the composition result of the portfolio.
-   * @return  JTable displaying the composition result.
+   *
+   * @param compositionResult map containing the composition result of the portfolio.
+   * @return JTable displaying the composition result.
    */
   private JTable createCompositionTable(Map<String, Double> compositionResult) {
     DefaultTableModel model = new DefaultTableModel();
@@ -1734,6 +1894,7 @@ public class GUIView extends JFrame implements IViewGUI {
      * to format dates as strings.
      * If provided value is an instance of Date, it formats the date using the "yyyy-MM-dd" format.
      * Otherwise, it returns an empty string.
+     *
      * @param value value to be formatted.
      * @return formatted string representation of the date, or an empty string if value is not Date.
      */

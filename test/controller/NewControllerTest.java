@@ -21,28 +21,15 @@ import view.IViewGUI;
  */
 public class NewControllerTest {
 
+  IViewGUI view = new GUIView();
   /**
    * Represents an instance of StockControllerImplGUI used for testing purposes.
    */
   private StockControllerImplGUI controller;
-
   /**
    * Represents a mock model used for testing purposes.
    */
   private MockModel mockModel;
-
-
-  /**
-   * Represents a mock name used for testing purposes.
-   */
-  private String mockName;
-
-  /**
-   * Represents a mock value used for testing purposes.
-   */
-  private double mockValue;
-
-  IViewGUI view = new GUIView();
 
   /**
    * Sets up the test environment before each test method execution.
@@ -57,8 +44,8 @@ public class NewControllerTest {
     mockStringInt.put("date", 10);
     mockComposition.put("AAPL", 20d);
     mockComposition.put("Goog", 10d);
-    mockName = "Test Portfolio";
-    mockValue = 17.5;
+    String mockName = "Test Portfolio";
+    double mockValue = 17.5;
     StringBuilder mockSaveInflexible = new StringBuilder();
     mockSaveInflexible.append("Stock, Quantity").append(System.lineSeparator()).append("AAPL,")
             .append("20");
@@ -72,7 +59,6 @@ public class NewControllerTest {
     newBuilder.addShare("AAPL", 20);
     mockModel.addPortfolio(newBuilder);
   }
-
 
 
   @Test
@@ -95,21 +81,18 @@ public class NewControllerTest {
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Creating flexible portfolio with name: Portfolio 1",
-            logChecker[logChecker.length -1]);
-    //String error = controller.getErrorMessage();
-    //assertEquals("Portfolio with this name already exists!",error);
-
+            logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testExportPortfolio() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.export(0,"/s.csv");
+    controller.export(0, "/s.csv");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Portfolio to be saved is at index: 0",
-            logChecker[logChecker.length -1]);
+            logChecker[logChecker.length - 1]);
     //String error = controller.getErrorMessage();
     //assertEquals("Portfolio with this name already exists!",error);
 
@@ -119,9 +102,9 @@ public class NewControllerTest {
   public void testExportPortfolioInputInvalid() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.export(2,"/s.csv");
+    controller.export(2, "/s.csv");
     String error = controller.getErrorMessage();
-    assertEquals("Invalid portfolio choice",error);
+    assertEquals("Invalid portfolio choice", error);
 
   }
 
@@ -129,7 +112,7 @@ public class NewControllerTest {
   public void testBuyStockInvalidDateFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.buyStock("1","1","aapl",0);
+    controller.buyStock("1", "1", "aapl", 0);
     //StringBuilder inputLog = mockModel.getLogger();
     //String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getErrorMessage();
@@ -141,7 +124,7 @@ public class NewControllerTest {
   public void testBuyStockInvalidQuantity() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.buyStock("2024-03-04","-1","aapl",0);
+    controller.buyStock("2024-03-04", "-1", "aapl", 0);
     //StringBuilder inputLog = mockModel.getLogger();
     //String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getErrorMessage();
@@ -153,7 +136,7 @@ public class NewControllerTest {
   public void testBuyStockInvalidDate() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.buyStock("2024-13-20","1","aapl",0);
+    controller.buyStock("2024-13-20", "1", "aapl", 0);
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -162,7 +145,7 @@ public class NewControllerTest {
   public void testBuyStockInvalidInput() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.buyStock("2024-12-20","1","aapl",2);
+    controller.buyStock("2024-12-20", "1", "aapl", 2);
     String message = controller.getErrorMessage();
     assertEquals("Invalid portfolio choice", message);
   }
@@ -171,33 +154,33 @@ public class NewControllerTest {
   public void testBuyStock() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.buyStock("2024-03-04","10","aapl",0);
+    controller.buyStock("2024-03-04", "10", "aapl", 0);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("10 aapl bought successfully", message);
     assertEquals("Buying 10 shares of aapl for portfolio at index: 0 on 2024-03-04"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testSellStock() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.sellStock("2024-03-04","10","aapl",0);
+    controller.sellStock("2024-03-04", "10", "aapl", 0);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("10 aapl sold successfully", message);
     assertEquals("Selling 10 shares of aapl for portfolio at index: 0 on 2024-03-04"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testSellStockInvalidDateFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.sellStock("1","1","aapl",0);
+    controller.sellStock("1", "1", "aapl", 0);
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -206,7 +189,7 @@ public class NewControllerTest {
   public void testSellStockInvalidDate() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.sellStock("2024-13-20","1","aapl",0);
+    controller.sellStock("2024-13-20", "1", "aapl", 0);
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -215,7 +198,7 @@ public class NewControllerTest {
   public void testSellStockInvalidQuantity() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.sellStock("2024-03-04","-1","aapl",0);
+    controller.sellStock("2024-03-04", "-1", "aapl", 0);
     String message = controller.getErrorMessage();
     assertEquals("Quantity must be positive integer.", message);
   }
@@ -224,7 +207,7 @@ public class NewControllerTest {
   public void testSellStockInvalidInput() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.sellStock("2024-03-04","1","aapl",2);
+    controller.sellStock("2024-03-04", "1", "aapl", 2);
     String message = controller.getErrorMessage();
     assertEquals("Invalid portfolio choice", message);
   }
@@ -233,7 +216,7 @@ public class NewControllerTest {
   public void testTotalValueInvalidDateFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getTotalValue(0,"1");
+    controller.getTotalValue(0, "1");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date format.", message);
   }
@@ -242,7 +225,7 @@ public class NewControllerTest {
   public void testTotalValueInvalidInput() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getTotalValue(2,"2024-03-03");
+    controller.getTotalValue(2, "2024-03-03");
     String message = controller.getErrorMessage();
     assertEquals("Invalid portfolio choice", message);
   }
@@ -251,7 +234,7 @@ public class NewControllerTest {
   public void testTotalValueInvalidDate() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getTotalValue(0,"2023-13-32");
+    controller.getTotalValue(0, "2023-13-32");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -260,34 +243,34 @@ public class NewControllerTest {
   public void testTotalValue() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getTotalValue(0,"2024-03-04");
+    controller.getTotalValue(0, "2024-03-04");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("The total value of the portfolio on 2024-03-04 is 17.5", message);
     assertEquals("Retrieving composition for portfolio at index: 0 For the day: 4 "
                     + "month: 3 year: 2024"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testCostBasis() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getCostBasis(0,"2024-03-04");
+    controller.getCostBasis(0, "2024-03-04");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     String message = controller.getSuccessMessage();
     assertEquals("The cost basis is: $17.5", message);
     assertEquals("Calculating cost basis for portfolio at index: 0on date: 2024-03-04"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testCostBasisInvalidDateFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getCostBasis(0,"1");
+    controller.getCostBasis(0, "1");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -296,7 +279,7 @@ public class NewControllerTest {
   public void testCostBasisInvalidDate() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getCostBasis(0,"2024-03-34");
+    controller.getCostBasis(0, "2024-03-34");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -305,7 +288,7 @@ public class NewControllerTest {
   public void testCostBasisInvalidInput() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.getCostBasis(2,"2024-03-28");
+    controller.getCostBasis(2, "2024-03-28");
     String message = controller.getErrorMessage();
     assertEquals("Invalid portfolio choice", message);
   }
@@ -320,7 +303,7 @@ public class NewControllerTest {
     String message = controller.getSuccessMessage();
     assertEquals("Test Portfolio", message);
     assertEquals("Calculating gain or loss for aapl on 2024-03-04"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
@@ -345,7 +328,7 @@ public class NewControllerTest {
   public void testGainOrLoseInvalidDateStartFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.gainOrLoseOverPeriod("2024","2024-03-03", "aapl");
+    controller.gainOrLoseOverPeriod("2024", "2024-03-03", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
   }
@@ -354,7 +337,7 @@ public class NewControllerTest {
   public void testGainOrLoseInvalidDateStart() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.gainOrLoseOverPeriod("2023-13-03","2024-03-03",
+    controller.gainOrLoseOverPeriod("2023-13-03", "2024-03-03",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
@@ -364,7 +347,7 @@ public class NewControllerTest {
   public void testGainOrLoseInvalidDateEndFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.gainOrLoseOverPeriod("2024-03-03","2024-30",
+    controller.gainOrLoseOverPeriod("2024-03-03", "2024-30",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
@@ -374,18 +357,19 @@ public class NewControllerTest {
   public void testGainOrLoseOverPeriod() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.gainOrLoseOverPeriod("2024-03-03","2024-03-13", "aapl");
+    controller.gainOrLoseOverPeriod("2024-03-03", "2024-03-13",
+            "aapl");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Calculating gain or loss for aapl from 2024-03-03 to 2024-03-13"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testGainOrLoseInvalidDateEnd() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.gainOrLoseOverPeriod("2024-03-03","2024-30-03",
+    controller.gainOrLoseOverPeriod("2024-03-03", "2024-30-03",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
@@ -395,7 +379,7 @@ public class NewControllerTest {
   public void testXMovingAvgInvalidDateEnd() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.xDayMovingAvg("aapl","20","2024-30-03");
+    controller.xDayMovingAvg("aapl", "20", "2024-30-03");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -404,7 +388,7 @@ public class NewControllerTest {
   public void testXMovingAvgInvalidDateEndFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.xDayMovingAvg("aapl","20","2024-30");
+    controller.xDayMovingAvg("aapl", "20", "2024-30");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -413,7 +397,7 @@ public class NewControllerTest {
   public void testXMovingAvgInvalidXValue() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.xDayMovingAvg("aapl","-1"
+    controller.xDayMovingAvg("aapl", "-1"
             , "2024-03-03");
     String message = controller.getErrorMessage();
     assertEquals("X must be a positive integer.", message);
@@ -423,18 +407,18 @@ public class NewControllerTest {
   public void testXMovingAvg() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.xDayMovingAvg("aapl","20", "2024-03-03");
+    controller.xDayMovingAvg("aapl", "20", "2024-03-03");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Calculating 20-day moving average for aapl on 2024-03-03"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testCrossoverInvalidDateEnd() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.crossoverOverPeriod("2024-03-03","2024-30-03",
+    controller.crossoverOverPeriod("2024-03-03", "2024-30-03",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
@@ -444,7 +428,7 @@ public class NewControllerTest {
   public void testCrossoverInvalidDateEndFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.crossoverOverPeriod("2024-03-03","2024-30",
+    controller.crossoverOverPeriod("2024-03-03", "2024-30",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
@@ -454,7 +438,7 @@ public class NewControllerTest {
   public void testCrossoverInvalidDateStart() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.crossoverOverPeriod("2023-13-03","2024-03-03",
+    controller.crossoverOverPeriod("2023-13-03", "2024-03-03",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
@@ -464,7 +448,7 @@ public class NewControllerTest {
   public void testCrossoverInvalidDateStartFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.crossoverOverPeriod("2023-13","2024-03-03",
+    controller.crossoverOverPeriod("2023-13", "2024-03-03",
             "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
@@ -474,32 +458,33 @@ public class NewControllerTest {
   public void testCrossOver() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.crossoverOverPeriod("2024-03-03","2024-03-13", "aapl");
+    controller.crossoverOverPeriod("2024-03-03", "2024-03-13",
+            "aapl");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Calculating crossover over period for aapl from 2024-03-03 to 2024-03-13"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testMovingCrossOver() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2024-03-03","2024-03-13",
-            "10","100","aapl");
+    controller.movingCrossoversOverPeriod("2024-03-03", "2024-03-13",
+            "10", "100", "aapl");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Calculating moving crossover for aapl from 2024-03-03 to "
                     + "2024-03-13 for x = 10 and y = 100"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testMovingCrossoverInvalidDateEnd() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2024-03-03","2024-30-13",
-            "10","100","aapl");
+    controller.movingCrossoversOverPeriod("2024-03-03", "2024-30-13",
+            "10", "100", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
   }
@@ -508,8 +493,8 @@ public class NewControllerTest {
   public void testMovingCrossoverInvalidDateEndFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2024-03-03","2024-11",
-            "10","100","aapl");
+    controller.movingCrossoversOverPeriod("2024-03-03", "2024-11",
+            "10", "100", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
   }
@@ -518,8 +503,8 @@ public class NewControllerTest {
   public void testMovingCrossoverInvalidDateStart() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2023-13-03","2024-01-11",
-            "10","100","aapl");
+    controller.movingCrossoversOverPeriod("2023-13-03", "2024-01-11",
+            "10", "100", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
   }
@@ -528,8 +513,8 @@ public class NewControllerTest {
   public void testMovingCrossoverInvalidDateStartFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2024-03","2024-04-03",
-            "10","100","aapl");
+    controller.movingCrossoversOverPeriod("2024-03", "2024-04-03",
+            "10", "100", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
   }
@@ -538,8 +523,8 @@ public class NewControllerTest {
   public void testMovingCrossoverInvalidXValue() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2024-03-03","2024-04-03",
-            "-10","100","aapl");
+    controller.movingCrossoversOverPeriod("2024-03-03", "2024-04-03",
+            "-10", "100", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("X must be a positive integer.", message);
   }
@@ -548,23 +533,11 @@ public class NewControllerTest {
   public void testMovingCrossoverInvalidYValue() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.movingCrossoversOverPeriod("2024-03-03","2024-04-03",
-            "10","-100","aapl");
+    controller.movingCrossoversOverPeriod("2024-03-03", "2024-04-03",
+            "10", "-100", "aapl");
     String message = controller.getErrorMessage();
     assertEquals("Y must be a positive integer.", message);
   }
-
-//  @Test
-//  public void testGetPortfolioNames() {
-//    IViewGUI view = new GUIView();
-//    StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-//    controller.getPortfolioNames();
-//    StringBuilder inputLog = mockModel.getLogger();
-//    String[] logChecker = inputLog.toString().split("\n");
-//    assertEquals("Calculating moving crossover for aapl from 2024-03-03 to "
-//                    + "2024-03-13 for x = 10 and y = 100"
-//            ,logChecker[logChecker.length -1]);
-//  }
 
   @Test
   public void testLoad() {
@@ -577,7 +550,7 @@ public class NewControllerTest {
     String message = controller.getSuccessMessage();
     assertEquals("File loaded successfully", message);
     assertEquals("Name of portfolio to be saved: sachi and lines to be appended are: lines"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
 
   }
 
@@ -597,18 +570,18 @@ public class NewControllerTest {
   public void testExamineComposition() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.examineComposition(0,"2024-03-03");
+    controller.examineComposition(0, "2024-03-03");
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Retrieving composition for portfolio at index: 0 on date: 2024-03-03"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
   public void testExamineCompositionInvalidDate() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.examineComposition(0,"2024-13-03");
+    controller.examineComposition(0, "2024-13-03");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -617,7 +590,7 @@ public class NewControllerTest {
   public void testExamineCompositionInvalidDateFormat() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.examineComposition(0,"2024-0303");
+    controller.examineComposition(0, "2024-0303");
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -626,7 +599,7 @@ public class NewControllerTest {
   public void testExamineCompositionInvalidInput() {
     IViewGUI view = new GUIView();
     StockControllerImplGUI controller = new StockControllerImplGUI(view, mockModel);
-    controller.examineComposition(2,"2024-0303");
+    controller.examineComposition(2, "2024-0303");
     String message = controller.getErrorMessage();
     assertEquals("Invalid portfolio choice", message);
   }
@@ -638,14 +611,14 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-03",
-            "2024-04-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-03",
+            "2024-04-03", 10, 100.0, shareDetails);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Index of portfolio to be saved: 0 and buyingList to be appended are: "
                     + "[{goog: 50.0}, {aapl: 50.0}, ], startDate: 2024-03-03, endDate: 2024-04-03, "
                     + "frequencyDays: 10, amount: 100.0"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
@@ -655,8 +628,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-13-03",
-            "2024-04-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-13-03",
+            "2024-04-03", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
   }
@@ -668,8 +641,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03",
-            "2024-04-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03",
+            "2024-04-03", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid start date!", message);
   }
@@ -681,8 +654,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-12-03",
-            "2024-13-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-12-03",
+            "2024-13-03", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
   }
@@ -694,8 +667,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-04",
-            "2024-043", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-04",
+            "2024-043", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid end date!", message);
   }
@@ -707,8 +680,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", -50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-04",
-            "2024-04-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-04",
+            "2024-04-03", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The weight cannot be negative", message);
   }
@@ -720,8 +693,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 101.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-04",
-            "2024-04-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-04",
+            "2024-04-03", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The weight cannot be greater than 100%", message);
   }
@@ -733,8 +706,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 48.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-04",
-            "2024-04-03", 10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-04",
+            "2024-04-03", 10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The combined sum of weights must be 100%", message);
   }
@@ -746,8 +719,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-04",
-            "2024-04-03", -10, 100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-04",
+            "2024-04-03", -10, 100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Frequency of investment must be a positive integer.", message);
   }
@@ -759,13 +732,11 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.createPortfolioWithStrategy("0","2024-03-04",
-            "2024-04-03", 10, -100.0,shareDetails);
+    controller.createPortfolioWithStrategy("0", "2024-03-04",
+            "2024-04-03", 10, -100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Amount must be a positive integer.", message);
   }
-
-
 
 
   @Test
@@ -775,13 +746,13 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-03-03",
-             100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-03-03",
+            100.0, shareDetails);
     StringBuilder inputLog = mockModel.getLogger();
     String[] logChecker = inputLog.toString().split("\n");
     assertEquals("Index of portfolio to be invested: 0 and investingList to be appended "
                     + "are: [{goog: 50.0}, {aapl: 50.0}, ], date: 2024-03-03, amount: 100.0"
-            ,logChecker[logChecker.length -1]);
+            , logChecker[logChecker.length - 1]);
   }
 
   @Test
@@ -791,8 +762,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-03-03",
-            -100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-03-03",
+            -100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Amount must be a positive integer.", message);
   }
@@ -804,8 +775,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", -50.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-03-03",
-            100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-03-03",
+            100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The weight cannot be negative", message);
   }
@@ -817,8 +788,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 101.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-03-03",
-            100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-03-03",
+            100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The weight cannot be greater than 100%", message);
   }
@@ -830,8 +801,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 48.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-03-03",
-            100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-03-03",
+            100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("The combined sum of weights must be 100%", message);
   }
@@ -843,8 +814,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 48.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(2,"2024-03-03",
-            100.0,shareDetails);
+    controller.investWithDCAStrategy(2, "2024-03-03",
+            100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid portfolio choice", message);
   }
@@ -856,8 +827,8 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-13-03",
-            100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-13-03",
+            100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
@@ -869,23 +840,11 @@ public class NewControllerTest {
     Map<String, Double> shareDetails = new HashMap<>();
     shareDetails.put("aapl", 50.0);
     shareDetails.put("goog", 50.0);
-    controller.investWithDCAStrategy(0,"2024-03",
-            100.0,shareDetails);
+    controller.investWithDCAStrategy(0, "2024-03",
+            100.0, shareDetails);
     String message = controller.getErrorMessage();
     assertEquals("Invalid date!", message);
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

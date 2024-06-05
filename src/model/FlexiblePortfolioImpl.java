@@ -263,7 +263,7 @@ public class FlexiblePortfolioImpl extends AbstractPortfolio {
   public StringBuilder save() {
     StringBuilder sb = new StringBuilder();
     sb.append("Transaction Type,Symbol,Quantity,Date").append(System.lineSeparator());
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     for (Transaction transaction : transactions) {
       sb.append(transaction.getType()).append(",");
       sb.append(transaction.getStock()).append(",");

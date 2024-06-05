@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -19,13 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JFormattedTextField;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
-
 
 
 import controller.Features;
@@ -38,19 +40,17 @@ public class CreateStrategyPage {
 
   private final JFrame mainFrame;
   private final JPanel mainPanel;
-  private JPanel inputPanel;
-
-  private String portfolioName;
-
-  private Map<String, Double> shareDetails = new HashMap<>();
-
   GUIView mainView;
   Features features;
+  private JPanel inputPanel;
+  private String portfolioName;
+  private Map<String, Double> shareDetails = new HashMap<>();
 
   /**
    * the constructor CreateStrategyPage object, used to initialise frame, view and features.
-   * @param mainFrame  main JFrame of the application.
-   * @param view       GUIView instance.
+   *
+   * @param mainFrame main JFrame of the application.
+   * @param view      GUIView instance.
    * @param features  Features instance for interacting with the application's features.
    */
   public CreateStrategyPage(JFrame mainFrame, GUIView view, Features features) {
@@ -96,13 +96,15 @@ public class CreateStrategyPage {
     submitButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        int n = Integer.parseInt(numberField.getText().trim());
         portfolioName = nameField.getText().trim();
-        if (!portfolioName.isEmpty()) {
+        if (!portfolioName.isEmpty() && !numberField.getText().isEmpty()) {
+          int n = Integer.parseInt(numberField.getText().trim());
           features.createFlexiblePortfolio(portfolioName);
 
-          if (features.getErrorMessage() != null) {
-            JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage(),
+          if (features.getErrorMessage() != null || n == 0) {
+            JOptionPane.showMessageDialog(inputPanel, features.getErrorMessage() == null ?
+                            "Number" +
+                                    " of stocks cannot be 0" : features.getErrorMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             numberField.setText("");
@@ -111,13 +113,18 @@ public class CreateStrategyPage {
           } else {
             takeStrategyInputs(n);
           }
-        }
-        else {
-          JOptionPane.showMessageDialog(inputPanel, "Please enter portfolio name.",
+        } else {
+          JOptionPane.showMessageDialog(inputPanel, "Please enter portfolio name and number of " +
+                          "stock",
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
         }
       }
+    });
+
+    JButton backButton = new JButton("Go to menu page");
+    backButton.addActionListener(e -> {
+      mainView.showSecondMenu(features);
     });
 
     GridBagConstraints gbc = new GridBagConstraints();
@@ -140,6 +147,8 @@ public class CreateStrategyPage {
     gbc.gridx = 0;
     gbc.gridwidth = 2;
     inputPanel.add(submitButton, gbc);
+    gbc.gridy = 3;
+    inputPanel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(inputPanel);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -153,6 +162,7 @@ public class CreateStrategyPage {
 
   /**
    * this method displays panel for taking strategy inputs.
+   *
    * @param n is number of stocks for which strategy inputs are required.
    */
   private void takeStrategyInputs(int n) {
@@ -179,7 +189,7 @@ public class CreateStrategyPage {
         public void keyReleased(KeyEvent e) {
           String share = shareName.getText();
           String quantityText = quantity.getText();
-          if (! quantityText.isEmpty()) {
+          if (!quantityText.isEmpty()) {
             double quantity = Double.parseDouble(quantityText);
             shareDetails.put(share, quantity);
           }
@@ -189,6 +199,7 @@ public class CreateStrategyPage {
       quantity.addKeyListener(new KeyAdapter() {
 
         int flag = 0;
+
         @Override
         public void keyTyped(KeyEvent e) {
           char c = e.getKeyChar();
@@ -297,6 +308,7 @@ public class CreateStrategyPage {
 
     totalAmountField.addKeyListener(new KeyAdapter() {
       int flag = 0;
+
       @Override
       public void keyTyped(KeyEvent e) {
         char c = e.getKeyChar();
@@ -334,9 +346,9 @@ public class CreateStrategyPage {
       public void actionPerformed(ActionEvent e) {
         String frequencyS = frequencyDaysField.getText();
         String amountS = totalAmountField.getText();
-        int frequency = Integer.parseInt(frequencyDaysField.getText());
-        Double amount = Double.parseDouble(totalAmountField.getText());
         if (!shareDetails.isEmpty() && !frequencyS.isEmpty() && !amountS.isEmpty()) {
+          int frequency = Integer.parseInt(frequencyDaysField.getText());
+          Double amount = Double.parseDouble(totalAmountField.getText());
           features.createPortfolioWithStrategy(portfolioName, startDate[0], endDate[0], frequency,
                   amount, shareDetails);
 
@@ -352,8 +364,7 @@ public class CreateStrategyPage {
                     JOptionPane.INFORMATION_MESSAGE);
             mainView.showSecondMenu(features);
           }
-        }
-        else {
+        } else {
           JOptionPane.showMessageDialog(inputPanel, "Please enter value for all fields",
                   "Error",
                   JOptionPane.ERROR_MESSAGE);
@@ -361,11 +372,18 @@ public class CreateStrategyPage {
       }
     });
 
+    JButton backButton = new JButton("Go to menu page");
+    backButton.addActionListener(e -> {
+      mainView.showSecondMenu(features);
+    });
+
     gbc.gridy++;
     gbc.gridx = 0;
     gbc.gridwidth = 2;
     gbc.anchor = GridBagConstraints.CENTER;
     inputPanel.add(confirmButton, gbc);
+    gbc.gridy++;
+    inputPanel.add(backButton, gbc);
 
     JScrollPane scrollPane = new JScrollPane(inputPanel);
 
@@ -378,8 +396,9 @@ public class CreateStrategyPage {
 
   /**
    * this method formats and displays selected date.
-   * @param datePicker  JDatePickerImpl object containing the selected date.
-   * @return  selected date in "yyyy-MM-dd" format.
+   *
+   * @param datePicker JDatePickerImpl object containing the selected date.
+   * @return selected date in "yyyy-MM-dd" format.
    */
   private String displaySelectedDate(JDatePickerImpl datePicker) {
     Date selectedDate = (Date) datePicker.getModel().getValue();

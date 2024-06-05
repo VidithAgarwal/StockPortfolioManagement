@@ -313,7 +313,8 @@ public class MockModel implements InvestmentManager {
    */
   @Override
   public TreeMap<String, String> movingCrossOver(String tickerSymbol, IStockData api,
-                                                 LocalDate startDate, LocalDate endDate, int x, int y) {
+                                                 LocalDate startDate, LocalDate endDate, int x,
+                                                 int y) {
     logger.append("Calculating moving crossover for ").append(tickerSymbol)
             .append(" from ").append(startDate.toString()).append(" to ")
             .append(endDate.toString()).append(" for x = ").append(x).append(" and y = ")
